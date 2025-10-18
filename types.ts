@@ -1,23 +1,30 @@
-
 export interface Capacitacao {
-  id: string;
-  nome_capacitacao: string;
-  data_inicio: string;
-  data_fim: string;
-  instrutor: string;
-  carga_horaria: string;
-  // Campos do tipo antigo que não estão no CSV, mantidos como opcionais para evitar quebras em outras partes do código
-  servidor?: string;
-  matricula?: string;
-  uorg?: string;
-  evento?: string;
-  status?: 'Concluído' | 'Em andamento' | 'Cancelado' | 'Pendente';
-  instituicao_promotora?: string;
-  modalidade?: 'EAD' | 'Presencial' | 'Híbrido';
-  data_termino?: string;
-  valor_evento?: number;
-  data_criacao?: string;
-  data_atualizacao?: string;
+    id: number;
+    ano: number;
+    servidor: string;
+    cargo_de_chefia: string;
+    matricula: number;
+    coord_geral: string;
+    uorg: string;
+    base_maiuscula: string;
+    evento: string;
+    status: string;
+    carga_horaria: number;
+    instituicao_promotora: string;
+    cnpjcpf: string;
+    modalidade: string;
+    linha_de_capacitacao: string;
+    programa_interno_cetec: string;
+    data_inicio: string;
+    data_termino: string;
+    mes: string;
+    iniciativa: string;
+    devolutiva_pdp: string;
+    gratuito_ou_pago: string;
+    valor_evento: number;
+    valor_diaria: number;
+    valor_passagem: number;
+    com_ou_sem_afastamento: string;
 }
 
 export type Page = 'Dashboard' | 'Cadastrar Capacitação' | 'Relatórios';
