@@ -1,9 +1,11 @@
-
-import React, { useState, useMemo } from 'react';
-import { MOCK_CAPACITACOES } from '../lib/mockData';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Capacitacao } from '../types';
 
 const Relatorios: React.FC = () => {
+    const [capacitacoes, setCapacitacoes] = useState<Capacitacao[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
     const [filters, setFilters] = useState({
         termo: '',
         uorg: '',
@@ -12,11 +14,30 @@ const Relatorios: React.FC = () => {
         dataFim: '',
     });
 
+    useEffect(() => {
+        const fetchCapacitacoes = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/capacitacoes');
+                if (!response.ok) {
+                    throw new Error('Falha ao buscar capacitações');
+                }
+                const data = await response.json();
+                setCapacitacoes(data);
+            } catch (err: any) {
+                setError(err.message);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchCapacitacoes();
+    }, []);
+
     const filteredData = useMemo(() => {
-        return MOCK_CAPACITACOES.filter(item => {
+        return capacitacoes.filter(item => {
             const termoMatch = filters.termo.toLowerCase() === '' ||
-                item.servidor.toLowerCase().includes(filters.termo.toLowerCase()) ||
-                item.evento.toLowerCase().includes(filters.termo.toLowerCase());
+                (item.nome_capacitacao && item.nome_capacitacao.toLowerCase().includes(filters.termo.toLowerCase())) ||
+                (item.instrutor && item.instrutor.toLowerCase().includes(filters.termo.toLowerCase()));
 
             const uorgMatch = filters.uorg === '' || item.uorg === filters.uorg;
             const statusMatch = filters.status === '' || item.status === filters.status;
@@ -24,17 +45,34 @@ const Relatorios: React.FC = () => {
             const dataInicioMatch = filters.dataInicio === '' || item.data_inicio >= filters.dataInicio;
             const dataFimMatch = filters.dataFim === '' || item.data_inicio <= filters.dataFim;
 
-
             return termoMatch && uorgMatch && statusMatch && dataInicioMatch && dataFimMatch;
         });
-    }, [filters]);
+    }, [filters, capacitacoes]);
     
-    const uorgsUnicas = [...new Set(MOCK_CAPACITACOES.map(item => item.uorg))];
+    const uorgsUnicas = [...new Set(capacitacoes.map(item => item.uorg).filter(Boolean))];
 
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFilters(prev => ({ ...prev, [name]: value }));
     };
+
+    const clearFilters = () => {
+        setFilters({
+            termo: '',
+            uorg: '',
+            status: '',
+            dataInicio: '',
+            dataFim: '',
+        });
+    };
+
+    if (isLoading) {
+        return <div className="text-center py-16">Carregando dados...</div>;
+    }
+
+    if (error) {
+        return <div className="text-center py-16 text-red-600">Erro: {error}</div>;
+    }
 
     return (
         <div className="flex flex-col h-full">
@@ -43,7 +81,7 @@ const Relatorios: React.FC = () => {
             <div className="bg-white p-6 rounded-lg shadow-md mb-6">
                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="lg:col-span-2">
-                        <label className="text-sm font-medium text-gray-700">Buscar por Servidor ou Evento</label>
+                        <label className="text-sm font-medium text-gray-700">Buscar por Nome ou Instrutor</label>
                         <input type="text" name="termo" value={filters.termo} onChange={handleFilterChange} className="mt-1 w-full rounded-md border-gray-300 shadow-sm" />
                     </div>
                     <div>
@@ -72,7 +110,7 @@ const Relatorios: React.FC = () => {
                         <input type="date" name="dataFim" value={filters.dataFim} onChange={handleFilterChange} className="mt-1 w-full rounded-md border-gray-300 shadow-sm"/>
                     </div>
                     <div className="flex items-end col-span-full md:col-span-2 justify-end space-x-2">
-                         <button className="py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                         <button onClick={clearFilters} className="py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                             Limpar Filtros
                         </button>
                          <button className="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
@@ -90,29 +128,21 @@ const Relatorios: React.FC = () => {
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Servidor</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Evento</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UORG</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome da Capacitação</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Instrutor</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Carga Horária</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Início</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Fim</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {filteredData.map((item) => (
                                 <tr key={item.id} className="hover:bg-gray-50">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.servidor}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-xs truncate">{item.evento}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.uorg}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                            item.status === 'Concluído' ? 'bg-green-100 text-green-800' : 
-                                            item.status === 'Em andamento' ? 'bg-yellow-100 text-yellow-800' :
-                                            item.status === 'Pendente' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800'
-                                        }`}>
-                                            {item.status}
-                                        </span>
-                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.nome_capacitacao}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.instrutor}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.carga_horaria}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(item.data_inicio).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(item.data_fim).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</td>
                                 </tr>
                             ))}
                         </tbody>
