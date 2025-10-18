@@ -1,7 +1,6 @@
 
-import React, { useMemo } from 'react';
-import { MOCK_CAPACITACOES } from '../lib/mockData';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import React, { useMemo, useState, useEffect } from 'react';
+import { Capacitacao } from '../types';
 
 const StatCard: React.FC<{ title: string; value: string | number; description: string }> = ({ title, value, description }) => (
     <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-primary">
@@ -12,23 +11,43 @@ const StatCard: React.FC<{ title: string; value: string | number; description: s
 );
 
 const Dashboard: React.FC = () => {
+    const [capacitacoes, setCapacitacoes] = useState<Capacitacao[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchCapacitacoes = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/capacitacoes');
+                if (!response.ok) {
+                    throw new Error('Falha ao buscar dados para o dashboard');
+                }
+                const data = await response.json();
+                setCapacitacoes(data);
+            } catch (err: any) {
+                setError(err.message);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchCapacitacoes();
+    }, []);
+
     const stats = useMemo(() => {
-        const totalCapacitacoes = MOCK_CAPACITACOES.length;
-        const cargaHorariaTotal = MOCK_CAPACITACOES.reduce((acc, curr) => acc + curr.carga_horaria, 0);
-        const servidoresAtendidos = new Set(MOCK_CAPACITACOES.map(c => c.matricula)).size;
-        const investimentoTotal = MOCK_CAPACITACOES.reduce((acc, curr) => acc + curr.valor_evento, 0);
+        const totalCapacitacoes = capacitacoes.length;
+        const cargaHorariaTotal = capacitacoes.reduce((acc, curr) => acc + Number(curr.carga_horaria || 0), 0);
         
-        return { totalCapacitacoes, cargaHorariaTotal, servidoresAtendidos, investimentoTotal };
-    }, []);
+        return { totalCapacitacoes, cargaHorariaTotal };
+    }, [capacitacoes]);
 
-    const dataByStatus = useMemo(() => {
-        const statusCount = MOCK_CAPACITACOES.reduce((acc, curr) => {
-            acc[curr.status] = (acc[curr.status] || 0) + 1;
-            return acc;
-        }, {} as Record<string, number>);
+    if (isLoading) {
+        return <div className="text-center py-16">Carregando dashboard...</div>;
+    }
 
-        return Object.entries(statusCount).map(([name, value]) => ({ name, quantidade: value }));
-    }, []);
+    if (error) {
+        return <div className="text-center py-16 text-red-600">Erro: {error}</div>;
+    }
 
     return (
         <div>
@@ -36,29 +55,6 @@ const Dashboard: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <StatCard title="Total de Capacitações" value={stats.totalCapacitacoes} description="Registros totais no sistema" />
                 <StatCard title="Carga Horária Total" value={`${stats.cargaHorariaTotal}h`} description="Soma de todas as horas de curso" />
-                <StatCard title="Servidores Atendidos" value={stats.servidoresAtendidos} description="Número de matrículas únicas" />
-                <StatCard title="Investimento Total" value={`R$ ${stats.investimentoTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} description="Soma dos valores dos eventos" />
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold text-dark-text mb-4">Capacitações por Status</h3>
-                <div style={{ width: '100%', height: 400 }}>
-                    <ResponsiveContainer>
-                        <BarChart
-                            data={dataByStatus}
-                            margin={{
-                                top: 5, right: 30, left: 20, bottom: 5,
-                            }}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Bar dataKey="quantidade" fill="#00529B" />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
             </div>
         </div>
     );

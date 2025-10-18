@@ -8,8 +8,6 @@ const Relatorios: React.FC = () => {
 
     const [filters, setFilters] = useState({
         termo: '',
-        uorg: '',
-        status: '',
         dataInicio: '',
         dataFim: '',
     });
@@ -39,17 +37,12 @@ const Relatorios: React.FC = () => {
                 (item.nome_capacitacao && item.nome_capacitacao.toLowerCase().includes(filters.termo.toLowerCase())) ||
                 (item.instrutor && item.instrutor.toLowerCase().includes(filters.termo.toLowerCase()));
 
-            const uorgMatch = filters.uorg === '' || item.uorg === filters.uorg;
-            const statusMatch = filters.status === '' || item.status === filters.status;
-            
             const dataInicioMatch = filters.dataInicio === '' || item.data_inicio >= filters.dataInicio;
-            const dataFimMatch = filters.dataFim === '' || item.data_inicio <= filters.dataFim;
+            const dataFimMatch = filters.dataFim === '' || item.data_fim <= filters.dataFim;
 
-            return termoMatch && uorgMatch && statusMatch && dataInicioMatch && dataFimMatch;
+            return termoMatch && dataInicioMatch && dataFimMatch;
         });
     }, [filters, capacitacoes]);
-    
-    const uorgsUnicas = [...new Set(capacitacoes.map(item => item.uorg).filter(Boolean))];
 
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -59,8 +52,6 @@ const Relatorios: React.FC = () => {
     const clearFilters = () => {
         setFilters({
             termo: '',
-            uorg: '',
-            status: '',
             dataInicio: '',
             dataFim: '',
         });
@@ -83,23 +74,6 @@ const Relatorios: React.FC = () => {
                     <div className="lg:col-span-2">
                         <label className="text-sm font-medium text-gray-700">Buscar por Nome ou Instrutor</label>
                         <input type="text" name="termo" value={filters.termo} onChange={handleFilterChange} className="mt-1 w-full rounded-md border-gray-300 shadow-sm" />
-                    </div>
-                    <div>
-                        <label className="text-sm font-medium text-gray-700">UORG</label>
-                        <select name="uorg" value={filters.uorg} onChange={handleFilterChange} className="mt-1 w-full rounded-md border-gray-300 shadow-sm">
-                            <option value="">Todas</option>
-                            {uorgsUnicas.map(u => <option key={u} value={u}>{u}</option>)}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="text-sm font-medium text-gray-700">Status</label>
-                        <select name="status" value={filters.status} onChange={handleFilterChange} className="mt-1 w-full rounded-md border-gray-300 shadow-sm">
-                            <option value="">Todos</option>
-                            <option>Concluído</option>
-                            <option>Em andamento</option>
-                            <option>Pendente</option>
-                            <option>Cancelado</option>
-                        </select>
                     </div>
                      <div>
                         <label className="text-sm font-medium text-gray-700">Data Início (a partir de)</label>
