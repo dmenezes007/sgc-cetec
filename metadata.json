@@ -1,0 +1,5 @@
+{
+  "name": "Sistema de Gestão de Capacitações",
+  "description": "Uma aplicação web moderna para gerenciar, registrar e gerar relatórios sobre as capacitações de servidores, substituindo planilhas manuais por um sistema intuitivo e centralizado.",
+  "requestFramePermissions": []
+}
