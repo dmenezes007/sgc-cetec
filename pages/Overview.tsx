@@ -188,13 +188,12 @@ const Overview: React.FC = () => {
                         <BarChart data={capacitacoesPorAno} style={{fontFamily: 'Open Sans, sans-serif'}}>
                             <defs>
                                 <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="rgb(0 82 155)" stopOpacity={0.8}/>
+                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
                                 <stop offset="95%" stopColor="#FFFFFF" stopOpacity={0.8}/>
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" />
-                            <YAxis />
+                            <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                            <YAxis tick={{ fontSize: 12 }} />
                             <Tooltip />
                             <Bar dataKey="total" fill="url(#colorUv)" />
                         </BarChart>
@@ -206,13 +205,12 @@ const Overview: React.FC = () => {
                         <BarChart data={capacitacoesPorMes} style={{fontFamily: 'Open Sans, sans-serif'}}>
                             <defs>
                                 <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="rgb(0 82 155)" stopOpacity={0.8}/>
+                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
                                 <stop offset="95%" stopColor="#FFFFFF" stopOpacity={0.8}/>
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" />
-                            <YAxis />
+                            <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                            <YAxis tick={{ fontSize: 12 }} />
                             <Tooltip />
                             <Bar dataKey="total" fill="url(#colorUv)" />
                         </BarChart>

@@ -12,7 +12,7 @@ const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogin = (password: string) => {
-    if (password === 'sgc_inpi_2025') {
+    if (password === 'SGC_CETEC_2025') {
       setIsLoggedIn(true);
     } else {
       alert('Senha incorreta');
