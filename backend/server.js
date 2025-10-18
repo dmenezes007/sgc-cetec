@@ -37,8 +37,18 @@ app.post('/api/capacitacoes', (req, res) => {
             const nextId = trainings.length > 0 ? Math.max(...trainings.map(t => parseInt(t.id) || 0)) + 1 : 1;
             newTraining.id = nextId;
 
+            // Ensure the order of columns matches the CSV header
+            const newRow = [
+                newTraining.id,
+                newTraining.nome_capacitacao,
+                newTraining.data_inicio,
+                newTraining.data_fim,
+                newTraining.instrutor,
+                newTraining.carga_horaria
+            ];
+
             const ws = fs.createWriteStream(csvFilePath, { flags: 'a' });
-            csv.write([newTraining], { headers: false, includeEndRowDelimiter: true })
+            csv.write([newRow], { headers: false, includeEndRowDelimiter: true })
                 .pipe(ws)
                 .on('finish', () => {
                     res.status(201).send(newTraining);
