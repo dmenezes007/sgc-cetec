@@ -162,7 +162,7 @@ const Overview: React.FC = () => {
     }
 
     return (
-        <div>
+        <div style={{fontFamily: 'Open Sans, sans-serif'}}>
             <h2 className="text-3xl font-bold text-dark-text mb-6">Overview</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -185,7 +185,7 @@ const Overview: React.FC = () => {
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-dark-text mb-4">Capacitações por Ano</h3>
                     <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={capacitacoesPorAno}>
+                        <BarChart data={capacitacoesPorAno} style={{fontFamily: 'Open Sans, sans-serif'}}>
                             <defs>
                                 <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="5%" stopColor="rgb(0 82 155)" stopOpacity={0.8}/>
@@ -203,7 +203,7 @@ const Overview: React.FC = () => {
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-dark-text mb-4">Capacitações por Mês</h3>
                     <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={capacitacoesPorMes}>
+                        <BarChart data={capacitacoesPorMes} style={{fontFamily: 'Open Sans, sans-serif'}}>
                             <defs>
                                 <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="5%" stopColor="rgb(0 82 155)" stopOpacity={0.8}/>
