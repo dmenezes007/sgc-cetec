@@ -85,9 +85,9 @@ const Overview: React.FC = () => {
         fetchCapacitacoes();
     }, []);
 
-    const uniqueAnos = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.ano.toString())))], [capacitacoes]);
-    const uniqueServidores = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.servidor)))], [capacitacoes]);
-    const uniqueInstituicoes = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.instituicao_promotora)))], [capacitacoes]);
+    const uniqueAnos = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.ano.toString()))).sort((a, b) => b.localeCompare(a))], [capacitacoes]);
+    const uniqueServidores = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.servidor))).sort((a, b) => a.localeCompare(b))], [capacitacoes]);
+    const uniqueInstituicoes = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.instituicao_promotora))).sort((a, b) => a.localeCompare(b))], [capacitacoes]);
 
     const filteredCapacitacoes = useMemo(() => {
         const sorted = [...capacitacoes].sort((a, b) => new Date(b.data_inicio).getTime() - new Date(a.data_inicio).getTime());
@@ -118,7 +118,7 @@ const Overview: React.FC = () => {
 
     const capacitacoesPorAno = useMemo(() => {
         const yearCounts = filteredCapacitacoes.reduce((acc, curr) => {
-            if(curr.ano) {
+            if(curr.ano && curr.ano.toString().trim() !== '') {
                 acc[curr.ano] = (acc[curr.ano] || 0) + 1;
             }
             return acc;
@@ -135,8 +135,6 @@ const Overview: React.FC = () => {
         });
         return data;
     }, [filteredCapacitacoes]);
-
-    const CHART_COLORS = ['#4F46E5', '#6366F1', '#818CF8', '#A5B4FC'];
 
     if (isLoading) {
         return <div className="text-center py-16">Carregando overview...</div>;
@@ -175,7 +173,7 @@ const Overview: React.FC = () => {
                             <XAxis dataKey="name" />
                             <YAxis />
                             <Tooltip />
-                            <Bar dataKey="total" fill={CHART_COLORS[0]} />
+                            <Bar dataKey="total" fill="rgb(0 82 155)" />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
@@ -187,7 +185,7 @@ const Overview: React.FC = () => {
                             <XAxis dataKey="name" />
                             <YAxis />
                             <Tooltip />
-                            <Bar dataKey="total" fill={CHART_COLORS[1]} />
+                            <Bar dataKey="total" fill="rgb(0 82 155)" />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
@@ -211,13 +209,13 @@ const Overview: React.FC = () => {
                         <tbody className="bg-white divide-y divide-gray-200">
                             {paginatedCapacitacoes.map((capacitacao) => (
                                 <tr key={capacitacao.id}>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{capacitacao.servidor}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{capacitacao.evento}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{capacitacao.instituicao_promotora}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{capacitacao.carga_horaria}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{capacitacao.data_inicio}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{capacitacao.data_termino}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{capacitacao.modalidade}</td>
+                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.servidor}</td>
+                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.evento}</td>
+                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.instituicao_promotora}</td>
+                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.carga_horaria}</td>
+                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.data_inicio}</td>
+                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.data_termino}</td>
+                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.modalidade}</td>
                                 </tr>
                             ))}
                         </tbody>
