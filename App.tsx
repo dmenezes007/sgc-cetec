@@ -5,9 +5,19 @@ import Dashboard from './pages/Dashboard';
 import CadastrarCapacitacao from './pages/CadastrarCapacitacao';
 import Relatorios from './pages/Relatorios';
 import { Page } from './types';
+import LoginPage from './components/LoginPage';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('Dashboard');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const handleLogin = (password: string) => {
+    if (password === 'sgc_inpi_2025') {
+      setIsLoggedIn(true);
+    } else {
+      alert('Senha incorreta');
+    }
+  };
 
   const renderPage = () => {
     switch (currentPage) {
@@ -21,6 +31,10 @@ const App: React.FC = () => {
         return <Dashboard />;
     }
   };
+
+  if (!isLoggedIn) {
+    return <LoginPage onLogin={handleLogin} />;
+  }
 
   return (
     <Layout currentPage={currentPage} setCurrentPage={setCurrentPage}>
