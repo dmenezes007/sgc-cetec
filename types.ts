@@ -27,7 +27,7 @@ export interface Capacitacao {
     com_ou_sem_afastamento: string;
 }
 
-export type Page = 'Dashboard' | 'Cadastrar Capacitação' | 'Relatórios';
+export type Page = 'Overview' | 'Cadastrar Capacitação' | 'Relatórios';
 
 export interface BulkUploadError {
   linha: number;
