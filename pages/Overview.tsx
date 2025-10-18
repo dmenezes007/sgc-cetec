@@ -1,6 +1,10 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Capacitacao } from '../types';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+const formatNumber = (num: number) => {
+    return new Intl.NumberFormat('pt-BR').format(num);
+};
 
 const StatCard: React.FC<{ title: string; value: string | number; description: string }> = ({ title, value, description }) => (
     <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-primary">
@@ -20,7 +24,7 @@ const Overview: React.FC = () => {
     // Filtros
     const [filterAno, setFilterAno] = useState<string>('');
     const [filterServidor, setFilterServidor] = useState<string>('');
-    const [filterStatus, setFilterStatus] = useState<string>('');
+    const [filterInstituicao, setFilterInstituicao] = useState<string>('');
 
     useEffect(() => {
         const fetchCapacitacoes = async () => {
@@ -45,10 +49,10 @@ const Overview: React.FC = () => {
         return capacitacoes.filter(c => {
             const anoMatch = filterAno ? c.ano.toString() === filterAno : true;
             const servidorMatch = filterServidor ? c.servidor.toLowerCase().includes(filterServidor.toLowerCase()) : true;
-            const statusMatch = filterStatus ? c.status === filterStatus : true;
-            return anoMatch && servidorMatch && statusMatch;
+            const instituicaoMatch = filterInstituicao ? c.instituicao_promotora.toLowerCase().includes(filterInstituicao.toLowerCase()) : true;
+            return anoMatch && servidorMatch && instituicaoMatch;
         });
-    }, [capacitacoes, filterAno, filterServidor, filterStatus]);
+    }, [capacitacoes, filterAno, filterServidor, filterInstituicao]);
 
     const stats = useMemo(() => {
         const totalCapacitacoes = filteredCapacitacoes.length;
@@ -67,6 +71,14 @@ const Overview: React.FC = () => {
         return filteredCapacitacoes.slice(startIndex, startIndex + itemsPerPage);
     }, [filteredCapacitacoes, currentPage]);
 
+    const capacitacoesPorAno = useMemo(() => {
+        const yearCounts = filteredCapacitacoes.reduce((acc, curr) => {
+            acc[curr.ano] = (acc[curr.ano] || 0) + 1;
+            return acc;
+        }, {} as Record<string, number>);
+        return Object.entries(yearCounts).map(([name, value]) => ({ name, total: value }));
+    }, [filteredCapacitacoes]);
+
     const capacitacoesPorMes = useMemo(() => {
         const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
         const data = meses.map(mes => ({ name: mes, total: 0 }));
@@ -77,15 +89,7 @@ const Overview: React.FC = () => {
         return data;
     }, [filteredCapacitacoes]);
 
-    const statusData = useMemo(() => {
-        const statusCounts = filteredCapacitacoes.reduce((acc, curr) => {
-            acc[curr.status] = (acc[curr.status] || 0) + 1;
-            return acc;
-        }, {} as Record<string, number>);
-        return Object.entries(statusCounts).map(([name, value]) => ({ name, value }));
-    }, [filteredCapacitacoes]);
-
-    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+    const CHART_COLORS = ['#4F46E5', '#6366F1', '#818CF8', '#A5B4FC'];
 
     if (isLoading) {
         return <div className="text-center py-16">Carregando overview...</div>;
@@ -99,23 +103,36 @@ const Overview: React.FC = () => {
         <div>
             <h2 className="text-3xl font-bold text-dark-text mb-6">Overview</h2>
             
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <StatCard title="Total de Capacitações" value={formatNumber(stats.totalCapacitacoes)} description="Registros totais no sistema" />
+                <StatCard title="Carga Horária Total" value={`${formatNumber(stats.cargaHorariaTotal)}h`} description="Soma de todas as horas de curso" />
+                <StatCard title="Total de Servidores" value={formatNumber(stats.totalServidores)} description="Número de servidores únicos" />
+                <StatCard title="Total de Instituições" value={formatNumber(stats.totalInstituicoes)} description="Número de instituições promotoras únicas" />
+            </div>
+
             <div className="bg-white p-6 rounded-lg shadow-md mb-8">
                 <h3 className="text-xl font-bold text-dark-text mb-4">Filtros</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <input type="text" placeholder="Filtrar por Ano..." value={filterAno} onChange={e => setFilterAno(e.target.value)} className="p-2 border rounded" />
-                    <input type="text" placeholder="Filtrar por Pesquisador..." value={filterServidor} onChange={e => setFilterServidor(e.target.value)} className="p-2 border rounded" />
-                    <input type="text" placeholder="Filtrar por Status..." value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="p-2 border rounded" />
+                    <input type="text" placeholder="Filtrar por Servidor..." value={filterServidor} onChange={e => setFilterServidor(e.target.value)} className="p-2 border rounded" />
+                    <input type="text" placeholder="Filtrar por Instituição..." value={filterInstituicao} onChange={e => setFilterInstituicao(e.target.value)} className="p-2 border rounded" />
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <StatCard title="Total de Capacitações" value={stats.totalCapacitacoes} description="Registros totais no sistema" />
-                <StatCard title="Carga Horária Total" value={`${stats.cargaHorariaTotal.toFixed(2)}h`} description="Soma de todas as horas de curso" />
-                <StatCard title="Total de Servidores" value={stats.totalServidores} description="Número de servidores únicos" />
-                <StatCard title="Total de Instituições" value={stats.totalInstituicoes} description="Número de instituições promotoras únicas" />
-            </div>
-
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                    <h3 className="text-xl font-bold text-dark-text mb-4">Capacitações por Ano</h3>
+                    <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={capacitacoesPorAno}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="total" fill={CHART_COLORS[0]} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-dark-text mb-4">Capacitações por Mês</h3>
                     <ResponsiveContainer width="100%" height={300}>
@@ -125,20 +142,8 @@ const Overview: React.FC = () => {
                             <YAxis />
                             <Tooltip />
                             <Legend />
-                            <Bar dataKey="total" fill="#8884d8" />
+                            <Bar dataKey="total" fill={CHART_COLORS[1]} />
                         </BarChart>
-                    </ResponsiveContainer>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                    <h3 className="text-xl font-bold text-dark-text mb-4">Distribuição por Status</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <PieChart>
-                            <Pie data={statusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} fill="#8884d8" label>
-                                {statusData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
-                            </Pie>
-                            <Tooltip />
-                            <Legend />
-                        </PieChart>
                     </ResponsiveContainer>
                 </div>
             </div>

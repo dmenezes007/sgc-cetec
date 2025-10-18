@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Page } from '../types';
 import { ChartBarIcon, DocumentAddIcon, TableIcon } from './icons/Icons';
 
@@ -15,58 +15,82 @@ const NavLink: React.FC<{
   setCurrentPage: (page: Page) => void;
   icon: React.ReactNode;
   text: string;
-}> = ({ page, currentPage, setCurrentPage, icon, text }) => (
+  isExpanded: boolean;
+}> = ({ page, currentPage, setCurrentPage, icon, text, isExpanded }) => (
   <button
     onClick={() => setCurrentPage(page)}
-    className={`flex items-center w-full px-4 py-3 text-sm font-medium transition-colors duration-200 ease-in-out rounded-lg ${
+    className={`flex items-center w-full py-3 text-sm font-medium transition-colors duration-200 ease-in-out rounded-lg ${
+      isExpanded ? 'px-4' : 'justify-center'
+    } ${
       currentPage === page
         ? 'bg-primary text-white shadow-md'
-        : 'text-gray-200 hover:bg-secondary hover:text-white'
+        : 'text-gray-200 hover:bg-secondary-dark hover:text-white'
     }`}
+    title={!isExpanded ? text : ''}
   >
     {icon}
-    <span className="ml-3">{text}</span>
+    {isExpanded && <span className="ml-3">{text}</span>}
   </button>
 );
 
 const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  const toggleSidebar = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   return (
     <div className="flex h-screen bg-light-bg font-sans">
-      <aside className="w-64 flex-shrink-0 bg-secondary p-4 flex flex-col justify-between">
-        <div>
-          <div className="flex items-center mb-8 px-2">
-             <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl">
-                S
-             </div>
-            <h1 className="ml-3 text-xl font-bold text-white">Gestão de Capacitações</h1>
-          </div>
-          <nav className="space-y-2">
-            <NavLink
-              page="Dashboard"
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              icon={<ChartBarIcon />}
-              text="Dashboard"
-            />
-            <NavLink
-              page="Cadastrar Capacitação"
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              icon={<DocumentAddIcon />}
-              text="Cadastrar"
-            />
-            <NavLink
-              page="Relatórios"
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              icon={<TableIcon />}
-              text="Relatórios"
-            />
-          </nav>
+      <aside className={`bg-secondary flex flex-col shadow-lg transition-all duration-300 ease-in-out ${isExpanded ? 'w-64' : 'w-20'}`}>
+        <div className={`p-6 flex items-center ${isExpanded ? 'justify-between' : 'justify-center'}`}>
+          {isExpanded && (
+            <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-light">
+              SGC
+            </div>
+          )}
+          <button onClick={toggleSidebar} className="p-1 rounded-full text-gray-300 hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" className={`h-6 w-6 transition-transform duration-300 ${isExpanded ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+            </svg>
+          </button>
         </div>
-        <div className="text-center text-gray-400 text-xs">
-          <p>&copy; {new Date().getFullYear()} SGC</p>
-          <p>Todos os direitos reservados.</p>
+        
+        <nav className="flex-grow px-4 space-y-2">
+          <NavLink
+            page="Overview"
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            icon={<ChartBarIcon />}
+            text="Overview"
+            isExpanded={isExpanded}
+          />
+          <NavLink
+            page="Cadastrar Capacitação"
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            icon={<DocumentAddIcon />}
+            text="Cadastrar"
+            isExpanded={isExpanded}
+          />
+          <NavLink
+            page="Relatórios"
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            icon={<TableIcon />}
+            text="Relatórios"
+            isExpanded={isExpanded}
+          />
+        </nav>
+
+        <div className="p-4 text-center">
+          <div className={`flex justify-center text-xs text-gray-400 mt-4 transition-opacity duration-300 ${isExpanded ? 'opacity-100' : 'opacity-0'}`}>
+            <img 
+                src="https://dmenezes007.github.io/pgi-inpi/files/imgs/logo_inpi_branco_fundo_transparente.png" 
+                alt="Logo do INPI" 
+                className="h-8"
+            />
+          </div>
         </div>
       </aside>
 
