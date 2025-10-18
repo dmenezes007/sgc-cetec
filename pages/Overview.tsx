@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Capacitacao } from '../types';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const formatNumber = (num: number) => {
     return new Intl.NumberFormat('pt-BR').format(num);
@@ -13,6 +13,46 @@ const StatCard: React.FC<{ title: string; value: string | number; description: s
         <p className="text-xs text-gray-400 mt-2">{description}</p>
     </div>
 );
+
+const SearchableDropdown: React.FC<{ options: string[]; value: string; onChange: (value: string) => void; placeholder: string; }> = ({ options, value, onChange, placeholder }) => {
+    const [inputValue, setInputValue] = useState(value);
+    const [showOptions, setShowOptions] = useState(false);
+
+    const filteredOptions = useMemo(() => 
+        options.filter(option => option.toLowerCase().includes(inputValue.toLowerCase())),
+    [options, inputValue]);
+
+    return (
+        <div className="relative">
+            <input 
+                type="text" 
+                placeholder={placeholder} 
+                value={inputValue}
+                onChange={e => setInputValue(e.target.value)}
+                onFocus={() => setShowOptions(true)}
+                onBlur={() => setTimeout(() => setShowOptions(false), 100)}
+                className="p-2 border rounded w-full"
+            />
+            {showOptions && (
+                <ul className="absolute z-10 w-full bg-white border rounded mt-1 max-h-60 overflow-y-auto">
+                    {filteredOptions.map(option => (
+                        <li 
+                            key={option}
+                            onClick={() => {
+                                onChange(option);
+                                setInputValue(option);
+                                setShowOptions(false);
+                            }}
+                            className="p-2 hover:bg-gray-100 cursor-pointer"
+                        >
+                            {option}
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    );
+};
 
 const Overview: React.FC = () => {
     const [capacitacoes, setCapacitacoes] = useState<Capacitacao[]>([]);
@@ -45,11 +85,16 @@ const Overview: React.FC = () => {
         fetchCapacitacoes();
     }, []);
 
+    const uniqueAnos = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.ano.toString())))], [capacitacoes]);
+    const uniqueServidores = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.servidor)))], [capacitacoes]);
+    const uniqueInstituicoes = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.instituicao_promotora)))], [capacitacoes]);
+
     const filteredCapacitacoes = useMemo(() => {
-        return capacitacoes.filter(c => {
+        const sorted = [...capacitacoes].sort((a, b) => new Date(b.data_inicio).getTime() - new Date(a.data_inicio).getTime());
+        return sorted.filter(c => {
             const anoMatch = filterAno ? c.ano.toString() === filterAno : true;
-            const servidorMatch = filterServidor ? c.servidor.toLowerCase().includes(filterServidor.toLowerCase()) : true;
-            const instituicaoMatch = filterInstituicao ? c.instituicao_promotora.toLowerCase().includes(filterInstituicao.toLowerCase()) : true;
+            const servidorMatch = filterServidor ? c.servidor === filterServidor : true;
+            const instituicaoMatch = filterInstituicao ? c.instituicao_promotora === filterInstituicao : true;
             return anoMatch && servidorMatch && instituicaoMatch;
         });
     }, [capacitacoes, filterAno, filterServidor, filterInstituicao]);
@@ -73,7 +118,9 @@ const Overview: React.FC = () => {
 
     const capacitacoesPorAno = useMemo(() => {
         const yearCounts = filteredCapacitacoes.reduce((acc, curr) => {
-            acc[curr.ano] = (acc[curr.ano] || 0) + 1;
+            if(curr.ano) {
+                acc[curr.ano] = (acc[curr.ano] || 0) + 1;
+            }
             return acc;
         }, {} as Record<string, number>);
         return Object.entries(yearCounts).map(([name, value]) => ({ name, total: value }));
@@ -113,9 +160,9 @@ const Overview: React.FC = () => {
             <div className="bg-white p-6 rounded-lg shadow-md mb-8">
                 <h3 className="text-xl font-bold text-dark-text mb-4">Filtros</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <input type="text" placeholder="Filtrar por Ano..." value={filterAno} onChange={e => setFilterAno(e.target.value)} className="p-2 border rounded" />
-                    <input type="text" placeholder="Filtrar por Servidor..." value={filterServidor} onChange={e => setFilterServidor(e.target.value)} className="p-2 border rounded" />
-                    <input type="text" placeholder="Filtrar por Instituição..." value={filterInstituicao} onChange={e => setFilterInstituicao(e.target.value)} className="p-2 border rounded" />
+                    <SearchableDropdown options={uniqueAnos} value={filterAno} onChange={setFilterAno} placeholder="Filtrar por Ano..." />
+                    <SearchableDropdown options={uniqueServidores} value={filterServidor} onChange={setFilterServidor} placeholder="Filtrar por Servidor..." />
+                    <SearchableDropdown options={uniqueInstituicoes} value={filterInstituicao} onChange={setFilterInstituicao} placeholder="Filtrar por Instituição..." />
                 </div>
             </div>
 
@@ -128,7 +175,6 @@ const Overview: React.FC = () => {
                             <XAxis dataKey="name" />
                             <YAxis />
                             <Tooltip />
-                            <Legend />
                             <Bar dataKey="total" fill={CHART_COLORS[0]} />
                         </BarChart>
                     </ResponsiveContainer>
@@ -141,7 +187,6 @@ const Overview: React.FC = () => {
                             <XAxis dataKey="name" />
                             <YAxis />
                             <Tooltip />
-                            <Legend />
                             <Bar dataKey="total" fill={CHART_COLORS[1]} />
                         </BarChart>
                     </ResponsiveContainer>
@@ -149,18 +194,18 @@ const Overview: React.FC = () => {
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-bold text-dark-text mb-4">Últimas Capacitações</h3>
+                <h3 className="text-xl font-bold text-dark-text mb-4">Capacitações</h3>
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
+                    <table className="min-w-full divide-y divide-gray-200 table-fixed w-full">
                         <thead className="bg-gray-50">
                             <tr>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Servidor</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Evento</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Instituição</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Carga Horária</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Início</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fim</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modalidade</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Servidor</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">Evento</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Instituição</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Carga Horária</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Início</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Fim</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Modalidade</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">

@@ -45,7 +45,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }
       <aside className={`bg-secondary flex flex-col shadow-lg transition-all duration-300 ease-in-out ${isExpanded ? 'w-64' : 'w-20'}`}>
         <div className={`p-6 flex items-center ${isExpanded ? 'justify-between' : 'justify-center'}`}>
           {isExpanded && (
-            <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-light">
+            <div className="text-2xl font-bold text-white">
               SGC
             </div>
           )}
