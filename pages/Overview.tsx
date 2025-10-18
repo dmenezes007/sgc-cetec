@@ -6,6 +6,16 @@ const formatNumber = (num: number) => {
     return new Intl.NumberFormat('pt-BR').format(num);
 };
 
+const parseDate = (dateString: string): Date | null => {
+    if (!dateString) return null;
+    const parts = dateString.split('/');
+    if (parts.length === 3) {
+        const [day, month, year] = parts.map(Number);
+        return new Date(year, month - 1, day);
+    }
+    return null;
+};
+
 const StatCard: React.FC<{ title: string; value: string | number; description: string }> = ({ title, value, description }) => (
     <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-primary">
         <h3 className="text-sm font-medium text-gray-500">{title}</h3>
@@ -90,7 +100,14 @@ const Overview: React.FC = () => {
     const uniqueInstituicoes = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.instituicao_promotora))).sort((a, b) => a.localeCompare(b))], [capacitacoes]);
 
     const filteredCapacitacoes = useMemo(() => {
-        const sorted = [...capacitacoes].sort((a, b) => new Date(b.data_inicio).getTime() - new Date(a.data_inicio).getTime());
+        const sorted = [...capacitacoes].sort((a, b) => {
+            const dateA = parseDate(a.data_inicio) || parseDate(a.data_termino);
+            const dateB = parseDate(b.data_inicio) || parseDate(b.data_termino);
+            if (dateA && dateB) {
+                return dateB.getTime() - dateA.getTime();
+            }
+            return 0;
+        });
         return sorted.filter(c => {
             const anoMatch = filterAno ? c.ano.toString() === filterAno : true;
             const servidorMatch = filterServidor ? c.servidor === filterServidor : true;
@@ -118,7 +135,7 @@ const Overview: React.FC = () => {
 
     const capacitacoesPorAno = useMemo(() => {
         const yearCounts = filteredCapacitacoes.reduce((acc, curr) => {
-            if(curr.ano && curr.ano.toString().trim() !== '') {
+            if(curr.ano && curr.ano >= 2017) {
                 acc[curr.ano] = (acc[curr.ano] || 0) + 1;
             }
             return acc;
@@ -169,11 +186,17 @@ const Overview: React.FC = () => {
                     <h3 className="text-xl font-bold text-dark-text mb-4">Capacitações por Ano</h3>
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={capacitacoesPorAno}>
+                            <defs>
+                                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="rgb(0 82 155)" stopOpacity={0.8}/>
+                                <stop offset="95%" stopColor="#FFFFFF" stopOpacity={0.8}/>
+                                </linearGradient>
+                            </defs>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="name" />
                             <YAxis />
                             <Tooltip />
-                            <Bar dataKey="total" fill="rgb(0 82 155)" />
+                            <Bar dataKey="total" fill="url(#colorUv)" />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
@@ -181,11 +204,17 @@ const Overview: React.FC = () => {
                     <h3 className="text-xl font-bold text-dark-text mb-4">Capacitações por Mês</h3>
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={capacitacoesPorMes}>
+                            <defs>
+                                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="rgb(0 82 155)" stopOpacity={0.8}/>
+                                <stop offset="95%" stopColor="#FFFFFF" stopOpacity={0.8}/>
+                                </linearGradient>
+                            </defs>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="name" />
                             <YAxis />
                             <Tooltip />
-                            <Bar dataKey="total" fill="rgb(0 82 155)" />
+                            <Bar dataKey="total" fill="url(#colorUv)" />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
