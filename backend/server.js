@@ -37,18 +37,12 @@ app.post('/api/capacitacoes', (req, res) => {
             const nextId = trainings.length > 0 ? Math.max(...trainings.map(t => parseInt(t.id) || 0)) + 1 : 1;
             newTraining.id = nextId;
 
-            const ws = fs.createWriteStream(csvFilePath, { flags: 'a' }); // 'a' for append
-            if (trainings.length === 0) {
-                // If file is empty, write headers first
-                csv.write([Object.keys(newTraining)], { headers: true }).pipe(ws).on('finish', () => {
-                    const wsData = fs.createWriteStream(csvFilePath, { flags: 'a' });
-                    csv.write([newTraining], { headers: false, includeEndRowDelimiter: true }).pipe(wsData);
+            const ws = fs.createWriteStream(csvFilePath, { flags: 'a' });
+            csv.write([newTraining], { headers: false, includeEndRowDelimiter: true })
+                .pipe(ws)
+                .on('finish', () => {
+                    res.status(201).send(newTraining);
                 });
-            } else {
-                 csv.write([newTraining], { headers: false, includeEndRowDelimiter: true }).pipe(ws);
-            }
-
-            res.status(201).send(newTraining);
         });
 });
 
