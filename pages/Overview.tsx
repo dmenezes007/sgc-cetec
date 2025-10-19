@@ -28,6 +28,10 @@ const SearchableDropdown: React.FC<{ options: string[]; value: string; onChange:
     const [inputValue, setInputValue] = useState(value);
     const [showOptions, setShowOptions] = useState(false);
 
+    useEffect(() => {
+        setInputValue(value);
+    }, [value]);
+
     const filteredOptions = useMemo(() => 
         options.filter(option => option.toLowerCase().includes(inputValue.toLowerCase())),
     [options, inputValue]);
@@ -98,22 +102,24 @@ const Overview: React.FC = () => {
 
     const uniqueAnos = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.ano.toString()))).sort((a, b) => b.localeCompare(a))], [capacitacoes]);
     const uniqueServidores = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.servidor))).sort((a, b) => a.localeCompare(b))], [capacitacoes]);
-    const uniqueInstituicoes = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.instituicao_promotora))).sort((a, b) => a.localeCompare(b))], [capacitacoes]);
+    const uniqueInstituicoes = useMemo(() => {
+        const instituicoes = Array.from(new Set(capacitacoes.map(c => c.instituicao_promotora)));
+        return ['', ...instituicoes.sort((a, b) => a.localeCompare(b, 'pt-BR', { sensitivity: 'base' }))];
+    }, [capacitacoes]);
 
     const filteredCapacitacoes = useMemo(() => {
-        const sorted = [...capacitacoes].sort((a, b) => {
+        return capacitacoes.filter(c => {
+            const anoMatch = filterAno ? c.ano.toString() === filterAno : true;
+            const servidorMatch = filterServidor ? c.servidor === filterServidor : true;
+            const instituicaoMatch = filterInstituicao ? c.instituicao_promotora === filterInstituicao : true;
+            return anoMatch && servidorMatch && instituicaoMatch;
+        }).sort((a, b) => {
             const dateA = parseDate(a.data_inicio) || parseDate(a.data_termino);
             const dateB = parseDate(b.data_inicio) || parseDate(b.data_termino);
             if (dateA && dateB) {
                 return dateB.getTime() - dateA.getTime();
             }
             return 0;
-        });
-        return sorted.filter(c => {
-            const anoMatch = filterAno ? c.ano.toString() === filterAno : true;
-            const servidorMatch = filterServidor ? c.servidor === filterServidor : true;
-            const instituicaoMatch = filterInstituicao ? c.instituicao_promotora === filterInstituicao : true;
-            return anoMatch && servidorMatch && instituicaoMatch;
         });
     }, [capacitacoes, filterAno, filterServidor, filterInstituicao]);
 
@@ -255,7 +261,7 @@ const Overview: React.FC = () => {
                                     {expandedRowId === capacitacao.id && (
                                         <tr className="bg-gray-50">
                                             <td colSpan={7} className="p-4">
-                                                <div className="grid grid-cols-2 gap-4 text-sm">
+                                                <div className="grid grid-cols-3 gap-4 text-sm">
                                                     <div><strong>Cargo de Chefia:</strong> {capacitacao.cargo_de_chefia}</div>
                                                     <div><strong>Matrícula:</strong> {capacitacao.matricula}</div>
                                                     <div><strong>Coord. Geral:</strong> {capacitacao.coord_geral}</div>
@@ -268,7 +274,7 @@ const Overview: React.FC = () => {
                                                     <div><strong>Gratuito ou Pago:</strong> {capacitacao.gratuito_ou_pago}</div>
                                                     <div><strong>Valor do Evento:</strong> {capacitacao.valor_evento.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
                                                     <div><strong>Valor da Diária:</strong> {capacitacao.valor_diaria.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
-                                                    <div><strong>Valor da Passagem:</strong> {capacitacao.valor_passagem.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+<div><strong>Valor da Passagem:</strong> {capacitacao.valor_passagem.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
                                                     <div><strong>Com ou Sem Afastamento:</strong> {capacitacao.com_ou_sem_afastamento}</div>
                                                 </div>
                                             </td>
