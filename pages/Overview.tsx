@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, Fragment } from 'react';
 import { Capacitacao } from '../types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -69,6 +69,7 @@ const Overview: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [expandedRowId, setExpandedRowId] = useState<number | null>(null);
     const itemsPerPage = 10;
 
     // Filtros
@@ -153,6 +154,10 @@ const Overview: React.FC = () => {
         return data;
     }, [filteredCapacitacoes]);
 
+    const handleRowClick = (id: number) => {
+        setExpandedRowId(expandedRowId === id ? null : id);
+    };
+
     if (isLoading) {
         return <div className="text-center py-16">Carregando overview...</div>;
     }
@@ -167,7 +172,7 @@ const Overview: React.FC = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <StatCard title="Total de Capacitações" value={formatNumber(stats.totalCapacitacoes)} description="Registros totais no sistema" />
-                <StatCard title="Carga Horária Total" value={`${formatNumber(stats.cargaHorariaTotal)}h`} description="Soma de todas as horas de curso" />
+                <StatCard title="Carga Horária Total" value={`${stats.cargaHorariaTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}h`} description="Soma de todas as horas de curso" />
                 <StatCard title="Total de Servidores" value={formatNumber(stats.totalServidores)} description="Número de servidores únicos" />
                 <StatCard title="Total de Instituições" value={formatNumber(stats.totalInstituicoes)} description="Número de instituições promotoras únicas" />
             </div>
@@ -192,8 +197,9 @@ const Overview: React.FC = () => {
                                 <stop offset="95%" stopColor="#FFFFFF" stopOpacity={0.8}/>
                                 </linearGradient>
                             </defs>
-                            <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                            <YAxis tick={{ fontSize: 12 }} />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                            <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                            <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                             <Tooltip />
                             <Bar dataKey="total" fill="url(#colorUv)" />
                         </BarChart>
@@ -209,8 +215,9 @@ const Overview: React.FC = () => {
                                 <stop offset="95%" stopColor="#FFFFFF" stopOpacity={0.8}/>
                                 </linearGradient>
                             </defs>
-                            <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                            <YAxis tick={{ fontSize: 12 }} />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                            <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                            <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                             <Tooltip />
                             <Bar dataKey="total" fill="url(#colorUv)" />
                         </BarChart>
@@ -226,24 +233,48 @@ const Overview: React.FC = () => {
                             <tr>
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Servidor</th>
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">Evento</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Instituição</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Carga Horária</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Início</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Fim</th>
+                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Instituição</th>
+                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Carga Horária</th>
+                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Início</th>
+                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Fim</th>
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Modalidade</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {paginatedCapacitacoes.map((capacitacao) => (
-                                <tr key={capacitacao.id}>
-                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.servidor}</td>
-                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.evento}</td>
-                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.instituicao_promotora}</td>
-                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.carga_horaria}</td>
-                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.data_inicio}</td>
-                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.data_termino}</td>
-                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.modalidade}</td>
-                                </tr>
+                                <Fragment key={capacitacao.id}>
+                                    <tr onClick={() => handleRowClick(capacitacao.id)} className="hover:bg-gray-50 cursor-pointer">
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.servidor}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.evento}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-gray-900 text-center">{capacitacao.instituicao_promotora.toUpperCase()}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-gray-900 text-center">{capacitacao.carga_horaria}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-gray-900 text-center">{capacitacao.data_inicio}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-gray-900 text-center">{capacitacao.data_termino}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.modalidade}</td>
+                                    </tr>
+                                    {expandedRowId === capacitacao.id && (
+                                        <tr className="bg-gray-50">
+                                            <td colSpan={7} className="p-4">
+                                                <div className="grid grid-cols-2 gap-4 text-sm">
+                                                    <div><strong>Cargo de Chefia:</strong> {capacitacao.cargo_de_chefia}</div>
+                                                    <div><strong>Matrícula:</strong> {capacitacao.matricula}</div>
+                                                    <div><strong>Coord. Geral:</strong> {capacitacao.coord_geral}</div>
+                                                    <div><strong>UORG:</strong> {capacitacao.uorg}</div>
+                                                    <div><strong>Status:</strong> {capacitacao.status}</div>
+                                                    <div><strong>Linha de Capacitação:</strong> {capacitacao.linha_de_capacitacao}</div>
+                                                    <div><strong>Programa Interno CETEC:</strong> {capacitacao.programa_interno_cetec}</div>
+                                                    <div><strong>Iniciativa:</strong> {capacitacao.iniciativa}</div>
+                                                    <div><strong>Devolutiva PDP:</strong> {capacitacao.devolutiva_pdp}</div>
+                                                    <div><strong>Gratuito ou Pago:</strong> {capacitacao.gratuito_ou_pago}</div>
+                                                    <div><strong>Valor do Evento:</strong> {capacitacao.valor_evento.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                                                    <div><strong>Valor da Diária:</strong> {capacitacao.valor_diaria.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                                                    <div><strong>Valor da Passagem:</strong> {capacitacao.valor_passagem.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                                                    <div><strong>Com ou Sem Afastamento:</strong> {capacitacao.com_ou_sem_afastamento}</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )}
+                                </Fragment>
                             ))}
                         </tbody>
                     </table>
