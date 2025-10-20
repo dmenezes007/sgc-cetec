@@ -84,7 +84,8 @@ const Overview: React.FC = () => {
     useEffect(() => {
         const fetchCapacitacoes = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/capacitacoes');
+                                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+                const response = await fetch(`${apiUrl}/api/capacitacoes`);
                 if (!response.ok) {
                     throw new Error('Falha ao buscar dados para o overview');
                 }
