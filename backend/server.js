@@ -10,7 +10,7 @@ const app = express();
 const port = 3001;
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174']
+  origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'https://sgc-cetec.vercel.app']
 }));
 app.use(bodyParser.json());
 
