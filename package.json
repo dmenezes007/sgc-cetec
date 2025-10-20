@@ -9,8 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react-dom": "^19.2.0",
+    "@types/react-select": "^5.0.0",
     "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-select": "^5.10.2",
     "recharts": "^3.3.0"
   },
   "devDependencies": {

@@ -1,6 +1,56 @@
 import React, { useMemo, useState, useEffect, Fragment } from 'react';
 import { Capacitacao } from '../types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import Select, { SingleValue } from 'react-select';
+
+// Tipos e Estilos para o novo seletor
+interface SelectOption {
+    value: string;
+    label: string;
+}
+
+const customStyles = {
+    control: (provided: any) => ({
+        ...provided,
+        backgroundColor: 'white',
+        borderColor: '#d1d5db', // border-gray-300
+        color: 'black',
+        borderRadius: '0.375rem', // rounded-md
+        padding: '0.1rem',
+        border: '1px solid #d1d5db',
+        boxShadow: 'none',
+        '&:hover': {
+            borderColor: '#9ca3af', // border-gray-400
+        },
+    }),
+    singleValue: (provided: any) => ({
+        ...provided,
+        color: 'black',
+    }),
+    menu: (provided: any) => ({
+        ...provided,
+        backgroundColor: 'white',
+        borderColor: '#e5e7eb', // border-gray-200
+        zIndex: 50
+    }),
+    option: (provided: any, state: { isFocused: any; isSelected: any; }) => ({
+        ...provided,
+        backgroundColor: state.isFocused ? '#f3f4f6' : state.isSelected ? '#3b82f6' : 'white',
+        color: state.isSelected ? 'white' : 'black',
+        '&:active': {
+            backgroundColor: '#3b82f6',
+            color: 'white'
+        },
+    }),
+    input: (provided: any) => ({
+        ...provided,
+        color: 'black',
+    }),
+    placeholder: (provided: any) => ({
+        ...provided,
+        color: '#6b7280', // text-gray-500
+    }),
+};
 
 const formatNumber = (num: number) => {
     return new Intl.NumberFormat('pt-BR').format(num);
@@ -25,46 +75,29 @@ const StatCard: React.FC<{ title: string; value: string | number; description: s
 );
 
 const SearchableDropdown: React.FC<{ options: string[]; value: string; onChange: (value: string) => void; placeholder: string; }> = ({ options, value, onChange, placeholder }) => {
-    const [inputValue, setInputValue] = useState(value);
-    const [showOptions, setShowOptions] = useState(false);
+    const selectOptions = useMemo(() => 
+        options.map(opt => ({ value: opt, label: opt || "(Vazio)" })), 
+    [options]);
 
-    useEffect(() => {
-        setInputValue(value);
-    }, [value]);
+    const selectedValue = useMemo(() => 
+        selectOptions.find(opt => opt.value === value) || null, 
+    [selectOptions, value]);
 
-    const filteredOptions = useMemo(() => 
-        options.filter(option => option.toLowerCase().includes(inputValue.toLowerCase())),
-    [options, inputValue]);
+    const handleChange = (option: SingleValue<SelectOption>) => {
+        onChange(option ? option.value : '');
+    };
 
     return (
-        <div className="relative">
-            <input 
-                type="text" 
-                placeholder={placeholder} 
-                value={inputValue}
-                onChange={e => setInputValue(e.target.value)}
-                onFocus={() => setShowOptions(true)}
-                onBlur={() => setTimeout(() => setShowOptions(false), 100)}
-                className="p-2 border rounded w-full"
-            />
-            {showOptions && (
-                <ul className="absolute z-10 w-full bg-white border rounded mt-1 max-h-60 overflow-y-auto">
-                    {filteredOptions.map(option => (
-                        <li 
-                            key={option}
-                            onClick={() => {
-                                onChange(option);
-                                setInputValue(option);
-                                setShowOptions(false);
-                            }}
-                            className="p-2 hover:bg-gray-100 cursor-pointer"
-                        >
-                            {option}
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
+        <Select
+            instanceId={placeholder}
+            value={selectedValue}
+            onChange={handleChange}
+            options={selectOptions}
+            styles={customStyles}
+            placeholder={placeholder}
+            isClearable
+            isSearchable
+        />
     );
 };
 
@@ -84,7 +117,7 @@ const Overview: React.FC = () => {
     useEffect(() => {
         const fetchCapacitacoes = async () => {
             try {
-                                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
                 const response = await fetch(`${apiUrl}/api/capacitacoes`);
                 if (!response.ok) {
                     throw new Error('Falha ao buscar dados para o overview');
