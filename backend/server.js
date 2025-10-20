@@ -9,7 +9,9 @@ const sqlite3 = require('sqlite3').verbose();
 const app = express();
 const port = 3001;
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174']
+}));
 app.use(bodyParser.json());
 
 const dbPath = path.resolve(__dirname, 'database.db');
