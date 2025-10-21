@@ -18,8 +18,7 @@ const Relatorios: React.FC = () => {
         setSearched(true);
         setError(null);
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-            const response = await fetch(`${apiUrl}/api/capacitacoes`);
+            const response = await fetch(`/api/capacitacoes`);
             if (!response.ok) {
                 throw new Error('Falha ao buscar capacitações');
             }

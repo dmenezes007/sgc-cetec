@@ -90,7 +90,7 @@ const CadastrarCapacitacao: React.FC = () => {
         setSubmitStatus(null);
 
         try {
-            const response = await fetch('http://localhost:3001/api/capacitacoes', {
+            const response = await fetch('/api/capacitacoes', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
