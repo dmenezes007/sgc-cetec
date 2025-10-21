@@ -176,7 +176,7 @@ const Relatorios: React.FC = () => {
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(item.data_inicio).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(item.data_termino).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</td>
                                         </tr>
-                                    )))}
+                                    ))}
                                 </tbody>
                             </table>
                             {filteredData.length === 0 && (
