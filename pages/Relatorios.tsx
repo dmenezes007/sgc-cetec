@@ -1,5 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { Capacitacao } from '../types';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const Relatorios: React.FC = () => {
     const [capacitacoes, setCapacitacoes] = useState<Capacitacao[]>([]);
@@ -18,6 +21,7 @@ const Relatorios: React.FC = () => {
         setSearched(true);
         setError(null);
         try {
+            // Simulating an API call
             const response = await fetch(`/api/capacitacoes`);
             if (!response.ok) {
                 throw new Error('Falha ao buscar capacitações');
@@ -69,6 +73,43 @@ const Relatorios: React.FC = () => {
         setCapacitacoes([]);
     };
 
+    const handleExportExcel = () => {
+        if (filteredData.length === 0) {
+            alert("Não há dados para exportar.");
+            return;
+        }
+        const dataToExport = filteredData.map(item => ({
+            'Servidor': item.servidor,
+            'Evento': item.evento,
+            'Carga Horária': item.carga_horaria,
+            'Data Início': new Date(item.data_inicio).toLocaleDateString('pt-BR', {timeZone: 'UTC'}),
+            'Data Fim': new Date(item.data_termino).toLocaleDateString('pt-BR', {timeZone: 'UTC'}),
+        }));
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
+        XLSX.writeFile(workbook, "RelatorioCapacitacoes.xlsx");
+    };
+
+    const handleExportPdf = () => {
+        if (filteredData.length === 0) {
+            alert("Não há dados para exportar.");
+            return;
+        }
+        const doc = new jsPDF();
+        (doc as any).autoTable({
+            head: [['Servidor', 'Evento', 'Carga Horária', 'Data Início', 'Data Fim']],
+            body: filteredData.map(item => [
+                item.servidor,
+                item.evento,
+                item.carga_horaria,
+                new Date(item.data_inicio).toLocaleDateString('pt-BR', {timeZone: 'UTC'}),
+                new Date(item.data_termino).toLocaleDateString('pt-BR', {timeZone: 'UTC'}),
+            ]),
+        });
+        doc.save("RelatorioCapacitacoes.pdf");
+    };
+
     return (
         <div className="flex flex-col h-full">
             <h2 className="text-3xl font-bold text-dark-text mb-6">Relatórios de Capacitações</h2>
@@ -97,10 +138,10 @@ const Relatorios: React.FC = () => {
                             </button>
                         </div>
                         <div className="flex items-end space-x-2">
-                            <button className="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+                            <button onClick={handleExportExcel} className="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
                                 Exportar Excel
                             </button>
-                            <button className="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
+                            <button onClick={handleExportPdf} className="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
                                 Exportar PDF
                             </button>
                         </div>
@@ -135,7 +176,7 @@ const Relatorios: React.FC = () => {
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(item.data_inicio).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(item.data_termino).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</td>
                                         </tr>
-                                    ))}
+                                    )))}
                                 </tbody>
                             </table>
                             {filteredData.length === 0 && (
