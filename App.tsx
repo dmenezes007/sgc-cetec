@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Layout from './components/Layout';
 import Overview from './pages/Overview';
-import CadastrarCapacitacao from './pages/CadastrarCapacitacao';
+import Cadastro from './pages/Cadastro';
 import Relatorios from './pages/Relatorios';
 import { Page } from './types';
 import LoginPage from './components/LoginPage';
@@ -22,8 +22,8 @@ const App: React.FC = () => {
     switch (currentPage) {
       case 'Overview':
         return <Overview />;
-      case 'Cadastrar Capacitação':
-        return <CadastrarCapacitacao />;
+      case 'Cadastro':
+        return <Cadastro />;
       case 'Relatórios':
         return <Relatorios />;
       default:

@@ -4,7 +4,7 @@ import { BulkUploadError, Capacitacao } from '../types';
 
 type Tab = 'individual' | 'lote';
 
-const CadastrarCapacitacao: React.FC = () => {
+const Cadastro: React.FC = () => {
     const [activeTab, setActiveTab] = useState<Tab>('individual');
     
     // States for bulk upload
@@ -139,7 +139,7 @@ const CadastrarCapacitacao: React.FC = () => {
 
     return (
         <div>
-            <h2 className="text-3xl font-bold text-dark-text mb-6">Cadastrar Capacitação</h2>
+            <h2 className="text-3xl font-bold text-dark-text mb-6">Cadastro</h2>
 
             <div className="bg-white p-2 rounded-lg shadow-md mb-6 max-w-md">
                 <div className="flex space-x-1">
@@ -147,7 +147,7 @@ const CadastrarCapacitacao: React.FC = () => {
                         Cadastro Individual
                     </button>
                     <button onClick={() => setActiveTab('lote')} className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${activeTab === 'lote' ? 'bg-primary text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
-                        Importar em Lote
+                        Cadastro em Lote
                     </button>
                 </div>
             </div>
@@ -323,4 +323,4 @@ const CadastrarCapacitacao: React.FC = () => {
     );
 };
 
-export default CadastrarCapacitacao;
+export default Cadastro;

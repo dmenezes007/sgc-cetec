@@ -56,6 +56,14 @@ const formatNumber = (num: number) => {
     return new Intl.NumberFormat('pt-BR').format(num);
 };
 
+const formatCurrency = (value: any) => {
+    const num = parseFloat(String(value).replace(',', '.'));
+    if (isNaN(num)) {
+        return 'R$ 0,00';
+    }
+    return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+};
+
 const parseDate = (dateString: string): Date | null => {
     if (!dateString) return null;
     const parts = dateString.split('/');
@@ -74,13 +82,13 @@ const StatCard: React.FC<{ title: string; value: string | number; description: s
     </div>
 );
 
-const SearchableDropdown: React.FC<{ options: string[]; value: string; onChange: (value: string) => void; placeholder: string; }> = ({ options, value, onChange, placeholder }) => {
-    const selectOptions = useMemo(() => 
-        options.map(opt => ({ value: opt, label: opt || "(Vazio)" })), 
+const SearchableDropdown: React.FC<{ options: string[]; value: string; onChange: (value: string) => void; placeholder: string; label: string; }> = ({ options, value, onChange, placeholder, label }) => {
+    const selectOptions = useMemo(() =>
+        options.map(opt => ({ value: opt, label: opt || "" })),
     [options]);
 
-    const selectedValue = useMemo(() => 
-        selectOptions.find(opt => opt.value === value) || null, 
+    const selectedValue = useMemo(() =>
+        selectOptions.find(opt => opt.value === value) || null,
     [selectOptions, value]);
 
     const handleChange = (option: SingleValue<SelectOption>) => {
@@ -88,16 +96,19 @@ const SearchableDropdown: React.FC<{ options: string[]; value: string; onChange:
     };
 
     return (
-        <Select
-            instanceId={placeholder}
-            value={selectedValue}
-            onChange={handleChange}
-            options={selectOptions}
-            styles={customStyles}
-            placeholder={placeholder}
-            isClearable
-            isSearchable
-        />
+        <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+            <Select
+                instanceId={placeholder}
+                value={selectedValue}
+                onChange={handleChange}
+                options={selectOptions}
+                styles={customStyles}
+                placeholder={placeholder}
+                isClearable
+                isSearchable
+            />
+        </div>
     );
 };
 
@@ -219,9 +230,9 @@ const Overview: React.FC = () => {
             <div className="bg-white p-6 rounded-lg shadow-md mb-8">
                 <h3 className="text-xl font-bold text-dark-text mb-4">Filtros</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <SearchableDropdown options={uniqueAnos} value={filterAno} onChange={setFilterAno} placeholder="Filtrar por Ano..." />
-                    <SearchableDropdown options={uniqueServidores} value={filterServidor} onChange={setFilterServidor} placeholder="Filtrar por Servidor..." />
-                    <SearchableDropdown options={uniqueInstituicoes} value={filterInstituicao} onChange={setFilterInstituicao} placeholder="Filtrar por Instituição..." />
+                    <SearchableDropdown options={uniqueAnos} value={filterAno} onChange={setFilterAno} placeholder="Filtrar por Ano..." label="Ano" />
+                    <SearchableDropdown options={uniqueServidores} value={filterServidor} onChange={setFilterServidor} placeholder="Filtrar por Servidor..." label="Servidor" />
+                    <SearchableDropdown options={uniqueInstituicoes} value={filterInstituicao} onChange={setFilterInstituicao} placeholder="Filtrar por Instituição..." label="Instituição" />
                 </div>
             </div>
 
@@ -305,9 +316,9 @@ const Overview: React.FC = () => {
                                                     <div><strong>Iniciativa:</strong> {capacitacao.iniciativa}</div>
                                                     <div><strong>Devolutiva PDP:</strong> {capacitacao.devolutiva_pdp}</div>
                                                     <div><strong>Gratuito ou Pago:</strong> {capacitacao.gratuito_ou_pago}</div>
-                                                    <div><strong>Valor do Evento:</strong> {capacitacao.valor_evento.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
-                                                    <div><strong>Valor da Diária:</strong> {capacitacao.valor_diaria.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
-<div><strong>Valor da Passagem:</strong> {capacitacao.valor_passagem.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                                                    <div><strong>Valor do Evento:</strong> {formatCurrency(capacitacao.valor_evento)}</div>
+                                                    <div><strong>Valor da Diária:</strong> {formatCurrency(capacitacao.valor_diaria)}</div>
+                                                    <div><strong>Valor da Passagem:</strong> {formatCurrency(capacitacao.valor_passagem)}</div>
                                                     <div><strong>Com ou Sem Afastamento:</strong> {capacitacao.com_ou_sem_afastamento}</div>
                                                 </div>
                                             </td>

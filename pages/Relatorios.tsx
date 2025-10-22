@@ -96,18 +96,36 @@ const Relatorios: React.FC = () => {
             alert("Não há dados para exportar.");
             return;
         }
-        const doc = new jsPDF();
-        (doc as any).autoTable({
-            head: [['Servidor', 'Evento', 'Carga Horária', 'Data Início', 'Data Fim']],
-            body: filteredData.map(item => [
+
+        try {
+            const doc = new jsPDF();
+            const tableData = filteredData.map(item => [
                 item.servidor,
                 item.evento,
                 item.carga_horaria,
                 new Date(item.data_inicio).toLocaleDateString('pt-BR', {timeZone: 'UTC'}),
                 new Date(item.data_termino).toLocaleDateString('pt-BR', {timeZone: 'UTC'}),
-            ]),
-        });
-        doc.save("RelatorioCapacitacoes.pdf");
+            ]);
+
+            (doc as any).autoTable({
+                head: [['Servidor', 'Evento', 'Carga Horária', 'Data Início', 'Data Fim']],
+                body: tableData,
+                styles: {
+                    font: "helvetica",
+                    fontSize: 8
+                },
+                headStyles: {
+                    fillColor: [22, 160, 133], // Exemplo de cor
+                    textColor: 255,
+                    fontStyle: 'bold'
+                }
+            });
+
+            doc.save("RelatorioCapacitacoes.pdf");
+        } catch (error) {
+            console.error("Erro ao gerar PDF:", error);
+            alert("Ocorreu um erro ao gerar o PDF. Verifique o console para mais detalhes.");
+        }
     };
 
     return (
