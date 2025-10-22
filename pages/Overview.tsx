@@ -133,7 +133,7 @@ const Overview: React.FC = () => {
         fetchCapacitacoes();
     }, []);
 
-    const uniqueAnos = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.ano.toString()))).sort((a, b) => b.localeCompare(a))], [capacitacoes]);
+    const uniqueAnos = useMemo(() => ['', ...Array.from(new Set(capacitacoes.filter(c => c.ano != null).map(c => c.ano.toString()))).sort((a, b) => b.localeCompare(a))], [capacitacoes]);
     const uniqueServidores = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.servidor))).sort((a, b) => a.localeCompare(b))], [capacitacoes]);
     const uniqueInstituicoes = useMemo(() => {
         const instituicoes = Array.from(new Set(capacitacoes.map(c => c.instituicao_promotora)));
@@ -142,7 +142,7 @@ const Overview: React.FC = () => {
 
     const filteredCapacitacoes = useMemo(() => {
         return capacitacoes.filter(c => {
-            const anoMatch = filterAno ? c.ano.toString() === filterAno : true;
+            const anoMatch = filterAno ? String(c.ano) === filterAno : true;
             const servidorMatch = filterServidor ? c.servidor === filterServidor : true;
             const instituicaoMatch = filterInstituicao ? c.instituicao_promotora === filterInstituicao : true;
             return anoMatch && servidorMatch && instituicaoMatch;
