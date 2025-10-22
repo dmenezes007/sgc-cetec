@@ -19,7 +19,7 @@
       "destination": "api/index.js"
     },
     {
-      "source": "/(?!.*\\..*).*",
+      "source": "^/([^.]*)$",
       "destination": "/index.html"
     }
   ]

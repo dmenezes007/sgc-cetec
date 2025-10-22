@@ -133,7 +133,7 @@ const Overview: React.FC = () => {
         fetchCapacitacoes();
     }, []);
 
-    const uniqueAnos = useMemo(() => ['', ...Array.from(new Set(capacitacoes.filter(c => c.ano != null).map(c => c.ano.toString()))).sort((a, b) => b.localeCompare(a))], [capacitacoes]);
+    const uniqueAnos = useMemo(() => ['', ...Array.from(new Set(capacitacoes.filter(c => c && c.ano).map(c => c.ano.toString()))).sort((a, b) => b.localeCompare(a))], [capacitacoes]);
     const uniqueServidores = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.servidor))).sort((a, b) => a.localeCompare(b))], [capacitacoes]);
     const uniqueInstituicoes = useMemo(() => {
         const instituicoes = Array.from(new Set(capacitacoes.map(c => c.instituicao_promotora)));
