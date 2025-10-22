@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Page } from '../types';
 import { ChartBarIcon, DocumentAddIcon, TableIcon } from './icons/Icons';
@@ -66,11 +65,11 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }
             isExpanded={isExpanded}
           />
           <NavLink
-            page="Cadastrar Capacitação"
+            page="Cadastro"
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             icon={<DocumentAddIcon />}
-            text="Cadastrar"
+            text="Cadastro"
             isExpanded={isExpanded}
           />
           <NavLink

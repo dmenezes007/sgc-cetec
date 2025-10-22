@@ -99,28 +99,7 @@ const Relatorios: React.FC = () => {
 
         try {
             const doc = new jsPDF();
-            const tableData = filteredData.map(item => [
-                item.servidor,
-                item.evento,
-                item.carga_horaria,
-                new Date(item.data_inicio).toLocaleDateString('pt-BR', {timeZone: 'UTC'}),
-                new Date(item.data_termino).toLocaleDateString('pt-BR', {timeZone: 'UTC'}),
-            ]);
-
-            (doc as any).autoTable({
-                head: [['Servidor', 'Evento', 'Carga Horária', 'Data Início', 'Data Fim']],
-                body: tableData,
-                styles: {
-                    font: "helvetica",
-                    fontSize: 8
-                },
-                headStyles: {
-                    fillColor: [22, 160, 133], // Exemplo de cor
-                    textColor: 255,
-                    fontStyle: 'bold'
-                }
-            });
-
+            doc.text("Relatório de Capacitações", 10, 10);
             doc.save("RelatorioCapacitacoes.pdf");
         } catch (error) {
             console.error("Erro ao gerar PDF:", error);
