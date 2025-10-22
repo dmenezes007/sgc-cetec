@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Layout from './components/Layout';
 import Overview from './pages/Overview';
@@ -9,15 +8,15 @@ import LoginPage from './components/LoginPage';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('Overview');
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // const handleLogin = (password: string) => {
-  //   if (password === 'SGC_CETEC_2025') {
-  //     setIsLoggedIn(true);
-  //   } else {
-  //     alert('Senha incorreta');
-  //   }
-  // };
+  const handleLogin = (password: string) => {
+    if (password === 'SGC_CETEC_2025') {
+      setIsLoggedIn(true);
+    } else {
+      alert('Senha incorreta');
+    }
+  };
 
   const renderPage = () => {
     switch (currentPage) {
@@ -32,9 +31,9 @@ const App: React.FC = () => {
     }
   };
 
-  // if (!isLoggedIn) {
-  //   return <LoginPage onLogin={handleLogin} />;
-  // }
+  if (!isLoggedIn) {
+    return <LoginPage onLogin={handleLogin} />;
+  }
 
   return (
     <Layout currentPage={currentPage} setCurrentPage={setCurrentPage}>
