@@ -10,7 +10,6 @@ const Cadastro: React.FC = () => {
     // States for bulk upload
     const [file, setFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
-    const [uploadProgress, setUploadProgress] = useState(0);
     const [uploadResult, setUploadResult] = useState<{ success: number; errors: BulkUploadError[] } | null>(null);
 
     // States for individual registration
@@ -51,32 +50,33 @@ const Cadastro: React.FC = () => {
         }
     };
 
-    const handleBulkUpload = () => {
+    const handleBulkUpload = async () => {
         if (!file) return;
 
         setUploading(true);
-        setUploadProgress(0);
         setUploadResult(null);
 
-        // Simulate upload progress
-        const interval = setInterval(() => {
-            setUploadProgress(prev => {
-                if (prev >= 100) {
-                    clearInterval(interval);
-                    setUploading(false);
-                    // Simulate API response
-                    setUploadResult({
-                        success: 95,
-                        errors: [
-                            { linha: 15, erro: "Formato de data inválido para 'data_inicio'. Use AAAA-MM-DD." },
-                            { linha: 42, erro: "'carga_horaria' deve ser um número inteiro." },
-                        ]
-                    });
-                    return 100;
-                }
-                return prev + 10;
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await fetch('/api/capacitacoes/bulk', {
+                method: 'POST',
+                body: formData,
             });
-        }, 200);
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Falha no upload em lote');
+            }
+
+            setUploadResult(result);
+        } catch (error: any) {
+            setUploadResult({ success: 0, errors: [{ linha: 0, erro: error.message }] });
+        } finally {
+            setUploading(false);
+        }
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -276,7 +276,7 @@ const Cadastro: React.FC = () => {
                                 <a href="/modelo_importacao.csv" download className="text-sm font-medium text-primary hover:text-primary-dark">
                                     Baixar modelo de planilha (CSV)
                                 </a>
-                                <p className="text-xs text-gray-500 mt-1">Nota: A funcionalidade de upload em lote é uma simulação e não processará o arquivo.</p>
+                                <p className="text-xs text-gray-500 mt-1">Selecione o arquivo CSV para fazer o upload em lote.</p>
                             </div>
                             <label htmlFor="file-upload" className="cursor-pointer block border-2 border-dashed border-gray-300 rounded-lg p-12 hover:border-primary transition-colors">
                                 <UploadIcon />
@@ -300,8 +300,8 @@ const Cadastro: React.FC = () => {
                              <div className="mt-8">
                                 <p className="text-center text-sm font-medium text-gray-700 mb-2">Importando...</p>
                                 <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                    <div className="bg-primary h-2.5 rounded-full" style={{ width: `${uploadProgress}%` }}></div>
-                                d</div>
+                                    <div className="bg-primary h-2.5 rounded-full" style={{ width: `100%` }}></div>
+                                </div>
                             </div>
                         )}
 
