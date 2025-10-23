@@ -273,8 +273,8 @@ const Cadastro: React.FC = () => {
                     <div>
                         <div className="max-w-xl mx-auto text-center">
                             <div className="mb-4">
-                                <a href="/modelo_importacao.xlsx" download className="text-sm font-medium text-primary hover:text-primary-dark">
-                                    Baixar modelo de planilha (XLSX)
+                                <a href="/modelo_importacao.csv" download className="text-sm font-medium text-primary hover:text-primary-dark">
+                                    Baixar modelo de planilha (CSV)
                                 </a>
                                 <p className="text-xs text-gray-500 mt-1">Nota: A funcionalidade de upload em lote é uma simulação e não processará o arquivo.</p>
                             </div>
