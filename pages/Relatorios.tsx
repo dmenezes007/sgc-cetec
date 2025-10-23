@@ -4,6 +4,10 @@ import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
+interface jsPDFWithAutoTable extends jsPDF {
+  autoTable: (options: any) => jsPDF;
+}
+
 const Relatorios: React.FC = () => {
     const [capacitacoes, setCapacitacoes] = useState<Capacitacao[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -98,7 +102,7 @@ const Relatorios: React.FC = () => {
         }
 
         try {
-            const doc = new jsPDF();
+            const doc = new jsPDF() as jsPDFWithAutoTable;
             const tableData = filteredData.map(item => [
                 String(item.servidor || ''),
                 String(item.evento || ''),
@@ -107,7 +111,7 @@ const Relatorios: React.FC = () => {
                 item.data_termino ? new Date(item.data_termino).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) : '',
             ]);
 
-            (doc as any).autoTable({
+            doc.autoTable({
                 head: [['Servidor', 'Evento', 'Carga Horária', 'Data Início', 'Data Fim']],
                 body: tableData,
                 styles: {
@@ -185,7 +189,7 @@ const Relatorios: React.FC = () => {
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Fim</th>
                                     </tr>
                                 </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
+                                <tbody className.bg-white divide-y divide-gray-200">
                                     {filteredData.map((item) => (
                                         <tr key={item.id} className="hover:bg-gray-50">
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.servidor}</td>
