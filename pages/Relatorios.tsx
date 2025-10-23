@@ -95,43 +95,6 @@ const Relatorios: React.FC = () => {
         XLSX.writeFile(workbook, "RelatorioCapacitacoes.xlsx");
     };
 
-    const handleExportPdf = () => {
-        if (filteredData.length === 0) {
-            alert("Não há dados para exportar.");
-            return;
-        }
-
-        try {
-            const doc = new jsPDF() as jsPDFWithAutoTable;
-            const tableData = filteredData.map(item => [
-                String(item.servidor || ''),
-                String(item.evento || ''),
-                String(item.carga_horaria || ''),
-                item.data_inicio ? new Date(item.data_inicio).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) : '',
-                item.data_termino ? new Date(item.data_termino).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) : '',
-            ]);
-
-            doc.autoTable({
-                head: [['Servidor', 'Evento', 'Carga Horária', 'Data Início', 'Data Fim']],
-                body: tableData,
-                styles: {
-                    font: "helvetica",
-                    fontSize: 8
-                },
-                headStyles: {
-                    fillColor: [22, 160, 133],
-                    textColor: 255,
-                    fontStyle: 'bold'
-                }
-            });
-
-            doc.save("RelatorioCapacitacoes.pdf");
-        } catch (error) {
-            console.error("Erro ao gerar PDF:", error);
-            alert("Ocorreu um erro ao gerar o PDF. Verifique o console para mais detalhes.");
-        }
-    };
-
     return (
         <div className="flex flex-col h-full">
             <h2 className="text-3xl font-bold text-dark-text mb-6">Relatórios de Capacitações</h2>
@@ -140,15 +103,15 @@ const Relatorios: React.FC = () => {
                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                     <div className="lg:col-span-2">
                         <label className="text-sm font-medium text-gray-700">Buscar por Evento ou Servidor</label>
-                        <input type="text" name="termo" value={filters.termo} onChange={handleFilterChange} className="mt-1 w-full rounded-md border-gray-300 shadow-sm" />
+                        <input type="text" name="termo" value={filters.termo} onChange={handleFilterChange} className="mt-1 w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                     </div>
                      <div>
                         <label className="text-sm font-medium text-gray-700">Data Início (a partir de)</label>
-                        <input type="date" name="dataInicio" value={filters.dataInicio} onChange={handleFilterChange} className="mt-1 w-full rounded-md border-gray-300 shadow-sm"/>
+                        <input type="date" name="dataInicio" value={filters.dataInicio} onChange={handleFilterChange} className="mt-1 w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2"/>
                     </div>
                      <div>
                         <label className="text-sm font-medium text-gray-700">Data Fim (até)</label>
-                        <input type="date" name="dataFim" value={filters.dataFim} onChange={handleFilterChange} className="mt-1 w-full rounded-md border-gray-300 shadow-sm"/>
+                        <input type="date" name="dataFim" value={filters.dataFim} onChange={handleFilterChange} className="mt-1 w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2"/>
                     </div>
                     <div className="flex items-end col-span-full justify-between mt-4">
                         <div>
@@ -162,9 +125,6 @@ const Relatorios: React.FC = () => {
                         <div className="flex items-end space-x-2">
                             <button onClick={handleExportExcel} className="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
                                 Exportar Excel
-                            </button>
-                            <button onClick={handleExportPdf} className="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
-                                Exportar PDF
                             </button>
                         </div>
                     </div>

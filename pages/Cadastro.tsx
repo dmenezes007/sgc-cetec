@@ -155,105 +155,105 @@ const Cadastro: React.FC = () => {
             <div className="bg-white p-8 rounded-lg shadow-md">
                 {activeTab === 'individual' && (
                     <form className="grid grid-cols-1 md:grid-cols-3 gap-6" onSubmit={handleIndividualSubmit}>
-                        <div className="md:col-span-3">
-                            <label className="block text-sm font-medium text-gray-700">Evento</label>
-                            <input type="text" name="evento" value={formData.evento} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" required />
+                        <div class="md:col-span-3">
+                            <label class="block text-sm font-medium text-gray-700">Evento</label>
+                            <input type="text" name="evento" value={formData.evento} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" required />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Servidor</label>
-                            <input type="text" name="servidor" value={formData.servidor} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" required />
+                            <label class="block text-sm font-medium text-gray-700">Servidor</label>
+                            <input type="text" name="servidor" value={formData.servidor} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" required />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Matrícula</label>
-                            <input type="number" name="matricula" value={formData.matricula} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Matrícula</label>
+                            <input type="number" name="matricula" value={formData.matricula} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Cargo de Chefia</label>
-                            <input type="text" name="cargo_de_chefia" value={formData.cargo_de_chefia} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Cargo de Chefia</label>
+                            <input type="text" name="cargo_de_chefia" value={formData.cargo_de_chefia} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Coordenação Geral</label>
-                            <input type="text" name="coord_geral" value={formData.coord_geral} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Coordenação Geral</label>
+                            <input type="text" name="coord_geral" value={formData.coord_geral} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">UORG</label>
-                            <input type="text" name="uorg" value={formData.uorg} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">UORG</label>
+                            <input type="text" name="uorg" value={formData.uorg} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Base Maiúscula</label>
-                            <input type="text" name="base_maiuscula" value={formData.base_maiuscula} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Base Maiúscula</label>
+                            <input type="text" name="base_maiuscula" value={formData.base_maiuscula} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Status</label>
-                            <input type="text" name="status" value={formData.status} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Status</label>
+                            <input type="text" name="status" value={formData.status} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Carga Horária (horas)</label>
-                            <input type="number" name="carga_horaria" value={formData.carga_horaria} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" required />
+                            <label class="block text-sm font-medium text-gray-700">Carga Horária (horas)</label>
+                            <input type="number" name="carga_horaria" value={formData.carga_horaria} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" required />
                         </div>
-                        <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700">Instituição Promotora</label>
-                            <input type="text" name="instituicao_promotora" value={formData.instituicao_promotora} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">CNPJ/CPF</label>
-                            <input type="text" name="cnpjcpf" value={formData.cnpjcpf} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Instituição Promotora</label>
+                            <input type="text" name="instituicao_promotora" value={formData.instituicao_promotora} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Modalidade</label>
-                            <input type="text" name="modalidade" value={formData.modalidade} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">CNPJ/CPF</label>
+                            <input type="text" name="cnpjcpf" value={formData.cnpjcpf} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Linha de Capacitação</label>
-                            <input type="text" name="linha_de_capacitacao" value={formData.linha_de_capacitacao} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Modalidade</label>
+                            <input type="text" name="modalidade" value={formData.modalidade} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Programa Interno CETEC</label>
-                            <input type="text" name="programa_interno_cetec" value={formData.programa_interno_cetec} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Linha de Capacitação</label>
+                            <input type="text" name="linha_de_capacitacao" value={formData.linha_de_capacitacao} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Data de Início</label>
-                            <input type="date" name="data_inicio" value={formData.data_inicio} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" required />
+                            <label class="block text-sm font-medium text-gray-700">Programa Interno CETEC</label>
+                            <input type="text" name="programa_interno_cetec" value={formData.programa_interno_cetec} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Data de Término</label>
-                            <input type="date" name="data_termino" value={formData.data_termino} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Data de Início</label>
+                            <input type="date" name="data_inicio" value={formData.data_inicio} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" required />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Mês</label>
-                            <input type="text" name="mes" value={formData.mes} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Data de Término</label>
+                            <input type="date" name="data_termino" value={formData.data_termino} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Iniciativa</label>
-                            <input type="text" name="iniciativa" value={formData.iniciativa} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Mês</label>
+                            <input type="text" name="mes" value={formData.mes} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Devolutiva PDP</label>
-                            <input type="text" name="devolutiva_pdp" value={formData.devolutiva_pdp} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Iniciativa</label>
+                            <input type="text" name="iniciativa" value={formData.iniciativa} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Gratuito ou Pago</label>
-                            <input type="text" name="gratuito_ou_pago" value={formData.gratuito_ou_pago} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Devolutiva PDP</label>
+                            <input type="text" name="devolutiva_pdp" value={formData.devolutiva_pdp} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Valor do Evento</label>
-                            <input type="number" name="valor_evento" value={formData.valor_evento} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Gratuito ou Pago</label>
+                            <input type="text" name="gratuito_ou_pago" value={formData.gratuito_ou_pago} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Valor da Diária</label>
-                            <input type="number" name="valor_diaria" value={formData.valor_diaria} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Valor do Evento</label>
+                            <input type="number" name="valor_evento" value={formData.valor_evento} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Valor da Passagem</label>
-                            <input type="number" name="valor_passagem" value={formData.valor_passagem} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Valor da Diária</label>
+                            <input type="number" name="valor_diaria" value={formData.valor_diaria} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Com ou Sem Afastamento</label>
-                            <input type="text" name="com_ou_sem_afastamento" value={formData.com_ou_sem_afastamento} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Valor da Passagem</label>
+                            <input type="number" name="valor_passagem" value={formData.valor_passagem} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Ano</label>
-                            <input type="number" name="ano" value={formData.ano} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm" />
+                            <label class="block text-sm font-medium text-gray-700">Com ou Sem Afastamento</label>
+                            <input type="text" name="com_ou_sem_afastamento" value={formData.com_ou_sem_afastamento} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Ano</label>
+                            <input type="number" name="ano" value={formData.ano} onChange={handleInputChange} class="mt-1 block w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
                         </div>
                         
                         <div className="md:col-span-3 text-right">
@@ -272,6 +272,12 @@ const Cadastro: React.FC = () => {
                 {activeTab === 'lote' && (
                     <div>
                         <div className="max-w-xl mx-auto text-center">
+                            <div className="mb-4">
+                                <a href="/modelo_importacao.xlsx" download className="text-sm font-medium text-primary hover:text-primary-dark">
+                                    Baixar modelo de planilha (XLSX)
+                                </a>
+                                <p className="text-xs text-gray-500 mt-1">Nota: A funcionalidade de upload em lote é uma simulação e não processará o arquivo.</p>
+                            </div>
                             <label htmlFor="file-upload" className="cursor-pointer block border-2 border-dashed border-gray-300 rounded-lg p-12 hover:border-primary transition-colors">
                                 <UploadIcon />
                                 <span className="mt-2 block text-sm font-medium text-gray-900">
@@ -295,7 +301,7 @@ const Cadastro: React.FC = () => {
                                 <p className="text-center text-sm font-medium text-gray-700 mb-2">Importando...</p>
                                 <div className="w-full bg-gray-200 rounded-full h-2.5">
                                     <div className="bg-primary h-2.5 rounded-full" style={{ width: `${uploadProgress}%` }}></div>
-                                </div>
+                                d</div>
                             </div>
                         )}
 
