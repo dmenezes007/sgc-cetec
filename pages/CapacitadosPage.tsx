@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect, Fragment } from 'react';
+console.log('CapacitadosPage.tsx file executed');
 import { Capacitacao } from '../types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Select, { SingleValue } from 'react-select';
