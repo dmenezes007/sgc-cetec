@@ -35,10 +35,10 @@ const customStyles = {
     }),
     option: (provided: any, state: { isFocused: any; isSelected: any; }) => ({
         ...provided,
-        backgroundColor: state.isFocused ? '#334155' : state.isSelected ? '#3b82f6' : '#1e293b',
+        backgroundColor: state.isFocused ? '#334155' : state.isSelected ? '#2563eb' : '#1e293b',
         color: 'white',
         '&:active': {
-            backgroundColor: '#3b82f6',
+            backgroundColor: '#2563eb',
             color: 'white'
         },
     }),
@@ -245,7 +245,7 @@ const Overview: React.FC = () => {
                             <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155' }} />
-                            <Bar dataKey="total" fill="#00529B" fillOpacity={0.75} stroke="#00529B" strokeOpacity={1} />
+                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
@@ -257,7 +257,7 @@ const Overview: React.FC = () => {
                             <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155' }} />
-                            <Bar dataKey="total" fill="#00529B" fillOpacity={0.75} stroke="#00529B" strokeOpacity={1} />
+                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
