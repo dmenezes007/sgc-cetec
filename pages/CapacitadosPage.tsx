@@ -112,7 +112,7 @@ const SearchableDropdown: React.FC<{ options: string[]; value: string; onChange:
     );
 };
 
-const Overview: React.FC = () => {
+const Capacitados: React.FC = () => {
     const [capacitacoes, setCapacitacoes] = useState<Capacitacao[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);

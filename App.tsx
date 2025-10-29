@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Layout from './components/Layout';
 import Capacitados from './pages/Capacitados';
+console.log('Capacitados component in App.tsx:', Capacitados);
 import Relatorios from './pages/Relatorios';
 import { Page } from './types';
 import LoginPage from './components/LoginPage';
