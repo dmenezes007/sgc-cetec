@@ -23,7 +23,7 @@ const NavLink: React.FC<{
     } ${
       currentPage === page
         ? 'bg-primary text-white shadow-md'
-        : 'text-gray-200 hover:bg-secondary-dark hover:text-white'
+        : 'text-gray-400 hover:bg-slate-700 hover:text-white'
     }`}
     title={!isExpanded ? text : ''}
   >
@@ -40,15 +40,15 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }
   };
 
   return (
-    <div className="flex h-screen bg-light-bg font-sans">
-      <aside className={`bg-secondary flex flex-col shadow-lg transition-all duration-300 ease-in-out ${isExpanded ? 'w-64' : 'w-20'}`}>
+    <div className="flex h-screen bg-slate-900 font-sans">
+      <aside className={`bg-slate-800 flex flex-col shadow-lg transition-all duration-300 ease-in-out ${isExpanded ? 'w-64' : 'w-20'}`}>
         <div className={`p-6 flex items-center ${isExpanded ? 'justify-between' : 'justify-center'}`}>
           {isExpanded && (
             <div className="text-2xl font-bold text-white">
               SGC
             </div>
           )}
-          <button onClick={toggleSidebar} className="p-1 rounded-full text-gray-300 hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-primary">
+          <button onClick={toggleSidebar} className="p-1 rounded-full text-gray-400 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-primary">
             <svg xmlns="http://www.w3.org/2000/svg" className={`h-6 w-6 transition-transform duration-300 ${isExpanded ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
             </svg>

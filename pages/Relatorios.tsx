@@ -97,28 +97,28 @@ const Relatorios: React.FC = () => {
 
     return (
         <div className="flex flex-col h-full">
-            <h2 className="text-3xl font-bold text-dark-text mb-6">Relatórios de Capacitações</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">Relatórios de Capacitações</h2>
 
-            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+            <div className="bg-slate-800 p-6 rounded-lg shadow-md mb-6">
                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                     <div className="lg:col-span-2">
-                        <label className="text-sm font-medium text-gray-700">Buscar por Evento ou Servidor</label>
-                        <input type="text" name="termo" value={filters.termo} onChange={handleFilterChange} className="mt-1 w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2" />
+                        <label className="text-sm font-medium text-gray-400">Buscar por Evento ou Servidor</label>
+                        <input type="text" name="termo" value={filters.termo} onChange={handleFilterChange} className="mt-1 w-full bg-transparent border-0 border-b-2 border-slate-600 focus:border-primary focus:ring-0 px-1 py-2" />
                     </div>
                      <div>
-                        <label className="text-sm font-medium text-gray-700">Data Início (a partir de)</label>
-                        <input type="date" name="dataInicio" value={filters.dataInicio} onChange={handleFilterChange} className="mt-1 w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2"/>
+                        <label className="text-sm font-medium text-gray-400">Data Início (a partir de)</label>
+                        <input type="date" name="dataInicio" value={filters.dataInicio} onChange={handleFilterChange} className="mt-1 w-full bg-transparent border-0 border-b-2 border-slate-600 focus:border-primary focus:ring-0 px-1 py-2"/>
                     </div>
                      <div>
-                        <label className="text-sm font-medium text-gray-700">Data Fim (até)</label>
-                        <input type="date" name="dataFim" value={filters.dataFim} onChange={handleFilterChange} className="mt-1 w-full bg-transparent border-0 border-b-2 border-gray-300 focus:border-primary focus:ring-0 px-1 py-2"/>
+                        <label className="text-sm font-medium text-gray-400">Data Fim (até)</label>
+                        <input type="date" name="dataFim" value={filters.dataFim} onChange={handleFilterChange} className="mt-1 w-full bg-transparent border-0 border-b-2 border-slate-600 focus:border-primary focus:ring-0 px-1 py-2"/>
                     </div>
                     <div className="flex items-end col-span-full justify-between mt-4">
                         <div>
-                            <button onClick={handleSearch} className="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark">
+                            <button onClick={handleSearch} className="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
                                 Gerar Relatório
                             </button>
-                            <button onClick={clearFilters} className="ml-2 py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            <button onClick={clearFilters} className="ml-2 py-2 px-4 border border-slate-600 text-sm font-medium rounded-md text-gray-300 bg-slate-800 hover:bg-slate-700">
                                 Limpar
                             </button>
                         </div>
@@ -132,44 +132,44 @@ const Relatorios: React.FC = () => {
             </div>
 
             <div className="flex-1 overflow-hidden">
-                <div className="bg-white rounded-lg shadow-md overflow-y-auto h-full">
+                <div className="bg-slate-800 rounded-lg shadow-md overflow-y-auto h-full">
                     {isLoading ? (
-                        <div className="text-center py-16">Carregando dados...</div>
+                        <div className="text-center py-16">Carregando Dados...</div>
                     ) : error ? (
                         <div className="text-center py-16 text-red-600">Erro: {error}</div>
                     ) : searched ? (
                         <> 
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead className="bg-gray-50 sticky top-0">
+                            <table className="min-w-full divide-y divide-slate-700">
+                                <thead className="bg-slate-700 sticky top-0">
                                     <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Servidor</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Evento</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Carga Horária</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Início</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Fim</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Servidor</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Evento</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Carga Horária</th>
+                                        <.th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Data Início</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Data Fim</th>
                                     </tr>
                                 </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
+                                <tbody className="bg-slate-800 divide-y divide-slate-700">
                                     {filteredData.map((item) => (
-                                        <tr key={item.id} className="hover:bg-gray-50">
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.servidor}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.evento}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.carga_horaria}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(item.data_inicio).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(item.data_termino).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</td>
+                                        <tr key={item.id} className="hover:bg-slate-700">
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{item.servidor}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{item.evento}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{item.carga_horaria}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{new Date(item.data_inicio).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{new Date(item.data_termino).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                             {filteredData.length === 0 && (
                                 <div className="text-center py-16">
-                                    <p className="text-gray-500">Nenhum resultado encontrado para os filtros aplicados.</p>
+                                    <p className="text-gray-400">Nenhum resultado encontrado para os filtros aplicados.</p>
                                 </div>
                             )}
                         </>
                     ) : (
                         <div className="text-center py-16">
-                            <p className="text-gray-500">Insira os parâmetros e clique em "Gerar Relatório" para visualizar os dados.</p>
+                            <p className="text-gray-400">Insira os parâmetros e clique em "Gerar Relatório" para visualizar os dados.</p>
                         </div>
                     )}
                 </div>

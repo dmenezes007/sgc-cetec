@@ -12,31 +12,31 @@ interface SelectOption {
 const customStyles = {
     control: (provided: any) => ({
         ...provided,
-        backgroundColor: 'white',
-        borderColor: '#d1d5db', // border-gray-300
-        color: 'black',
+        backgroundColor: '#1e293b', // bg-slate-800
+        borderColor: '#475569', // border-slate-600
+        color: 'white',
         borderRadius: '0.375rem', // rounded-md
         padding: '0.1rem',
-        border: '1px solid #d1d5db',
+        border: '1px solid #475569',
         boxShadow: 'none',
         '&:hover': {
-            borderColor: '#9ca3af', // border-gray-400
+            borderColor: '#94a3b8', // border-slate-400
         },
     }),
     singleValue: (provided: any) => ({
         ...provided,
-        color: 'black',
+        color: 'white',
     }),
     menu: (provided: any) => ({
         ...provided,
-        backgroundColor: 'white',
-        borderColor: '#e5e7eb', // border-gray-200
+        backgroundColor: '#1e293b', // bg-slate-800
+        borderColor: '#334155', // border-slate-700
         zIndex: 50
     }),
     option: (provided: any, state: { isFocused: any; isSelected: any; }) => ({
         ...provided,
-        backgroundColor: state.isFocused ? '#f3f4f6' : state.isSelected ? '#3b82f6' : 'white',
-        color: state.isSelected ? 'white' : 'black',
+        backgroundColor: state.isFocused ? '#334155' : state.isSelected ? '#3b82f6' : '#1e293b',
+        color: 'white',
         '&:active': {
             backgroundColor: '#3b82f6',
             color: 'white'
@@ -44,11 +44,11 @@ const customStyles = {
     }),
     input: (provided: any) => ({
         ...provided,
-        color: 'black',
+        color: 'white',
     }),
     placeholder: (provided: any) => ({
         ...provided,
-        color: '#6b7280', // text-gray-500
+        color: '#94a3b8', // text-slate-400
     }),
 };
 
@@ -75,10 +75,10 @@ const parseDate = (dateString: string): Date | null => {
 };
 
 const StatCard: React.FC<{ title: string; value: string | number; description: string }> = ({ title, value, description }) => (
-    <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-primary">
-        <h3 className="text-sm font-medium text-gray-500">{title}</h3>
-        <p className="text-3xl font-bold text-dark-text mt-1">{value}</p>
-        <p className="text-xs text-gray-400 mt-2">{description}</p>
+    <div className="bg-slate-800 p-6 rounded-lg shadow-md border-l-4 border-primary">
+        <h3 className="text-sm font-medium text-gray-400">{title}</h3>
+        <p className="text-3xl font-bold text-white mt-1">{value}</p>
+        <p className="text-xs text-gray-300 mt-2">{description}</p>
     </div>
 );
 
@@ -97,7 +97,7 @@ const SearchableDropdown: React.FC<{ options: string[]; value: string; onChange:
 
     return (
         <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+            <label className="block text-sm font-medium text-gray-300 mb-1">{label}</label>
             <Select
                 instanceId={placeholder}
                 value={selectedValue}
@@ -209,7 +209,7 @@ const Overview: React.FC = () => {
     };
 
     if (isLoading) {
-        return <div className="text-center py-16">Carregando overview...</div>;
+        return <div className="text-center py-16">Carregando Dados...</div>;
     }
 
     if (error) {
@@ -218,7 +218,7 @@ const Overview: React.FC = () => {
 
     return (
         <div style={{fontFamily: 'Open Sans, sans-serif'}}>
-            <h2 className="text-3xl font-bold text-dark-text mb-6">Overview</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">Overview</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <StatCard title="Total de Capacitações" value={formatNumber(stats.totalCapacitacoes)} description="Registros totais no sistema" />
@@ -227,8 +227,8 @@ const Overview: React.FC = () => {
                 <StatCard title="Total de Instituições" value={formatNumber(stats.totalInstituicoes)} description="Número de instituições promotoras únicas" />
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-                <h3 className="text-xl font-bold text-dark-text mb-4">Filtros</h3>
+            <div className="bg-slate-800 p-6 rounded-lg shadow-md mb-8">
+                <h3 className="text-xl font-bold text-white mb-4">Filtros</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <SearchableDropdown options={uniqueAnos} value={filterAno} onChange={setFilterAno} placeholder="Filtrar por Ano..." label="Ano" />
                     <SearchableDropdown options={uniqueServidores} value={filterServidor} onChange={setFilterServidor} placeholder="Filtrar por Servidor..." label="Servidor" />
@@ -237,75 +237,75 @@ const Overview: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                    <h3 className="text-xl font-bold text-dark-text mb-4">Capacitações por Ano</h3>
+                <div className="bg-slate-800 p-6 rounded-lg shadow-md">
+                    <h3 className="text-xl font-bold text-white mb-4">Capacitações por Ano</h3>
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={capacitacoesPorAno} style={{fontFamily: 'Open Sans, sans-serif'}}>
                             <defs>
                                 <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                                <stop offset="95%" stopColor="#FFFFFF" stopOpacity={0.8}/>
+                                <stop offset="95%" stopColor="#0f172a" stopOpacity={0.8}/>
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                            <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                            <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                            <Tooltip />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
+                            <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                            <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                            <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155' }} />
                             <Bar dataKey="total" fill="url(#colorUv)" />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                    <h3 className="text-xl font-bold text-dark-text mb-4">Capacitações por Mês</h3>
+                <div className="bg-slate-800 p-6 rounded-lg shadow-md">
+                    <h3 className="text-xl font-bold text-white mb-4">Capacitações por Mês</h3>
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={capacitacoesPorMes} style={{fontFamily: 'Open Sans, sans-serif'}}>
                             <defs>
                                 <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                                <stop offset="95%" stopColor="#FFFFFF" stopOpacity={0.8}/>
+                                <stop offset="95%" stopColor="#0f172a" stopOpacity={0.8}/>
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                            <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                            <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                            <Tooltip />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
+                            <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                            <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                            <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155' }} />
                             <Bar dataKey="total" fill="url(#colorUv)" />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-bold text-dark-text mb-4">Capacitações</h3>
+            <div className="bg-slate-800 p-6 rounded-lg shadow-md">
+                <h3 className="text-xl font-bold text-white mb-4">Capacitações</h3>
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 table-fixed w-full">
-                        <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-slate-700 table-fixed w-full">
+                        <thead className="bg-slate-700">
                             <tr>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Servidor</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">Evento</th>
-                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Instituição</th>
-                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Carga Horária</th>
-                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Início</th>
-                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Fim</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Modalidade</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-1/6">Servidor</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-1/4">Evento</th>
+                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider w-1/6">Instituição</th>
+                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider w-1/12">Carga Horária</th>
+                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider w-1/12">Início</th>
+                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider w-1/12">Fim</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-1/12">Modalidade</th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="bg-slate-800 divide-y divide-slate-700">
                             {paginatedCapacitacoes.map((capacitacao) => (
                                 <Fragment key={capacitacao.id}>
-                                    <tr onClick={() => handleRowClick(capacitacao.id)} className="hover:bg-gray-50 cursor-pointer">
-                                        <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.servidor}</td>
-                                        <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.evento}</td>
-                                        <td className="px-6 py-4 whitespace-normal text-sm text-gray-900 text-center">{capacitacao.instituicao_promotora.toUpperCase()}</td>
-                                        <td className="px-6 py-4 whitespace-normal text-sm text-gray-900 text-center">{capacitacao.carga_horaria}</td>
-                                        <td className="px-6 py-4 whitespace-normal text-sm text-gray-900 text-center">{capacitacao.data_inicio}</td>
-                                        <td className="px-6 py-4 whitespace-normal text-sm text-gray-900 text-center">{capacitacao.data_termino}</td>
-                                        <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{capacitacao.modalidade}</td>
+                                    <tr onClick={() => handleRowClick(capacitacao.id)} className="hover:bg-slate-700 cursor-pointer">
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white">{capacitacao.servidor}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white">{capacitacao.evento}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white text-center">{capacitacao.instituicao_promotora.toUpperCase()}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white text-center">{capacitacao.carga_horaria}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white text-center">{capacitacao.data_inicio}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white text-center">{capacitacao.data_termino}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white">{capacitacao.modalidade}</td>
                                     </tr>
                                     {expandedRowId === capacitacao.id && (
-                                        <tr className="bg-gray-50">
+                                        <tr className="bg-slate-700">
                                             <td colSpan={7} className="p-4">
-                                                <div className="grid grid-cols-3 gap-4 text-sm">
+                                                <div className="grid grid-cols-3 gap-4 text-sm text-white">
                                                     <div><strong>Cargo de Chefia:</strong> {capacitacao.cargo_de_chefia}</div>
                                                     <div><strong>Matrícula:</strong> {capacitacao.matricula}</div>
                                                     <div><strong>Coord. Geral:</strong> {capacitacao.coord_geral}</div>
@@ -331,19 +331,19 @@ const Overview: React.FC = () => {
                 </div>
                 <div className="py-3 flex items-center justify-between">
                     <div className="flex-1 flex justify-between sm:hidden">
-                        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"> Previous </button>
-                        <button onClick={() => setCurrentPage(p => p + 1)} disabled={paginatedCapacitacoes.length < itemsPerPage} className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"> Next </button>
+                        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="relative inline-flex items-center px-4 py-2 border border-slate-600 text-sm font-medium rounded-md text-gray-300 bg-slate-800 hover:bg-slate-700"> Previous </button>
+                        <button onClick={() => setCurrentPage(p => p + 1)} disabled={paginatedCapacitacoes.length < itemsPerPage} className="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-600 text-sm font-medium rounded-md text-gray-300 bg-slate-800 hover:bg-slate-700"> Next </button>
                     </div>
                     <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                         <div>
-                            <p className="text-sm text-gray-700">
+                            <p className="text-sm text-gray-300">
                                 Showing <span className="font-medium">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-medium">{(currentPage - 1) * itemsPerPage + paginatedCapacitacoes.length}</span> of <span className="font-medium">{filteredCapacitacoes.length}</span> results
                             </p>
                         </div>
                         <div>
                             <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                                <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"> <span className="sr-only">Previous</span> &lt; </button>
-                                <button onClick={() => setCurrentPage(p => p + 1)} disabled={paginatedCapacitacoes.length < itemsPerPage} className="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"> <span className="sr-only">Next</span> &gt; </button>
+                                <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-slate-600 bg-slate-800 text-sm font-medium text-gray-400 hover:bg-slate-700"> <span className="sr-only">Previous</span> &lt; </button>
+                                <button onClick={() => setCurrentPage(p => p + 1)} disabled={paginatedCapacitacoes.length < itemsPerPage} className="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-slate-600 bg-slate-800 text-sm font-medium text-gray-400 hover:bg-slate-700"> <span className="sr-only">Next</span> &gt; </button>
                             </nav>
                         </div>
                     </div>

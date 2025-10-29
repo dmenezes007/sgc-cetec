@@ -16,6 +16,12 @@ export default {
         'light-bg': '#F0F4F8',
         'dark-text': '#102A43',
         'light-text': '#BCCCDC',
+        slate: {
+          600: '#475569',
+          700: '#334155',
+          800: '#1e293b',
+          900: '#0f172a',
+        },
       },
       fontFamily: {
         sans: ['Open Sans', 'sans-serif'],
