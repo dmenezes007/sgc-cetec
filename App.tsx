@@ -4,9 +4,12 @@ import Capacitados from './pages/Capacitados';
 import Relatorios from './pages/Relatorios';
 import { Page } from './types';
 import LoginPage from './components/LoginPage';
+import Capacitacoes from './pages/Capacitacoes';
+import Afastamentos from './pages/Afastamentos';
+import Planejamento from './pages/Planejamento';
 
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<Page>('Capacitados');
+  const [currentPage, setCurrentPage] = useState<Page>('Capacitações');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogin = (password: string) => {
@@ -19,12 +22,18 @@ const App: React.FC = () => {
 
   const renderPage = () => {
     switch (currentPage) {
+      case 'Capacitações':
+        return <Capacitacoes />;
       case 'Capacitados':
         return <Capacitados />;
+      case 'Afastamentos':
+        return <Afastamentos />;
+      case 'Planejamento':
+        return <Planejamento />;
       case 'Relatórios':
         return <Relatorios />;
       default:
-        return <Capacitados />;
+        return <Capacitacoes />;
     }
   };
 

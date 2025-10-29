@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Page } from '../types';
-import { ChartBarIcon, DocumentAddIcon, TableIcon } from './icons/Icons';
+import { AcademicCapIcon, UsersIcon, GlobeIcon, ClipboardListIcon, TableIcon } from './icons/Icons';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -60,7 +60,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }
             page="Capacitações"
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
-            icon={<ChartBarIcon />}
+            icon={<AcademicCapIcon />}
             text="Capacitações"
             isExpanded={isExpanded}
           />
@@ -68,7 +68,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }
             page="Capacitados"
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
-            icon={<ChartBarIcon />}
+            icon={<UsersIcon />}
             text="Capacitados"
             isExpanded={isExpanded}
           />
@@ -76,7 +76,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }
             page="Afastamentos"
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
-            icon={<ChartBarIcon />}
+            icon={<GlobeIcon />}
             text="Afastamentos"
             isExpanded={isExpanded}
           />
@@ -84,7 +84,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }
             page="Planejamento"
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
-            icon={<ChartBarIcon />}
+            icon={<ClipboardListIcon />}
             text="Planejamento"
             isExpanded={isExpanded}
           />
