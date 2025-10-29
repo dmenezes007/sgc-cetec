@@ -342,15 +342,3 @@ const Overview: React.FC = () => {
 };
 
 export default Overview;
-y-2 rounded-l-md border border-slate-600 bg-slate-800 text-sm font-medium text-gray-400 hover:bg-slate-700"> <span className="sr-only">Previous</span> &lt; </button>
-                                <button onClick={() => setCurrentPage(p => p + 1)} disabled={paginatedCapacitacoes.length < itemsPerPage} className="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-slate-600 bg-slate-800 text-sm font-medium text-gray-400 hover:bg-slate-700"> <span className="sr-only">Next</span> &gt; </button>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export default Overview;
