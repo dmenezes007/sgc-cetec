@@ -241,17 +241,11 @@ const Overview: React.FC = () => {
                     <h3 className="text-xl font-bold text-white mb-4">Capacitações por Ano</h3>
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={capacitacoesPorAno} style={{fontFamily: 'Open Sans, sans-serif'}}>
-                            <defs>
-                                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                                <stop offset="95%" stopColor="#0f172a" stopOpacity={0.8}/>
-                                </linearGradient>
-                            </defs>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155' }} />
-                            <Bar dataKey="total" fill="url(#colorUv)" />
+                            <Bar dataKey="total" fill="#00529B" fillOpacity={0.75} stroke="#00529B" strokeOpacity={1} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
@@ -259,17 +253,11 @@ const Overview: React.FC = () => {
                     <h3 className="text-xl font-bold text-white mb-4">Capacitações por Mês</h3>
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={capacitacoesPorMes} style={{fontFamily: 'Open Sans, sans-serif'}}>
-                            <defs>
-                                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                                <stop offset="95%" stopColor="#0f172a" stopOpacity={0.8}/>
-                                </linearGradient>
-                            </defs>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155' }} />
-                            <Bar dataKey="total" fill="url(#colorUv)" />
+                            <Bar dataKey="total" fill="#00529B" fillOpacity={0.75} stroke="#00529B" strokeOpacity={1} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
