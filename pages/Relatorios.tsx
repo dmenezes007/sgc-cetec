@@ -145,7 +145,7 @@ const Relatorios: React.FC = () => {
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Servidor</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Evento</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Carga Horária</th>
-                                        <.th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Data Início</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Data Início</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Data Fim</th>
                                     </tr>
                                 </thead>
