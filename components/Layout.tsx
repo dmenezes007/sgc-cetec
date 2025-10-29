@@ -44,7 +44,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }
       <aside className={`bg-slate-800 flex flex-col shadow-lg transition-all duration-300 ease-in-out ${isExpanded ? 'w-64' : 'w-20'}`}>
         <div className={`p-6 flex items-center ${isExpanded ? 'justify-between' : 'justify-center'}`}>
           {isExpanded && (
-            <div className="text-2xl font-bold text-white">
+            <div className="text-2xl font-bold text-primary">
               SGC
             </div>
           )}
@@ -57,19 +57,35 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }
         
         <nav className="flex-grow px-4 space-y-2">
           <NavLink
-            page="Overview"
+            page="Capacitações"
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             icon={<ChartBarIcon />}
-            text="Overview"
+            text="Capacitações"
             isExpanded={isExpanded}
           />
           <NavLink
-            page="Cadastro"
+            page="Capacitados"
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
-            icon={<DocumentAddIcon />}
-            text="Cadastro"
+            icon={<ChartBarIcon />}
+            text="Capacitados"
+            isExpanded={isExpanded}
+          />
+          <NavLink
+            page="Afastamentos"
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            icon={<ChartBarIcon />}
+            text="Afastamentos"
+            isExpanded={isExpanded}
+          />
+          <NavLink
+            page="Planejamento"
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            icon={<ChartBarIcon />}
+            text="Planejamento"
             isExpanded={isExpanded}
           />
           <NavLink

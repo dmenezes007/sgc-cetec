@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import Layout from './components/Layout';
-import Overview from './pages/Overview';
-import Cadastro from './pages/Cadastro';
+import Capacitados from './pages/Capacitados';
 import Relatorios from './pages/Relatorios';
 import { Page } from './types';
 import LoginPage from './components/LoginPage';
 
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<Page>('Overview');
+  const [currentPage, setCurrentPage] = useState<Page>('Capacitados');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogin = (password: string) => {
@@ -20,14 +19,12 @@ const App: React.FC = () => {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'Overview':
-        return <Overview />;
-      case 'Cadastro':
-        return <Cadastro />;
+      case 'Capacitados':
+        return <Capacitados />;
       case 'Relatórios':
         return <Relatorios />;
       default:
-        return <Overview />;
+        return <Capacitados />;
     }
   };
 
