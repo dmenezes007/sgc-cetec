@@ -218,7 +218,7 @@ const Overview: React.FC = () => {
 
     return (
         <div style={{fontFamily: 'Open Sans, sans-serif'}}>
-            <h2 className="text-3xl font-bold text-white mb-6">Overview</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">Capacitados</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <StatCard title="Total de Capacitações" value={formatNumber(stats.totalCapacitacoes)} description="Registros totais no sistema" />
