@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import Layout from './components/Layout';
-import CapacitadosPage from './pages/CapacitadosPage';
-console.log('CapacitadosPage component in App.tsx:', CapacitadosPage);
-import Relatorios from './pages/Relatorios';
 import { Page } from './types';
 import LoginPage from './components/LoginPage';
-import Capacitacoes from './pages/Capacitacoes';
-import Afastamentos from './pages/Afastamentos';
-import Planejamento from './pages/Planejamento';
+
+const Capacitacoes = React.lazy(() => import('./pages/Capacitacoes'));
+const CapacitadosPage = React.lazy(() => import('./pages/CapacitadosPage'));
+const Afastamentos = React.lazy(() => import('./pages/Afastamentos'));
+const Planejamento = React.lazy(() => import('./pages/Planejamento'));
+const Relatorios = React.lazy(() => import('./pages/Relatorios'));
+
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('Capacitações');
@@ -43,9 +44,11 @@ const App: React.FC = () => {
   }
 
   return (
-    <Layout currentPage={currentPage} setCurrentPage={setCurrentPage}>
-      {renderPage()}
-    </Layout>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Layout currentPage={currentPage} setCurrentPage={setCurrentPage}>
+        {renderPage()}
+      </Layout>
+    </Suspense>
   );
 };
 
