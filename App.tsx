@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Layout from './components/Layout';
-import Capacitados from './pages/Capacitados';
-console.log('Capacitados component in App.tsx:', Capacitados);
+import CapacitadosPage from './pages/CapacitadosPage';
 import Relatorios from './pages/Relatorios';
 import { Page } from './types';
 import LoginPage from './components/LoginPage';
@@ -26,7 +25,7 @@ const App: React.FC = () => {
       case 'Capacitações':
         return <Capacitacoes />;
       case 'Capacitados':
-        return <Capacitados />;
+        return <CapacitadosPage />;
       case 'Afastamentos':
         return <Afastamentos />;
       case 'Planejamento':
