@@ -237,7 +237,7 @@ const Capacitacoes: React.FC = () => {
                             <XAxis type="number" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={300} />
                             <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
-                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} barSize={30} />
+                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} barSize={40} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
@@ -249,7 +249,7 @@ const Capacitacoes: React.FC = () => {
                             <XAxis type="number" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={300} />
                             <Tooltip content={<CustomTooltip isCurrency={false} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
-                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} barSize={30} />
+                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} barSize={40} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
