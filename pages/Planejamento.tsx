@@ -287,8 +287,8 @@ const Planejamento: React.FC = () => {
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
-                <div className="bg-slate-800 p-6 rounded-lg shadow-md">
-                    <h3 className="text-xl font-bold text-white mb-4">Vagas por Unidade</h3>
+                <div class="bg-slate-800 p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-white mb-4">Vagas por Unidade</h3>
                     <ResponsiveContainer width="100%" height={700}>
                         <BarChart data={vagasPorUnidade} style={{fontFamily: 'Open Sans, sans-serif'}} onClick={handleChartUnidadeClick} barSize={80} barCategoryGap={40}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
@@ -299,8 +299,9 @@ const Planejamento: React.FC = () => {
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
-            <div className="bg-slate-800 p-6 rounded-lg shadow-md mt-8"> {/* Added mt-8 for spacing */}
-                <h3 className="text-xl font-bold text-white mb-4">Contratações</h3>
+            </div>
+            <div class="bg-slate-800 p-6 rounded-lg shadow-md mt-8"> {/* Added mt-8 for spacing */}
+                <h3 class="text-xl font-bold text-white mb-4">Contratações</h3>
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-slate-700 table-fixed w-full">
                         <thead className="bg-slate-700">
