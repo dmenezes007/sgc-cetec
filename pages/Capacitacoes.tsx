@@ -232,6 +232,10 @@ const Capacitacoes: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Valor por Linha de Capacitação</h3>
                     <ResponsiveContainer width="100%" height={500}>
+                        <BarChart data={valorPorLinha} layout="vertical" style={{fontFamily: 'Open Sans, sans-serif'}} margin={{ top: 20, right: 30, left: 20, bottom: 5 }} onClick={handleChartClick}>
+                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
+                            <XAxis type="number" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                            <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={300} />
                             <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
                             <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} barSize={30} />
                         </BarChart>

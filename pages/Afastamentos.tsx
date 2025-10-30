@@ -68,6 +68,19 @@ const formatDecimal = (value: any) => {
     return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
+const CustomTooltip = ({ active, payload, label, isCurrency }: any) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="p-2 bg-slate-800 border border-slate-700 rounded shadow-lg">
+                <p className="label text-white">{`${label}`}</p>
+                <p className="intro text-white">{isCurrency ? formatCurrency(payload[0].value) : formatDecimal(payload[0].value)}</p>
+            </div>
+        );
+    }
+
+    return null;
+};
+
 const StatCard: React.FC<{ title: string; value: string | number; description: string }> = ({ title, value, description }) => (
     <div className="bg-slate-800 p-6 rounded-lg shadow-md border-l-4 border-primary">
         <h3 className="text-sm font-medium text-gray-400">{title}</h3>
@@ -204,8 +217,8 @@ const Afastamentos: React.FC = () => {
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                            <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', color: 'white' }} itemStyle={{ color: 'white' }} labelStyle={{ color: 'white' }} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
-                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} />
+                            <Tooltip content={<CustomTooltip isCurrency={false} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
+                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} barSize={30} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
