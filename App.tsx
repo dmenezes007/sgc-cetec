@@ -4,7 +4,7 @@ import { Page } from './types';
 import LoginPage from './components/LoginPage';
 
 const Capacitacoes = React.lazy(() => import('./pages/Capacitacoes'));
-const CapacitadosPage = React.lazy(() => import('./pages/CapacitadosPage'));
+const Capacitados = React.lazy(() => import('./pages/Capacitados'));
 const Afastamentos = React.lazy(() => import('./pages/Afastamentos'));
 const Planejamento = React.lazy(() => import('./pages/Planejamento'));
 const Relatorios = React.lazy(() => import('./pages/Relatorios'));
@@ -27,7 +27,7 @@ const App: React.FC = () => {
       case 'Capacitações':
         return <Capacitacoes />;
       case 'Capacitados':
-        return <CapacitadosPage />;
+        return <Capacitados />;
       case 'Afastamentos':
         return <Afastamentos />;
       case 'Planejamento':

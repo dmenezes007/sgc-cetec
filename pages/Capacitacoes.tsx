@@ -153,10 +153,7 @@ const Capacitacoes: React.FC = () => {
             if (!acc[linha]) {
                 acc[linha] = { name: linha, total: 0 };
             }
-            acc[linha].total += curr.valor_evento;
-            return acc;
-        }, {} as Record<string, { name: string; total: number }>);
-        return Object.values(linhaData);
+        return Object.values(linhaData).sort((a, b) => b.total - a.total);
     }, [filteredCapacitacoes]);
 
     const quantidadePorLinha = useMemo(() => {
@@ -168,7 +165,7 @@ const Capacitacoes: React.FC = () => {
             acc[linha].total++;
             return acc;
         }, {} as Record<string, { name: string; total: number }>);
-        return Object.values(linhaData);
+        return Object.values(linhaData).sort((a, b) => b.total - a.total);
     }, [filteredCapacitacoes]);
 
     if (isLoading) {
@@ -197,10 +194,10 @@ const Capacitacoes: React.FC = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div className="grid grid-cols-1 gap-8 mb-8">
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Valor por Linha de Capacitação</h3>
-                    <ResponsiveContainer width="100%" height={300}>
+                    <ResponsiveContainer width="100%" height={500}>
                         <BarChart data={valorPorLinha} style={{fontFamily: 'Open Sans, sans-serif'}}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
@@ -212,7 +209,7 @@ const Capacitacoes: React.FC = () => {
                 </div>
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Quantidade por Linha de Capacitação</h3>
-                    <ResponsiveContainer width="100%" height={300}>
+                    <ResponsiveContainer width="100%" height={500}>
                         <BarChart data={quantidadePorLinha} style={{fontFamily: 'Open Sans, sans-serif'}}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />

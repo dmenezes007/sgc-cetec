@@ -342,4 +342,4 @@ const Capacitados: React.FC = () => {
     );
 };
 
-export default CapacitadosPage;
+export default Capacitados;

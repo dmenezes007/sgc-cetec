@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Page } from '../types';
-import { AcademicCapIcon, UsersIcon, GlobeIcon, ClipboardListIcon, TableIcon } from './icons/Icons';
+import { FaCertificate, FaUserCheck, FaSuitcase, FaTasks, FaChartBar } from 'react-icons/fa';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -60,7 +60,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }
             page="Capacitações"
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
-            icon={<AcademicCapIcon />}
+            icon={<FaCertificate />}
             text="Capacitações"
             isExpanded={isExpanded}
           />
@@ -68,7 +68,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }
             page="Capacitados"
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
-            icon={<UsersIcon />}
+            icon={<FaUserCheck />}
             text="Capacitados"
             isExpanded={isExpanded}
           />
@@ -76,7 +76,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }
             page="Afastamentos"
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
-            icon={<GlobeIcon />}
+            icon={<FaSuitcase />}
             text="Afastamentos"
             isExpanded={isExpanded}
           />
@@ -84,7 +84,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }
             page="Planejamento"
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
-            icon={<ClipboardListIcon />}
+            icon={<FaTasks />}
             text="Planejamento"
             isExpanded={isExpanded}
           />
@@ -92,7 +92,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }
             page="Relatórios"
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
-            icon={<TableIcon />}
+            icon={<FaChartBar />}
             text="Relatórios"
             isExpanded={isExpanded}
           />
