@@ -159,6 +159,9 @@ const Planejamento: React.FC = () => {
     const [contratacoes, setContratacoes] = useState<Contratacao[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [expandedRowId, setExpandedRowId] = useState<number | null>(null);
+    const itemsPerPage = 10;
 
     // Filtros
     const [filterUnidade, setFilterUnidade] = useState<string>('');
@@ -170,6 +173,10 @@ const Planejamento: React.FC = () => {
             const newFilter = data.activePayload[0].payload.name;
             setChartFilterUnidade(prevFilter => (prevFilter === newFilter ? '' : newFilter));
         }
+    };
+
+    const handleRowClick = (id: number) => {
+        setExpandedRowId(expandedRowId === id ? null : id);
     };
 
 
@@ -235,6 +242,11 @@ const Planejamento: React.FC = () => {
         return Object.values(unidadeData);
     }, [filteredContratacoes]);
 
+    const paginatedContratacoes = useMemo(() => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        return filteredContratacoes.slice(startIndex, startIndex + itemsPerPage);
+    }, [filteredContratacoes, currentPage]);
+
     if (isLoading) {
         return <div className="text-center py-16">Carregando Dados...</div>;
     }
@@ -288,8 +300,91 @@ const Planejamento: React.FC = () => {
                     </ResponsiveContainer>
                 </div>
             </div>
+
+            <div className="bg-slate-800 p-6 rounded-lg shadow-md">
+                <h3 className="text-xl font-bold text-white mb-4">Contratações</h3>
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-slate-700 table-fixed w-full">
+                        <thead className="bg-slate-700">
+                            <tr>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-1/6">Unidade</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-1/4">Evento</th>
+                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider w-1/12">Início</th>
+                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider w-1/12">Fim</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-1/12">Cidade</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-1/12">Status</th>
+                                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider w-1/12">Custo</th>
+                                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider w-1/12">Vagas</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-slate-800 divide-y divide-slate-700">
+                            {paginatedContratacoes.map((contratacao, index) => (
+                                <React.Fragment key={contratacao.Processo || index}> {/* Using Processo as key, fallback to index */}
+                                    <tr onClick={() => handleRowClick(index)} className="hover:bg-slate-700 cursor-pointer"> {/* Using index as id for expandedRowId */}
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white">{contratacao.Unidade}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white">{contratacao.Evento}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white text-center">{contratacao.Inicio}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white text-center">{contratacao.Fim}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white">{contratacao.Cidade}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white">{contratacao.Status}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white text-right">{formatCurrency(contratacao.Custo)}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white text-right">{contratacao.Vagas}</td>
+                                    </tr>
+                                    {expandedRowId === index && (
+                                        <tr className="bg-slate-700">
+                                            <td colSpan={8} className="p-4">
+                                                <div className="grid grid-cols-3 gap-4 text-sm text-white">
+                                                    <div><strong>Processo:</strong> {contratacao.Processo}</div>
+                                                    <div><strong>Observações:</strong> {contratacao.Observacoes}</div>
+                                                    <div><strong>Autoriza PR:</strong> {contratacao.Autoriza_PR}</div>
+                                                    <div><strong>Diárias:</strong> {formatCurrency(contratacao.Diarias)}</div>
+                                                    <div><strong>Passagens:</strong> {formatCurrency(contratacao.Passagens)}</div>
+                                                    <div><strong>Inscrições:</strong> {contratacao.Inscricoes}</div>
+                                                    <div><strong>DFD:</strong> {contratacao.DFD}</div>
+                                                    <div><strong>Envio DIRAD:</strong> {contratacao.Envio_DIRAD}</div>
+                                                    <div><strong>Detalhamento DIORC:</strong> {contratacao.Detalhamento_DIORC}</div>
+                                                    <div><strong>Total:</strong> {formatCurrency(contratacao.Total)}</div>
+                                                    <div><strong>TR:</strong> {contratacao.TR}</div>
+                                                    <div><strong>Análise TR:</strong> {contratacao.Analise_TR}</div>
+                                                    <div><strong>Aprova TR:</strong> {contratacao.Aprova_TR}</div>
+                                                    <div><strong>Aprova PR:</strong> {contratacao.Aprova_PR}</div>
+                                                    <div><strong>Empenho DIRAD:</strong> {contratacao.Emprenho_DIRAD}</div>
+                                                    <div><strong>Empenho DIREF:</strong> {contratacao.Empenho_DIREF}</div>
+                                                    <div><strong>Envio Nota:</strong> {contratacao.Envio_Nota}</div>
+                                                    <div><strong>Certificado:</strong> {contratacao.Certificado}</div>
+                                                    <div><strong>NF:</strong> {contratacao.NF}</div>
+                                                    <div><strong>Liquidação:</strong> {contratacao.Liquidacao}</div>
+                                                    <div><strong>Encerramento:</strong> {contratacao.Encerramento}</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="py-3 flex items-center justify-between">
+                    <div className="flex-1 flex justify-between sm:hidden">
+                        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="relative inline-flex items-center px-4 py-2 border border-slate-600 text-sm font-medium rounded-md text-gray-300 bg-slate-800 hover:bg-slate-700"> Previous </button>
+                        <button onClick={() => setCurrentPage(p => p + 1)} disabled={paginatedContratacoes.length < itemsPerPage} className="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-600 text-sm font-medium rounded-md text-gray-300 bg-slate-800 hover:bg-slate-700"> Next </button>
+                    </div>
+                    <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                        <div>
+                            <p className="text-sm text-gray-300">
+                                Showing <span className="font-medium">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-medium">{(currentPage - 1) * itemsPerPage + paginatedContratacoes.length}</span> of <span className="font-medium">{filteredContratacoes.length}</span> results
+                            </p>
+                        </div>
+                        <div>
+                            <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-slate-600 bg-slate-800 text-sm font-medium text-gray-400 hover:bg-slate-700"> <span className="sr-only">Previous</span> &lt; </button>
+                                <button onClick={() => setCurrentPage(p => p + 1)} disabled={paginatedContratacoes.length < itemsPerPage} className="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-slate-600 bg-slate-800 text-sm font-medium text-gray-400 hover:bg-slate-700"> <span className="sr-only">Next</span> &gt; </button>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
-};
 
 export default Planejamento;
