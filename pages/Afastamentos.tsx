@@ -115,7 +115,7 @@ const Afastamentos: React.FC = () => {
             try {
                 const response = await fetch('/docs/afastamentos.xlsx');
                 const ab = await response.arrayBuffer();
-                const wb = XLSX.read(ab, { type: 'array' });
+                const wb = XLSX.read(ab, { type: 'array', cellDates: true });
                 const wsname = wb.SheetNames[0];
                 const ws = wb.Sheets[wsname];
                 const data = XLSX.utils.sheet_to_json<Afastamento>(ws);

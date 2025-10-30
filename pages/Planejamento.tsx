@@ -148,7 +148,7 @@ const Planejamento: React.FC = () => {
             try {
                 const response = await fetch('/docs/contratacoes-capacita.csv');
                 const text = await response.text();
-                const result = Papa.parse<Contratacao>(text, { header: true, delimiter: ';' });
+                const result = Papa.parse<Contratacao>(text, { header: true, delimiter: ';', dynamicTyping: true });
                 setContratacoes(result.data);
             } catch (err: any) {
                 setError(err.message);

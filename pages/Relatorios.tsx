@@ -170,7 +170,7 @@ const Relatorios: React.FC = () => {
                     ) : (
                         <div className="text-center py-16">
                             <p className="text-gray-400">Insira os parâmetros e clique em "Gerar Relatório" para visualizar os dados.</p>
-st                        </div>
+                        </div>
                     )}
                 </div>
             </div>
