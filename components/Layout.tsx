@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { Page } from '../types';
-import { FaCertificate } from 'react-icons/fa/FaCertificate';
-import { FaUserCheck } from 'react-icons/fa/FaUserCheck';
-import { FaSuitcase } from 'react-icons/fa/FaSuitcase';
-import { FaTasks } from 'react-icons/fa/FaTasks';
-import { FaChartBar } from 'react-icons/fa/FaChartBar';
+import { FaCertificate, FaUserCheck, FaSuitcase, FaTasks, FaChartBar } from 'react-icons/fa';
 
 interface LayoutProps {
   children: React.ReactNode;
