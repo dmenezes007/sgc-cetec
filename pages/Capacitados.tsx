@@ -133,6 +133,23 @@ const Capacitados: React.FC = () => {
     const [filterAno, setFilterAno] = useState<string>('');
     const [filterServidor, setFilterServidor] = useState<string>('');
     const [filterInstituicao, setFilterInstituicao] = useState<string>('');
+    const [chartFilterAno, setChartFilterAno] = useState<string>('');
+    const [chartFilterMes, setChartFilterMes] = useState<string>('');
+
+    const handleChartAnoClick = (data: any) => {
+        if (data && data.activePayload && data.activePayload.length > 0) {
+            const newFilter = data.activePayload[0].payload.name;
+            setChartFilterAno(prevFilter => (prevFilter === newFilter ? '' : newFilter));
+        }
+    };
+
+    const handleChartMesClick = (data: any) => {
+        if (data && data.activePayload && data.activePayload.length > 0) {
+            const newFilter = data.activePayload[0].payload.name;
+            setChartFilterMes(prevFilter => (prevFilter === newFilter ? '' : newFilter));
+        }
+    };
+
 
     useEffect(() => {
         const fetchCapacitacoes = async () => {
@@ -161,11 +178,14 @@ const Capacitados: React.FC = () => {
     }, [capacitacoes]);
 
     const filteredCapacitacoes = useMemo(() => {
+        const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
         return capacitacoes.filter(c => {
             const anoMatch = filterAno ? String(c.ano) === filterAno : true;
             const servidorMatch = filterServidor ? c.servidor === filterServidor : true;
             const instituicaoMatch = filterInstituicao ? c.instituicao_promotora === filterInstituicao : true;
-            return anoMatch && servidorMatch && instituicaoMatch;
+            const chartAnoMatch = chartFilterAno ? String(c.ano) === chartFilterAno : true;
+            const chartMesMatch = chartFilterMes ? meses[new Date(c.data_inicio).getMonth()] === chartFilterMes : true;
+            return anoMatch && servidorMatch && instituicaoMatch && chartAnoMatch && chartMesMatch;
         }).sort((a, b) => {
             const dateA = parseDate(a.data_inicio) || parseDate(a.data_termino);
             const dateB = parseDate(b.data_inicio) || parseDate(b.data_termino);
@@ -174,7 +194,7 @@ const Capacitados: React.FC = () => {
             }
             return 0;
         });
-    }, [capacitacoes, filterAno, filterServidor, filterInstituicao]);
+    }, [capacitacoes, filterAno, filterServidor, filterInstituicao, chartFilterAno, chartFilterMes]);
 
     const stats = useMemo(() => {
         const totalCapacitacoes = filteredCapacitacoes.length;
@@ -249,7 +269,7 @@ const Capacitados: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Capacitações por Ano</h3>
                     <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={capacitacoesPorAno} style={{fontFamily: 'Open Sans, sans-serif'}}>
+                        <BarChart data={capacitacoesPorAno} style={{fontFamily: 'Open Sans, sans-serif'}} onClick={handleChartAnoClick}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
@@ -261,11 +281,11 @@ const Capacitados: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Capacitações por Mês</h3>
                     <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={capacitacoesPorMes} style={{fontFamily: 'Open Sans, sans-serif'}}>
+                        <BarChart data={capacitacoesPorMes} style={{fontFamily: 'Open Sans, sans-serif'}} onClick={handleChartMesClick}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                            <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155' }} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
+                            <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', color: 'white' }} itemStyle={{ color: 'white' }} labelStyle={{ color: 'white' }} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
                             <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} />
                         </BarChart>
                     </ResponsiveContainer>
