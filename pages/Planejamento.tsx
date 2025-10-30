@@ -299,9 +299,7 @@ const Planejamento: React.FC = () => {
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
-            </div>
-
-            <div className="bg-slate-800 p-6 rounded-lg shadow-md">
+            <div className="bg-slate-800 p-6 rounded-lg shadow-md mt-8"> {/* Added mt-8 for spacing */}
                 <h3 className="text-xl font-bold text-white mb-4">Contratações</h3>
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-slate-700 table-fixed w-full">
@@ -386,5 +384,6 @@ const Planejamento: React.FC = () => {
             </div>
         </div>
     );
+};
 
 export default Planejamento;
