@@ -385,7 +385,3 @@ const Planejamento: React.FC = () => {
         </div>
     );
 };
-
-export default Planejamento;
-
-export default Planejamento;
