@@ -113,6 +113,15 @@ const Afastamentos: React.FC = () => {
 
     // Filtros
     const [filterLocal, setFilterLocal] = useState<string>('');
+    const [chartFilter, setChartFilter] = useState<string>('');
+
+    const handleChartClick = (data: any) => {
+        if (data && data.activePayload && data.activePayload.length > 0) {
+            const newFilter = data.activePayload[0].payload.name;
+            setChartFilter(prevFilter => (prevFilter === newFilter ? '' : newFilter));
+        }
+    };
+
 
     useEffect(() => {
         const fetchAfastamentos = async () => {
@@ -139,9 +148,10 @@ const Afastamentos: React.FC = () => {
     const filteredAfastamentos = useMemo(() => {
         return afastamentos.filter(a => {
             const localMatch = filterLocal ? a.Local === filterLocal : true;
-            return localMatch;
+            const chartMatch = chartFilter ? a.Local === chartFilter : true;
+            return localMatch && chartMatch;
         });
-    }, [afastamentos, filterLocal]);
+    }, [afastamentos, filterLocal, chartFilter]);
 
     const stats = useMemo(() => {
         const totalAfastamentos = filteredAfastamentos.length;
@@ -190,11 +200,11 @@ const Afastamentos: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Afastamentos por Local</h3>
                     <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={afastamentosPorLocal} style={{fontFamily: 'Open Sans, sans-serif'}}>
+                        <BarChart data={afastamentosPorLocal} style={{fontFamily: 'Open Sans, sans-serif'}} onClick={handleChartClick}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                            <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155' }} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
+                            <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', color: 'white' }} itemStyle={{ color: 'white' }} labelStyle={{ color: 'white' }} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
                             <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} />
                         </BarChart>
                     </ResponsiveContainer>

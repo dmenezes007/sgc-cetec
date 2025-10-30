@@ -93,7 +93,15 @@ const formatCurrency = (value: any) => {
     if (isNaN(num)) {
         return 'R$ 0,00';
     }
-    return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+
+const formatDecimal = (value: any) => {
+    const num = parseFloat(String(value).replace('.', '').replace(',', '.'));
+    if (isNaN(num)) {
+        return '0,00';
+    }
+    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
 const StatCard: React.FC<{ title: string; value: string | number; description: string }> = ({ title, value, description }) => (
@@ -217,9 +225,9 @@ const Planejamento: React.FC = () => {
             <h2 className="text-3xl font-bold text-white mb-6">Planejamento</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <StatCard title="Total de Contratações" value={formatNumber(stats.totalContratacoes)} description="Registros totais no sistema" />
+                <StatCard title="Total de Contratações" value={formatDecimal(stats.totalContratacoes)} description="Registros totais no sistema" />
                 <StatCard title="Custo Total" value={formatCurrency(stats.custoTotal)} description="Soma de todos os custos" />
-                <StatCard title="Total de Vagas" value={formatNumber(stats.totalVagas)} description="Soma de todas as vagas" />
+                <StatCard title="Total de Vagas" value={formatDecimal(stats.totalVagas)} description="Soma de todas as vagas" />
                 <StatCard title="Média de Custo por Vaga" value={formatCurrency(stats.mediaCustoPorVaga)} description="Média de custo por vaga" />
             </div>
 
