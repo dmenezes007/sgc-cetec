@@ -266,6 +266,10 @@ const Planejamento: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Custo por Unidade</h3>
                     <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={custoPorUnidade} style={{fontFamily: 'Open Sans, sans-serif'}} onClick={handleChartUnidadeClick}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
+                            <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                            <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
                             <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} barSize={40} />
                         </BarChart>
