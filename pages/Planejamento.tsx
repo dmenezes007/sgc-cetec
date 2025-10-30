@@ -265,25 +265,25 @@ const Planejamento: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Custo por Unidade</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={custoPorUnidade} style={{fontFamily: 'Open Sans, sans-serif'}} onClick={handleChartUnidadeClick} barSize={80} barCategoryGap={20}>
+                    <ResponsiveContainer width="100%" height={500}>
+                        <BarChart data={custoPorUnidade} style={{fontFamily: 'Open Sans, sans-serif'}} onClick={handleChartUnidadeClick} barSize={80} barCategoryGap={30}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
-                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} barSize={40} />
+                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} barSize={60} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Vagas por Unidade</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={vagasPorUnidade} style={{fontFamily: 'Open Sans, sans-serif'}} onClick={handleChartUnidadeClick} barSize={80} barCategoryGap={20}>
+                    <ResponsiveContainer width="100%" height={500}>
+                        <BarChart data={vagasPorUnidade} style={{fontFamily: 'Open Sans, sans-serif'}} onClick={handleChartUnidadeClick} barSize={80} barCategoryGap={30}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <Tooltip content={<CustomTooltip isCurrency={false} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
-                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} barSize={40} />
+                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} barSize={60} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
