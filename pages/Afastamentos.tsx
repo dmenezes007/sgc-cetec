@@ -213,7 +213,7 @@ const Afastamentos: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Afastamentos por Local</h3>
                     <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={afastamentosPorLocal} style={{fontFamily: 'Open Sans, sans-serif'}} onClick={handleChartClick} barSize={60} barCategoryGap={10}>
+                        <BarChart data={afastamentosPorLocal} style={{fontFamily: 'Open Sans, sans-serif'}} onClick={handleChartClick} barSize={80} barCategoryGap={20}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
