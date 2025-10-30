@@ -60,8 +60,12 @@ const customStyles = {
     }),
 };
 
-const formatNumber = (num: number) => {
-    return new Intl.NumberFormat('pt-BR').format(num);
+const formatDecimal = (value: any) => {
+    const num = parseFloat(String(value).replace(',', '.'));
+    if (isNaN(num)) {
+        return '0,00';
+    }
+    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
 const StatCard: React.FC<{ title: string; value: string | number; description: string }> = ({ title, value, description }) => (
@@ -171,8 +175,8 @@ const Afastamentos: React.FC = () => {
             <h2 className="text-3xl font-bold text-white mb-6">Afastamentos</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <StatCard title="Total de Afastamentos" value={formatNumber(stats.totalAfastamentos)} description="Registros totais no sistema" />
-                <StatCard title="Total de Locais" value={formatNumber(stats.totalLocais)} description="Número de locais únicos" />
+                <StatCard title="Total de Afastamentos" value={formatDecimal(stats.totalAfastamentos)} description="Registros totais no sistema" />
+                <StatCard title="Total de Locais" value={formatDecimal(stats.totalLocais)} description="Número de locais únicos" />
             </div>
 
             <div className="bg-slate-800 p-6 rounded-lg shadow-md mb-8">

@@ -62,7 +62,15 @@ const formatCurrency = (value: any) => {
     if (isNaN(num)) {
         return 'R$ 0,00';
     }
-    return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+
+const formatDecimal = (value: any) => {
+    const num = parseFloat(String(value).replace(',', '.'));
+    if (isNaN(num)) {
+        return '0,00';
+    }
+    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
 const parseDate = (dateString: string): Date | null => {

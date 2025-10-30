@@ -61,7 +61,15 @@ const formatCurrency = (value: any) => {
     if (isNaN(num)) {
         return 'R$ 0,00';
     }
-    return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+
+const formatDecimal = (value: any) => {
+    const num = parseFloat(String(value).replace(',', '.'));
+    if (isNaN(num)) {
+        return '0,00';
+    }
+    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
 const StatCard: React.FC<{ title: string; value: string | number; description: string }> = ({ title, value, description }) => (
@@ -109,6 +117,15 @@ const Capacitacoes: React.FC = () => {
 
     // Filtros
     const [filterLinha, setFilterLinha] = useState<string>('');
+    const [chartFilter, setChartFilter] = useState<string>('');
+
+    const handleChartClick = (data: any) => {
+        if (data && data.activePayload && data.activePayload.length > 0) {
+            const newFilter = data.activePayload[0].payload.name;
+            setChartFilter(prevFilter => (prevFilter === newFilter ? '' : newFilter));
+        }
+    };
+
 
     useEffect(() => {
         const fetchCapacitacoes = async () => {
@@ -134,9 +151,10 @@ const Capacitacoes: React.FC = () => {
     const filteredCapacitacoes = useMemo(() => {
         return capacitacoes.filter(c => {
             const linhaMatch = filterLinha ? c.linha_de_capacitacao === filterLinha : true;
-            return linhaMatch;
+            const chartMatch = chartFilter ? c.linha_de_capacitacao === chartFilter : true;
+            return linhaMatch && chartMatch;
         });
-    }, [capacitacoes, filterLinha]);
+    }, [capacitacoes, filterLinha, chartFilter]);
 
     const stats = useMemo(() => {
         const totalCapacitacoes = filteredCapacitacoes.length;
@@ -183,7 +201,7 @@ const Capacitacoes: React.FC = () => {
         <div style={{fontFamily: 'Open Sans, sans-serif'}}>
             <h2 className="text-3xl font-bold text-white mb-6">Capacitações</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <StatCard title="Total de Capacitações" value={formatNumber(stats.totalCapacitacoes)} description="Registros totais no sistema" />
                 <StatCard title="Valor Total Evento" value={formatCurrency(stats.valorTotalEvento)} description="Soma de todos os valores de evento" />
                 <StatCard title="Valor Total Diária" value={formatCurrency(stats.valorTotalDiaria)} description="Soma de todos os valores de diária" />
@@ -192,7 +210,7 @@ const Capacitacoes: React.FC = () => {
 
             <div className="bg-slate-800 p-6 rounded-lg shadow-md mb-8">
                 <h3 className="text-xl font-bold text-white mb-4">Filtros</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 gap-4">
                     <SearchableDropdown options={uniqueLinhas} value={filterLinha} onChange={setFilterLinha} placeholder="Filtrar por Linha de Capacitação..." label="Linha de Capacitação" />
                 </div>
             </div>
@@ -201,7 +219,7 @@ const Capacitacoes: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Valor por Linha de Capacitação</h3>
                     <ResponsiveContainer width="100%" height={500}>
-                        <BarChart data={valorPorLinha} layout="vertical" style={{fontFamily: 'Open Sans, sans-serif'}} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                        <BarChart data={valorPorLinha} layout="vertical" style={{fontFamily: 'Open Sans, sans-serif'}} margin={{ top: 20, right: 30, left: 20, bottom: 5 }} onClick={handleChartClick}>
                             <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
                             <XAxis type="number" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                             <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={300} />
@@ -213,10 +231,10 @@ const Capacitacoes: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Quantidade por Linha de Capacitação</h3>
                     <ResponsiveContainer width="100%" height={500}>
-                        <BarChart data={quantidadePorLinha} style={{fontFamily: 'Open Sans, sans-serif'}}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
-                            <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                            <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                        <BarChart data={quantidadePorLinha} layout="vertical" style={{fontFamily: 'Open Sans, sans-serif'}} margin={{ top: 20, right: 30, left: 20, bottom: 5 }} onClick={handleChartClick}>
+                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
+                            <XAxis type="number" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                            <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={300} />
                             <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155' }} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
                             <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} />
                         </BarChart>
