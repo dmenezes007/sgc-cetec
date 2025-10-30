@@ -387,3 +387,5 @@ const Planejamento: React.FC = () => {
 };
 
 export default Planejamento;
+
+export default Planejamento;
