@@ -250,7 +250,7 @@ const Afastamentos: React.FC = () => {
         style={{ width: "100%", height: "300px" }} 
     >
         <Geographies
-    /* Ajuste o caminho para incluir /docs/ */
+    {/* Ajuste o caminho para incluir /docs/ */}
     geography="/docs/world-110m.json" 
 >
     {({ geographies }) =>
@@ -274,8 +274,6 @@ const Afastamentos: React.FC = () => {
         ))}
     </ComposableMap>
 </div>
-                </div>
-            </div>
             </div>
         </div>
     );
