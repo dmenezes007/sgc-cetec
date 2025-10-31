@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Select, { SingleValue } from 'react-select';
-import * as XLSX from 'xlsx';
+import Papa from 'papaparse';
 import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps';
 
 interface Afastamento {
@@ -9,6 +9,8 @@ interface Afastamento {
     'Data Inicio': string;
     'Data Fim': string;
     Local: string;
+    Latitude: number;
+    Longitude: number;
 }
 
 // Tipos e Estilos para o novo seletor
@@ -139,13 +141,16 @@ const Afastamentos: React.FC = () => {
     useEffect(() => {
         const fetchAfastamentos = async () => {
             try {
-                const response = await fetch('/docs/afastamentos.xlsx');
-                const ab = await response.arrayBuffer();
-                const wb = XLSX.read(ab, { type: 'array', cellDates: true });
-                const wsname = wb.SheetNames[0];
-                const ws = wb.Sheets[wsname];
-                const data = XLSX.utils.sheet_to_json<Afastamento>(ws);
-                setAfastamentos(data);
+                const response = await fetch('/docs/afastamentos_com_coordenadas.csv');
+                const text = await response.text();
+                Papa.parse<Afastamento>(text, {
+                    header: true,
+                    delimiter: ';',
+                    dynamicTyping: true,
+                    complete: (result) => {
+                        setAfastamentos(result.data);
+                    }
+                });
             } catch (err: any) {
                 setError(err.message);
             } finally {
@@ -225,12 +230,18 @@ const Afastamentos: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Mapa de Afastamentos</h3>
                     <ResponsiveContainer width="100%" height={300}>
-                        <ComposableMap projection="geoMercator" projectionConfig={{ scale: 400, center: [-54, -15] }}>
-                            <Geographies geography="https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson">
+                        <ComposableMap projection="geoMercator" projectionConfig={{ scale: 100 }} style={{ width: "100%", height: "auto" }}>
+                            <Geographies geography="https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json">
                                 {({ geographies }) =>
                                     geographies.map(geo => <Geography key={geo.rsmKey} geography={geo} fill="#EAEAEC" stroke="#D6D6DA" />)
                                 }
                             </Geographies>
+                            {filteredAfastamentos.map((afastamento, i) => (
+                                afastamento.Latitude && afastamento.Longitude &&
+                                <Marker key={i} coordinates={[afastamento.Longitude, afastamento.Latitude]}>
+                                    <circle r={5} fill="#F00" stroke="#fff" strokeWidth={1} />
+                                </Marker>
+                            ))}
                         </ComposableMap>
                     </ResponsiveContainer>
                 </div>
