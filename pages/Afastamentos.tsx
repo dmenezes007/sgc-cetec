@@ -1,11 +1,14 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import 'leaflet/dist/leaflet.css'; // <--- ADICIONE ESTA LINHA
+import 'leaflet/dist/leaflet.css';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import React, { useMemo, useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Select, { SingleValue } from 'react-select';
 import Papa from 'papaparse';
-import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps';
 
 interface Afastamento {
     Servidor: string;
@@ -123,6 +126,15 @@ const SearchableDropdown: React.FC<{ options: string[]; value: string; onChange:
         </div>
     );
 };
+
+let DefaultIcon = L.icon({
+    iconUrl: icon,
+    shadowUrl: iconShadow,
+    iconSize: [25, 41], // O tamanho do ícone
+    iconAnchor: [12, 41] // O ponto do ícone que 'gruda' no mapa
+});
+
+L.Marker.prototype.options.icon = DefaultIcon;
 
 const Afastamentos: React.FC = () => {
     console.log("Afastamentos component rendering...");
@@ -250,8 +262,8 @@ const Afastamentos: React.FC = () => {
     <MapContainer 
         center={[20, 0]} // Centraliza o mapa [latitude, longitude]
         zoom={2} 
-        style={{ width: "100%", height: "300px" }}
-        scrollWheelZoom={false} // Desabilita zoom com scroll (opcional)
+        style={{ width: "100%", height: "300px", zIndex: 0 }} // Adicionado zIndex: 0
+        scrollWheelZoom={false} // Desabilita zoom com scroll
     >
         {/* Camada do mapa de fundo com tema escuro */}
         <TileLayer
@@ -262,21 +274,16 @@ const Afastamentos: React.FC = () => {
         {/* Mapeia seus marcadores */}
         {filteredAfastamentos.map((afastamento, i) => {
             
-            // Verifica se as coordenadas são válidas
             const latValida = isFinite(afastamento.Latitude);
             const longValida = isFinite(afastamento.Longitude);
             
             return (latValida && longValida) ? (
-                /* ATENÇÃO: Leaflet usa [Latitude, Longitude]
-                  react-simple-maps usava [Longitude, Latitude]
-                  Nós já fizemos a troca aqui!
-                */
+                /* ATENÇÃO: Leaflet usa [Latitude, Longitude] */
                 <Marker 
                     key={i} 
                     position={[afastamento.Latitude, afastamento.Longitude]}
                 >
                     <Popup>
-                        {/* Mostra o nome do local ao clicar */}
                         {afastamento.Local}
                     </Popup>
                 </Marker>
