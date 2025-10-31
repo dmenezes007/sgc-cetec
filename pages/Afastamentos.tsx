@@ -250,22 +250,21 @@ const Afastamentos: React.FC = () => {
         style={{ width: "100%", height: "300px" }} 
     >
         <Geographies
-            /* O caminho local agora está correto, pois você 
-               baixou o arquivo para /public */
-            geography="/world-110m.json" 
-        >
-            {({ geographies }) =>
-                geographies.map(geo => (
-                    <Geography
-                        key={geo.rsmKey}
-                        geography={geo}
-                        fill="#334155"   
-                        stroke="#475569" 
-                        strokeWidth={0.5}
-                    />
-                ))
-            }
-        </Geographies>
+    /* Ajuste o caminho para incluir /docs/ */
+    geography="/docs/world-110m.json" 
+>
+    {({ geographies }) =>
+        geographies.map(geo => (
+            <Geography
+                key={geo.rsmKey}
+                geography={geo}
+                fill="#334155"   
+                stroke="#475569" 
+                strokeWidth={0.5}
+            />
+        ))
+    }
+</Geographies>
         {filteredAfastamentos.map((afastamento, i) => (
             isFinite(afastamento.Latitude) && isFinite(afastamento.Longitude) ? (
                 <Marker key={i} coordinates={[afastamento.Longitude, afastamento.Latitude]}>
