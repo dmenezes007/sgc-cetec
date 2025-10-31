@@ -122,6 +122,7 @@ const SearchableDropdown: React.FC<{ options: string[]; value: string; onChange:
 };
 
 const Afastamentos: React.FC = () => {
+    console.log("Afastamentos component rendering...");
     const [afastamentos, setAfastamentos] = useState<Afastamento[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -144,24 +145,25 @@ const Afastamentos: React.FC = () => {
             try {
                 const response = await fetch('/docs/afastamentos_com_coordenadas.csv');
                 const text = await response.text();
-                Papa.parse<Afastamento>(text, {
-                    header: true,
-                    delimiter: ';',
-                    dynamicTyping: true,
-                    complete: (result) => {
-                        console.log("Parsed Data:", result.data);
-                        const dataWithNumbers = result.data.map(row => ({
-                            ...row,
-                            Latitude: parseFloat(String(row.Latitude).replace(',', '.')),
-                            Longitude: parseFloat(String(row.Longitude).replace(',', '.'))
-                        }));
-                        setAfastamentos(dataWithNumbers);
-                        console.log("Afastamentos state set:", dataWithNumbers);
-                        setIsLoading(false);
-                    }
+                const result = await new Promise<Papa.ParseResult<Afastamento>>((resolve) => {
+                    Papa.parse<Afastamento>(text, {
+                        header: true,
+                        delimiter: ';',
+                        dynamicTyping: true,
+                        complete: (results) => resolve(results),
+                    });
                 });
+                console.log("Parsed Data:", result.data);
+                const dataWithNumbers = result.data.map(row => ({
+                    ...row,
+                    Latitude: parseFloat(String(row.Latitude).replace(',', '.')),
+                    Longitude: parseFloat(String(row.Longitude).replace(',', '.'))
+                }));
+                setAfastamentos(dataWithNumbers);
+                console.log("Afastamentos state set:", dataWithNumbers);
             } catch (err: any) {
                 setError(err.message);
+            } finally {
                 setIsLoading(false);
             }
         };
