@@ -243,48 +243,40 @@ const Afastamentos: React.FC = () => {
                 </div>
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
     <h3 className="text-xl font-bold text-white mb-4">Mapa de Afastamentos</h3>
-    <ResponsiveContainer width="100%" height={300}>
-        {/* CORREÇÃO 1: 
-            'height' alterado de 'auto' para '100%' para preencher o ResponsiveContainer.
-        */}
-        <ComposableMap 
-            projection="geoMercator" 
-            projectionConfig={{ scale: 100, center: [0, 20] }} 
-            style={{ width: "100%", height: "100%" }}
+    
+    {/* TESTE: Removemos o ResponsiveContainer e definimos 
+      width="100%" e height="300px" diretamente no ComposableMap 
+    */}
+    <ComposableMap
+        projection="geoMercator"
+        projectionConfig={{ scale: 100, center: [0, 20] }}
+        style={{ width: "100%", height: "300px" }} // Altura fixa
+    >
+        <Geographies
+            geography="https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json"
         >
-            <Geographies 
-                geography="https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json"
-            >
-                {({ geographies }) =>
-                    geographies.map(geo => (
-                        <Geography 
-                            key={geo.rsmKey} 
-                            geography={geo} 
-                            /* SUGESTÃO 3: 
-                                Cores ajustadas para o tema escuro (slate-700 e slate-600).
-                            */
-                            fill="#334155"       // Cor de preenchimento (ex: slate-700)
-                            stroke="#475569"     // Cor da borda (ex: slate-600)
-                            strokeWidth={0.5}
-                        />
-                    ))
-                }
-            </Geographies>
-            {filteredAfastamentos.map((afastamento, i) => {
-                console.log(`Rendering marker for ${afastamento.Local}: Long=${afastamento.Longitude}, Lat=${afastamento.Latitude}`);
-                
-                /* CORREÇÃO 2: 
-                    Verificação alterada para 'isFinite' para lidar corretamente com coordenadas 0
-                    e valores NaN.
-                */
-                return isFinite(afastamento.Latitude) && isFinite(afastamento.Longitude) ? (
-                    <Marker key={i} coordinates={[afastamento.Longitude, afastamento.Latitude]}>
-                        <circle r={5} fill="#F00" stroke="#fff" strokeWidth={1} />
-                    </Marker>
-                ) : null; // Retorna null se as coordenadas não forem válidas
-            })}
-        </ComposableMap>
-    </ResponsiveContainer>
+            {({ geographies }) =>
+                geographies.map(geo => (
+                    <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        fill="#334155"   // Cor slate-700
+                        stroke="#475569" // Cor slate-600
+                        strokeWidth={0.5}
+                    />
+                ))
+            }
+        </Geographies>
+        {filteredAfastamentos.map((afastamento, i) => {
+            console.log(`Rendering marker for ${afastamento.Local}: Long=${afastamento.Longitude}, Lat=${afastamento.Latitude}`);
+            
+            return isFinite(afastamento.Latitude) && isFinite(afastamento.Longitude) ? (
+                <Marker key={i} coordinates={[afastamento.Longitude, afastamento.Latitude]}>
+                    <circle r={5} fill="#F00" stroke="#fff" strokeWidth={1} />
+                </Marker>
+            ) : null;
+        })}
+    </ComposableMap>
 </div>
             </div>
         </div>
