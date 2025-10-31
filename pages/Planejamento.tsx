@@ -338,7 +338,7 @@ const Planejamento: React.FC = () => {
                                                     <div><strong>Autoriza PR:</strong> {contratacao.Autoriza_PR}</div>
                                                     <div><strong>Diárias:</strong> {formatCurrency(contratacao.Diarias)}</div>
                                                     <div><strong>Passagens:</strong> {formatCurrency(contratacao.Passagens)}</div>
-                                                    <div><strong>Inscrições:</strong> {contratacao.Inscricoes}</div>
+                                                    <div><strong>Inscrições:</strong> {formatCurrency(contratacao.Inscricoes)}</div>
                                                     <div><strong>DFD:</strong> {contratacao.DFD}</div>
                                                     <div><strong>Envio DIRAD:</strong> {contratacao.Envio_DIRAD}</div>
                                                     <div><strong>Detalhamento DIORC:</strong> {contratacao.Detalhamento_DIORC}</div>
@@ -386,3 +386,5 @@ const Planejamento: React.FC = () => {
         </div>
     );
 };
+
+export default Planejamento;
