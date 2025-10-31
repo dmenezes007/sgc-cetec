@@ -244,40 +244,39 @@ const Afastamentos: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
     <h3 className="text-xl font-bold text-white mb-4">Mapa de Afastamentos</h3>
     
-    {/* TESTE: Removemos o ResponsiveContainer e definimos 
-      width="100%" e height="300px" diretamente no ComposableMap 
-    */}
     <ComposableMap
         projection="geoMercator"
         projectionConfig={{ scale: 100, center: [0, 20] }}
-        style={{ width: "100%", height: "300px" }} // Altura fixa
+        style={{ width: "100%", height: "300px" }} 
     >
         <Geographies
-            geography="https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json"
+            /* O caminho local agora está correto, pois você 
+               baixou o arquivo para /public */
+            geography="/world-110m.json" 
         >
             {({ geographies }) =>
                 geographies.map(geo => (
                     <Geography
                         key={geo.rsmKey}
                         geography={geo}
-                        fill="#334155"   // Cor slate-700
-                        stroke="#475569" // Cor slate-600
+                        fill="#334155"   
+                        stroke="#475569" 
                         strokeWidth={0.5}
                     />
                 ))
             }
         </Geographies>
-        {filteredAfastamentos.map((afastamento, i) => {
-            console.log(`Rendering marker for ${afastamento.Local}: Long=${afastamento.Longitude}, Lat=${afastamento.Latitude}`);
-            
-            return isFinite(afastamento.Latitude) && isFinite(afastamento.Longitude) ? (
+        {filteredAfastamentos.map((afastamento, i) => (
+            isFinite(afastamento.Latitude) && isFinite(afastamento.Longitude) ? (
                 <Marker key={i} coordinates={[afastamento.Longitude, afastamento.Latitude]}>
                     <circle r={5} fill="#F00" stroke="#fff" strokeWidth={1} />
                 </Marker>
-            ) : null;
-        })}
+            ) : null
+        ))}
     </ComposableMap>
 </div>
+                </div>
+            </div>
             </div>
         </div>
     );
