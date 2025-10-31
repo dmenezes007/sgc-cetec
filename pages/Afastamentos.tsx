@@ -122,7 +122,6 @@ const SearchableDropdown: React.FC<{ options: string[]; value: string; onChange:
 };
 
 const Afastamentos: React.FC = () => {
-    console.log("Afastamentos component rendering...");
     const [afastamentos, setAfastamentos] = useState<Afastamento[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -150,17 +149,16 @@ const Afastamentos: React.FC = () => {
                         header: true,
                         delimiter: ';',
                         dynamicTyping: true,
+                        skipEmptyLines: true,
                         complete: (results) => resolve(results),
                     });
                 });
-                console.log("Parsed Data:", result.data);
                 const dataWithNumbers = result.data.map(row => ({
                     ...row,
                     Latitude: parseFloat(String(row.Latitude).replace(',', '.')),
                     Longitude: parseFloat(String(row.Longitude).replace(',', '.'))
                 }));
                 setAfastamentos(dataWithNumbers);
-                console.log("Afastamentos state set:", dataWithNumbers);
             } catch (err: any) {
                 setError(err.message);
             } finally {
@@ -174,13 +172,11 @@ const Afastamentos: React.FC = () => {
     const uniqueLocais = useMemo(() => ['', ...Array.from(new Set(afastamentos.map(a => a.Local))).sort()], [afastamentos]);
 
     const filteredAfastamentos = useMemo(() => {
-        const filtered = afastamentos.filter(a => {
+        return afastamentos.filter(a => {
             const localMatch = filterLocal ? a.Local === filterLocal : true;
             const chartMatch = chartFilter ? a.Local === chartFilter : true;
             return localMatch && chartMatch;
         });
-        console.log("Filtered Afastamentos:", filtered);
-        return filtered;
     }, [afastamentos, filterLocal, chartFilter]);
 
     const stats = useMemo(() => {
@@ -242,19 +238,18 @@ const Afastamentos: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Mapa de Afastamentos</h3>
                     <ResponsiveContainer width="100%" height={300}>
-                        <ComposableMap projection="geoMercator" projectionConfig={{ scale: 100 }} style={{ width: "100%", height: "auto" }}>
+                        <ComposableMap projection="geoMercator" projectionConfig={{ scale: 100, center: [0, 20] }} style={{ width: "100%", height: "auto" }}>
                             <Geographies geography="https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json">
                                 {({ geographies }) =>
                                     geographies.map(geo => <Geography key={geo.rsmKey} geography={geo} fill="#EAEAEC" stroke="#D6D6DA" />)
                                 }
                             </Geographies>
-                            {filteredAfastamentos.map((afastamento, i) => {
-                                console.log(`Rendering marker for ${afastamento.Local}: Long=${afastamento.Longitude}, Lat=${afastamento.Latitude}`);
-                                return afastamento.Latitude && afastamento.Longitude &&
+                            {filteredAfastamentos.map((afastamento, i) => (
+                                afastamento.Latitude && afastamento.Longitude &&
                                 <Marker key={i} coordinates={[afastamento.Longitude, afastamento.Latitude]}>
                                     <circle r={5} fill="#F00" stroke="#fff" strokeWidth={1} />
                                 </Marker>
-                            })}
+                            ))}
                         </ComposableMap>
                     </ResponsiveContainer>
                 </div>
