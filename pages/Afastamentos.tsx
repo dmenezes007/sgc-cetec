@@ -140,6 +140,7 @@ const Afastamentos: React.FC = () => {
 
     useEffect(() => {
         const fetchAfastamentos = async () => {
+            setIsLoading(true);
             try {
                 const response = await fetch('/docs/afastamentos_com_coordenadas.csv');
                 const text = await response.text();
@@ -148,12 +149,17 @@ const Afastamentos: React.FC = () => {
                     delimiter: ';',
                     dynamicTyping: true,
                     complete: (result) => {
-                        setAfastamentos(result.data);
+                        const dataWithNumbers = result.data.map(row => ({
+                            ...row,
+                            Latitude: parseFloat(String(row.Latitude).replace(',', '.')),
+                            Longitude: parseFloat(String(row.Longitude).replace(',', '.'))
+                        }));
+                        setAfastamentos(dataWithNumbers);
+                        setIsLoading(false);
                     }
                 });
             } catch (err: any) {
                 setError(err.message);
-            } finally {
                 setIsLoading(false);
             }
         };
