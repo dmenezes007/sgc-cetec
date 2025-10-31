@@ -1,4 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import 'leaflet/dist/leaflet.css'; // <--- ADICIONE ESTA LINHA
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import React, { useMemo, useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Select, { SingleValue } from 'react-select';
 import Papa from 'papaparse';
@@ -244,34 +247,42 @@ const Afastamentos: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
     <h3 className="text-xl font-bold text-white mb-4">Mapa de Afastamentos</h3>
     
-    <ComposableMap
-        projection="geoMercator"
-        projectionConfig={{ scale: 100, center: [0, 20] }}
-        style={{ width: "100%", height: "300px" }} 
+    <MapContainer 
+        center={[20, 0]} // Centraliza o mapa [latitude, longitude]
+        zoom={2} 
+        style={{ width: "100%", height: "300px" }}
+        scrollWheelZoom={false} // Desabilita zoom com scroll (opcional)
     >
-        <Geographies
-    geography="/docs/world-110m.json" 
->
-    {({ geographies }) =>
-        geographies.map(geo => (
-            <Geography
-                key={geo.rsmKey}
-                geography={geo}
-                fill="#334155"   
-                stroke="#475569" 
-                strokeWidth={0.5}
-            />
-        ))
-    }
-</Geographies>
-        {filteredAfastamentos.map((afastamento, i) => (
-            isFinite(afastamento.Latitude) && isFinite(afastamento.Longitude) ? (
-                <Marker key={i} coordinates={[afastamento.Longitude, afastamento.Latitude]}>
-                    <circle r={5} fill="#F00" stroke="#fff" strokeWidth={1} />
+        {/* Camada do mapa de fundo com tema escuro */}
+        <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        />
+
+        {/* Mapeia seus marcadores */}
+        {filteredAfastamentos.map((afastamento, i) => {
+            
+            // Verifica se as coordenadas são válidas
+            const latValida = isFinite(afastamento.Latitude);
+            const longValida = isFinite(afastamento.Longitude);
+            
+            return (latValida && longValida) ? (
+                /* ATENÇÃO: Leaflet usa [Latitude, Longitude]
+                  react-simple-maps usava [Longitude, Latitude]
+                  Nós já fizemos a troca aqui!
+                */
+                <Marker 
+                    key={i} 
+                    position={[afastamento.Latitude, afastamento.Longitude]}
+                >
+                    <Popup>
+                        {/* Mostra o nome do local ao clicar */}
+                        {afastamento.Local}
+                    </Popup>
                 </Marker>
-            ) : null
-        ))}
-    </ComposableMap>
+            ) : null;
+        })}
+    </MapContainer>
 </div>
             </div>
         </div>
