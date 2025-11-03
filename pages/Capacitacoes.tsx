@@ -73,7 +73,8 @@ const formatDecimal = (value: any) => {
 };
 
 const renderCustomizedLabel = (props: any) => {
-    const { x, y, width, value, name, formatter } = props;
+    const { x, y, width, value, formatter } = props;
+    const { name } = props.payload;
     return (
         <g>
             <text x={x + 10} y={y + 14} fill="#fff" textAnchor="start">{name}</text>
@@ -254,7 +255,7 @@ const Capacitacoes: React.FC = () => {
                             <YAxis type="category" dataKey="name" tick={{ display: 'none' }} axisLine={false} tickLine={false} width={0} />
                             <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
                             <Bar dataKey="total" fill="url(#colorUv)" radius={[0, 10, 10, 0]}>
-                                <LabelList dataKey="name" content={(props) => {
+                                <LabelList dataKey="total" content={(props) => {
                                     if (props.payload === undefined) return null;
                                     return renderCustomizedLabel({...props, value: props.payload.total, formatter: formatCurrency});
                                 }} />
@@ -276,7 +277,7 @@ const Capacitacoes: React.FC = () => {
                             <YAxis type="category" dataKey="name" tick={{ display: 'none' }} axisLine={false} tickLine={false} width={0} />
                             <Tooltip content={<CustomTooltip isCurrency={false} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
                             <Bar dataKey="total" fill="url(#colorUv2)" radius={[0, 10, 10, 0]}>
-                                <LabelList dataKey="name" content={(props) => {
+                                <LabelList dataKey="total" content={(props) => {
                                     if (props.payload === undefined) return null;
                                     return renderCustomizedLabel({...props, value: props.payload.total, formatter: (value) => value});
                                 }} />
