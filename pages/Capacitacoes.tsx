@@ -73,14 +73,15 @@ const formatDecimal = (value: any) => {
 };
 
 const renderCustomizedLabel = (props: any) => {
-    const { x, y, width, value, formatter } = props;
-    const { name } = props.payload;
-    return (
-        <g>
-            <text x={x + 10} y={y + 14} fill="#fff" textAnchor="start">{name}</text>
-            <text x={x + width - 10} y={y + 14} fill="#fff" textAnchor="end">{formatter(value)}</text>
-        </g>
-    );
+    const { x, y, width, value, formatter } = props;
+    // const { name } = props.payload; // Esta linha não é mais necessária
+
+    return (
+        <g>
+            {/* Esta linha foi removida: <text x={x + 10} y={y + 14} fill="#fff" textAnchor="start">{name}</text> */}
+            <text x={x + width - 10} y={y + 14} fill="#fff" textAnchor="end">{formatter(value)}</text>
+        </g>
+    );
 };
 
 const CustomTooltip = ({ active, payload, label, isCurrency }: any) => {
@@ -251,8 +252,14 @@ const Capacitacoes: React.FC = () => {
                                 </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
-                            <XAxis type="number" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} tickFormatter={formatCurrency} />
-                            <YAxis type="category" dataKey="name" tick={{ display: 'none' }} axisLine={false} tickLine={false} width={0} />
+                            <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
+                            <YAxis 
+  type="category" 
+  dataKey="name" 
+  tick={{ fill: '#e2e8f0' }} /* Cor do texto (slate-200) */
+  axisLine={false} 
+  tickLine={false} 
+/>
                             <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
                             <Bar dataKey="total" fill="url(#colorUv)" radius={[0, 10, 10, 0]}>
                                 <LabelList dataKey="total" content={(props) => {
