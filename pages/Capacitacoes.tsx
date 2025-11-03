@@ -73,11 +73,27 @@ const formatDecimal = (value: any) => {
 };
 
 const renderCustomizedLabel = (props: any) => {
-    const { x, y, width, value, formatter } = props;
-    const { name } = props.payload;
+    const { x, y, width, value, formatter, payload } = props;
     
-    // Garante que a largura não seja negativa
+    // --- Verificações de Segurança ---
+    // 1. Verifica se os dados essenciais existem
+    if (!payload || !formatter || value === undefined) {
+        return null;
+    }
+    
+    const { name } = payload;
+    if (name === undefined) {
+        return null;
+    }
+
+    // 2. Verifica se as coordenadas são números válidos
+    if (typeof x !== 'number' || typeof y !== 'number' || typeof width !== 'number' || isNaN(x) || isNaN(y) || isNaN(width)) {
+        return null;
+    }
+    // --- Fim das Verificações ---
+
     const barWidth = Math.max(width, 0);
+    const formattedValue = formatter(value);
 
     return (
         <g>
@@ -88,7 +104,7 @@ const renderCustomizedLabel = (props: any) => {
             
             {/* 2. Valor FORA da barra (à direita) */}
             <text x={x + barWidth + 10} y={y + 14} fill="#94a3b8" textAnchor="start" fontSize={14}>
-                {formatter(value)}
+                {formattedValue}
             </text>
         </g>
     );
@@ -276,11 +292,9 @@ const Capacitacoes: React.FC = () => {
             <Bar dataKey="total" fill="#4f46e5" radius={10}>
                 
                 {/* MUDANÇA: LabelList usa 'content' para chamar a função customizada */}
-                <LabelList dataKey="total" content={(props) => {
-    if (props.payload === undefined) return null;
-    // CORREÇÃO: Usando formatNumber para números simples
-    return renderCustomizedLabel({...props, value: props.payload.total, formatter: formatNumber}); 
-}} />
+                <LabelList dataKey="total" content={(props) => 
+    renderCustomizedLabel({...props, formatter: formatCurrency})
+} />
             </Bar>
         </BarChart>
     </ResponsiveContainer>
@@ -310,11 +324,9 @@ const Capacitacoes: React.FC = () => {
             <Bar dataKey="total" fill="#4f46e5" radius={10}>
                 
                 {/* LabelList chama a função customizada */}
-                <LabelList dataKey="total" content={(props) => {
-                    if (props.payload === undefined) return null;
-                    {/* CORREÇÃO: Usando formatNumber para números simples */}
-                    return renderCustomizedLabel({...props, value: props.payload.total, formatter: formatNumber}); 
-                }} />
+                <LabelList dataKey="total" content={(props) => 
+    renderCustomizedLabel({...props, formatter: formatNumber})
+} />
             </Bar>
         </BarChart>
     </ResponsiveContainer>
