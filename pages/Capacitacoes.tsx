@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, Fragment } from 'react';
 import { Capacitacao } from '../types';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
 import Select, { SingleValue } from 'react-select';
 
 // Tipos e Estilos para o novo seletor
@@ -232,24 +232,63 @@ const Capacitacoes: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Valor por Linha de Capacitação</h3>
                     <ResponsiveContainer width="100%" height={1000}>
-                        <BarChart data={valorPorLinha} layout="vertical" style={{fontFamily: 'Open Sans, sans-serif'}} margin={{ top: 20, right: 30, left: 20, bottom: 5 }} onClick={handleChartClick} barSize={100} barCategoryGap={30}>
+                        <BarChart data={valorPorLinha} layout="vertical" style={{fontFamily: 'Open Sans, sans-serif'}} margin={{ top: 20, right: 50, left: 20, bottom: 5 }} onClick={handleChartClick} barCategoryGap={10}>
+                            <defs>
+                                <linearGradient id="colorUv" x1="0" y1="0" x2="1" y2="0">
+                                    <stop offset="5%" stopColor="#2563EB" stopOpacity={0.8}/>
+                                    <stop offset="95%" stopColor="#2563EB" stopOpacity={0.2}/>
+                                </linearGradient>
+                            </defs>
                             <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
-                            <XAxis type="number" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                            <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={300} />
+                            <XAxis type="number" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} tickFormatter={formatCurrency} />
+                            <YAxis type="category" dataKey="name" tick={{ display: 'none' }} axisLine={false} tickLine={false} width={0} />
                             <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
-                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} barSize={80} />
+                            <Bar dataKey="total" fill="url(#colorUv)" radius={[0, 10, 10, 0]}>
+                                <LabelList 
+                                    dataKey="name" 
+                                    position="insideLeft" 
+                                    offset={10}
+                                    style={{ fill: 'white', fontWeight: 'bold' }} 
+                                />
+                                <LabelList 
+                                    dataKey="total" 
+                                    position="right" 
+                                    offset={10}
+                                    style={{ fill: 'white' }}
+                                    formatter={(value: number) => formatCurrency(value)}
+                                />
+                            </Bar>
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Quantidade por Linha de Capacitação</h3>
                     <ResponsiveContainer width="100%" height={1000}>
-                        <BarChart data={quantidadePorLinha} layout="vertical" style={{fontFamily: 'Open Sans, sans-serif'}} margin={{ top: 20, right: 30, left: 20, bottom: 5 }} onClick={handleChartClick} barSize={100} barCategoryGap={30}>
+                        <BarChart data={quantidadePorLinha} layout="vertical" style={{fontFamily: 'Open Sans, sans-serif'}} margin={{ top: 20, right: 50, left: 20, bottom: 5 }} onClick={handleChartClick} barCategoryGap={10}>
+                            <defs>
+                                <linearGradient id="colorUv2" x1="0" y1="0" x2="1" y2="0">
+                                    <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
+                                    <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.2}/>
+                                </linearGradient>
+                            </defs>
                             <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
                             <XAxis type="number" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                            <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={300} />
+                            <YAxis type="category" dataKey="name" tick={{ display: 'none' }} axisLine={false} tickLine={false} width={0} />
                             <Tooltip content={<CustomTooltip isCurrency={false} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
-                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} barSize={80} />
+                            <Bar dataKey="total" fill="url(#colorUv2)" radius={[0, 10, 10, 0]}>
+                                <LabelList 
+                                    dataKey="name" 
+                                    position="insideLeft" 
+                                    offset={10}
+                                    style={{ fill: 'white', fontWeight: 'bold' }} 
+                                />
+                                <LabelList 
+                                    dataKey="total" 
+                                    position="right" 
+                                    offset={10}
+                                    style={{ fill: 'white' }}
+                                />
+                            </Bar>
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
