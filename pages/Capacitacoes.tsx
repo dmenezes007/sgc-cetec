@@ -74,12 +74,22 @@ const formatDecimal = (value: any) => {
 
 const renderCustomizedLabel = (props: any) => {
     const { x, y, width, value, formatter } = props;
-    // const { name } = props.payload; // Esta linha não é mais necessária
+    const { name } = props.payload;
+    
+    // Define uma largura mínima para a barra, para o nome não vazar
+    const barWidth = Math.max(width, 0);
 
     return (
         <g>
-            {/* Esta linha foi removida: <text x={x + 10} y={y + 14} fill="#fff" textAnchor="start">{name}</text> */}
-            <text x={x + width - 10} y={y + 14} fill="#fff" textAnchor="end">{formatter(value)}</text>
+            {/* 1. Nome DENTRO da barra (alinhado à esquerda) */}
+            <text x={x + 10} y={y + 14} fill="#fff" textAnchor="start" fontSize={14}>
+                {name}
+            </text>
+            
+            {/* 2. Valor FORA da barra (alinhado à esquerda, após a barra) */}
+            <text x={x + barWidth + 10} y={y + 14} fill="#94a3b8" textAnchor="start" fontSize={14}>
+                {formatter(value)}
+            </text>
         </g>
     );
 };
@@ -242,56 +252,79 @@ const Capacitacoes: React.FC = () => {
 
             <div className="grid grid-cols-1 gap-8 mb-8">
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
-                    <h3 className="text-xl font-bold text-white mb-4">Valor por Linha de Capacitação</h3>
-                    <ResponsiveContainer width="100%" height={1000}>
-                        <BarChart data={valorPorLinha} layout="vertical" style={{fontFamily: 'Open Sans, sans-serif'}} margin={{ top: 20, right: 50, left: 20, bottom: 5 }} onClick={handleChartClick} barCategoryGap={10}>
-                            <defs>
-                                <linearGradient id="colorUv" x1="0" y1="0" x2="1" y2="0">
-                                    <stop offset="5%" stopColor="#2563EB" stopOpacity={0.8}/>
-                                    <stop offset="95%" stopColor="#2563EB" stopOpacity={0.2}/>
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
-                            <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
-                            <YAxis 
-  type="category" 
-  dataKey="name" 
-  tick={{ fill: '#e2e8f0' }} /* Cor do texto (slate-200) */
-  axisLine={false} 
-  tickLine={false} 
-/>
-                            <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
-                            <Bar dataKey="total" fill="url(#colorUv)" radius={[0, 10, 10, 0]}>
-                                <LabelList dataKey="total" content={(props) => {
-                                    if (props.payload === undefined) return null;
-                                    return renderCustomizedLabel({...props, value: props.payload.total, formatter: formatCurrency});
-                                }} />
-                            </Bar>                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
+    <h3 className="text-xl font-bold text-white mb-4">Valor por Linha de Capacitação</h3>
+    <ResponsiveContainer width="100%" height={1000}>
+        {/* MUDANÇA 4: Margem direita aumentada para acomodar o valor externo */}
+        <BarChart 
+            data={valorPorLinha} 
+            layout="vertical" 
+            style={{fontFamily: 'Open Sans, sans-serif'}} 
+            margin={{ top: 20, right: 80, left: 20, bottom: 5 }} 
+            onClick={handleChartClick} 
+            barCategoryGap={10}
+        >
+            {/* MUDANÇA 2: Bloco <defs> (gradiente) foi REMOVIDO */}
+            
+            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
+            
+            {/* MUDANÇA 3: Eixo X (XAxis) oculto com tick={false} */}
+            <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
+            
+            {/* O YAxis permanece oculto, como no seu código original */}
+            <YAxis type="category" dataKey="name" tick={{ display: 'none' }} axisLine={false} tickLine={false} width={0} />
+            
+            <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
+            
+            {/* MUDANÇA 2: 'fill' usa cor sólida */}
+            {/* MUDANÇA 5: 'radius={10}' arredonda todos os cantos, como na imagem */}
+            <Bar dataKey="total" fill="#4f46e5" radius={10}>
+                
+                {/* MUDANÇA 1: O LabelList chama sua nova função renderCustomizedLabel */}
+                <LabelList dataKey="total" content={(props) => {
+                    if (props.payload === undefined) return null;
+                    return renderCustomizedLabel({...props, value: props.payload.total, formatter: formatCurrency});
+                }} />
+            </Bar>
+        </BarChart>
+    </ResponsiveContainer>
+</div>
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Quantidade por Linha de Capacitação</h3>
                     <ResponsiveContainer width="100%" height={1000}>
-                        <BarChart data={quantidadePorLinha} layout="vertical" style={{fontFamily: 'Open Sans, sans-serif'}} margin={{ top: 20, right: 50, left: 20, bottom: 5 }} onClick={handleChartClick} barCategoryGap={10}>
-                            <defs>
-                                <linearGradient id="colorUv2" x1="0" y1="0" x2="1" y2="0">
-                                    <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
-                                    <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.2}/>
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
-                            <XAxis type="number" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                            <YAxis type="category" dataKey="name" tick={{ display: 'none' }} axisLine={false} tickLine={false} width={0} />
-                            <Tooltip content={<CustomTooltip isCurrency={false} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
-                            <Bar dataKey="total" fill="url(#colorUv2)" radius={[0, 10, 10, 0]}>
-                                <LabelList dataKey="total" content={(props) => {
-                                    if (props.payload === undefined) return null;
-                                    return renderCustomizedLabel({...props, value: props.payload.total, formatter: (value) => value});
-                                }} />
-                            </Bar>
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
+        {/* MUDANÇA 4: Margem direita aumentada para acomodar o valor externo */}
+        <BarChart 
+            data={valorPorLinha} 
+            layout="vertical" 
+            style={{fontFamily: 'Open Sans, sans-serif'}} 
+            margin={{ top: 20, right: 80, left: 20, bottom: 5 }} 
+            onClick={handleChartClick} 
+            barCategoryGap={10}
+        >
+            {/* MUDANÇA 2: Bloco <defs> (gradiente) foi REMOVIDO */}
+            
+            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
+            
+            {/* MUDANÇA 3: Eixo X (XAxis) oculto com tick={false} */}
+            <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
+            
+            {/* O YAxis permanece oculto, como no seu código original */}
+            <YAxis type="category" dataKey="name" tick={{ display: 'none' }} axisLine={false} tickLine={false} width={0} />
+            
+            <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
+            
+            {/* MUDANÇA 2: 'fill' usa cor sólida */}
+            {/* MUDANÇA 5: 'radius={10}' arredonda todos os cantos, como na imagem */}
+            <Bar dataKey="total" fill="#4f46e5" radius={10}>
+                
+                {/* MUDANÇA 1: O LabelList chama sua nova função renderCustomizedLabel */}
+                <LabelList dataKey="total" content={(props) => {
+                    if (props.payload === undefined) return null;
+                    return renderCustomizedLabel({...props, value: props.payload.total, formatter: formatCurrency});
+                }} />
+            </Bar>
+        </BarChart>
+    </ResponsiveContainer>
+</div>
             </div>
         </div>
     );
