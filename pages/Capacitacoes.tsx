@@ -72,6 +72,33 @@ const formatDecimal = (value: any) => {
     return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
+const renderCustomizedLabel = (props: any) => {
+    const { x, y, width, height, value, formatter, payload, viewBox } = props;
+
+    // Basic validation
+    if (!payload || value === undefined || !viewBox) {
+        return null;
+    }
+    
+    const { name } = payload;
+    const formattedValue = formatter(value);
+    const barCenterY = y + height / 2;
+
+    return (
+        <g>
+            {/* Nome DENTRO da barra */}
+            <text x={x + 10} y={barCenterY} fill="#fff" textAnchor="start" dominantBaseline="middle" fontSize={14} fontWeight="bold">
+                {name}
+            </text>
+            
+            {/* Valor FORA da barra, alinhado à direita do GRÁFICO */}
+            <text x={viewBox.width + viewBox.x} y={barCenterY} fill="#94a3b8" textAnchor="end" dominantBaseline="middle" fontSize={14}>
+                {formattedValue}
+            </text>
+        </g>
+    );
+};
+
 const CustomTooltip = ({ active, payload, label, isCurrency }: any) => {
     if (active && payload && payload.length) {
         return (
@@ -237,7 +264,7 @@ const Capacitacoes: React.FC = () => {
                             data={valorPorLinha}
                             layout="vertical"
                             style={{ fontFamily: 'Open Sans, sans-serif' }}
-                            margin={{ top: 20, right: 20, left: 20, bottom: 5 }}
+                            margin={{ top: 20, right: 120, left: 20, bottom: 5 }}
                             barSize={40}
                         >
                             <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
@@ -245,8 +272,10 @@ const Capacitacoes: React.FC = () => {
                             <YAxis type="category" dataKey="name" hide />
                             <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(71, 85, 105, 0.5)' }} />
                             <Bar dataKey="total" fill="#4f46e5" radius={[0, 10, 10, 0]}>
-                                <LabelList dataKey="name" position="insideLeft" offset={10} style={{ fill: 'white', fontWeight: 'bold' }} />
-                                <LabelList dataKey="total" position="insideRight" offset={-10} style={{ fill: 'white' }} formatter={formatCurrency} />
+                                <LabelList 
+                                    dataKey="total" 
+                                    content={(props) => renderCustomizedLabel({ ...props, formatter: formatCurrency })} 
+                                />
                             </Bar>
                         </BarChart>
                     </ResponsiveContainer>
@@ -260,7 +289,7 @@ const Capacitacoes: React.FC = () => {
                             data={quantidadePorLinha}
                             layout="vertical"
                             style={{ fontFamily: 'Open Sans, sans-serif' }}
-                            margin={{ top: 20, right: 20, left: 20, bottom: 5 }}
+                            margin={{ top: 20, right: 120, left: 20, bottom: 5 }}
                             barSize={40}
                         >
                             <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
@@ -268,8 +297,10 @@ const Capacitacoes: React.FC = () => {
                             <YAxis type="category" dataKey="name" hide />
                             <Tooltip content={<CustomTooltip isCurrency={false} />} cursor={{ fill: 'rgba(71, 85, 105, 0.5)' }} />
                             <Bar dataKey="total" fill="#4f46e5" radius={[0, 10, 10, 0]}>
-                                <LabelList dataKey="name" position="insideLeft" offset={10} style={{ fill: 'white', fontWeight: 'bold' }} />
-                                <LabelList dataKey="total" position="insideRight" offset={-10} style={{ fill: 'white' }} formatter={formatNumber} />
+                                <LabelList 
+                                    dataKey="total" 
+                                    content={(props) => renderCustomizedLabel({ ...props, formatter: formatNumber })}
+                                />
                             </Bar>
                         </BarChart>
                     </ResponsiveContainer>
