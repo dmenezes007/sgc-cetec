@@ -72,6 +72,16 @@ const formatDecimal = (value: any) => {
     return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
+const renderCustomizedLabel = (props: any) => {
+    const { x, y, width, value, name, formatter } = props;
+    return (
+        <g>
+            <text x={x + 10} y={y + 14} fill="#fff" textAnchor="start">{name}</text>
+            <text x={x + width - 10} y={y + 14} fill="#fff" textAnchor="end">{formatter(value)}</text>
+        </g>
+    );
+};
+
 const CustomTooltip = ({ active, payload, label, isCurrency }: any) => {
     if (active && payload && payload.length) {
         return (
@@ -243,22 +253,9 @@ const Capacitacoes: React.FC = () => {
                             <XAxis type="number" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} tickFormatter={formatCurrency} />
                             <YAxis type="category" dataKey="name" tick={{ display: 'none' }} axisLine={false} tickLine={false} width={0} />
                             <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
-                            <Bar dataKey="total" fill="url(#colorUv)" radius={[0, 10, 10, 0]}>
-                                <LabelList 
-                                    dataKey="name" 
-                                    position="insideLeft" 
-                                    offset={10}
-                                    style={{ fill: 'white', fontWeight: 'bold' }} 
-                                />
-                                <LabelList 
-                                    dataKey="total" 
-                                    position="right" 
-                                    offset={10}
-                                    style={{ fill: 'white' }}
-                                    formatter={(value: number) => formatCurrency(value)}
-                                />
-                            </Bar>
-                        </BarChart>
+                                                                                                                <Bar dataKey="total" fill="url(#colorUv)" radius={[0, 10, 10, 0]}>
+                                <LabelList dataKey="name" content={(props) => renderCustomizedLabel({...props, value: props.payload.total, formatter: formatCurrency})} />
+                            </Bar>                        </BarChart>
                     </ResponsiveContainer>
                 </div>
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
@@ -276,18 +273,8 @@ const Capacitacoes: React.FC = () => {
                             <YAxis type="category" dataKey="name" tick={{ display: 'none' }} axisLine={false} tickLine={false} width={0} />
                             <Tooltip content={<CustomTooltip isCurrency={false} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
                             <Bar dataKey="total" fill="url(#colorUv2)" radius={[0, 10, 10, 0]}>
-                                <LabelList 
-                                    dataKey="name" 
-                                    position="insideLeft" 
-                                    offset={10}
-                                    style={{ fill: 'white', fontWeight: 'bold' }} 
-                                />
-                                <LabelList 
-                                    dataKey="total" 
-                                    position="right" 
-                                    offset={10}
-                                    style={{ fill: 'white' }}
-                                />
+                            <Bar dataKey="total" fill="url(#colorUv2)" radius={[0, 10, 10, 0]}>
+                                <LabelList dataKey="name" content={(props) => renderCustomizedLabel({...props, value: props.payload.total})} />
                             </Bar>
                         </BarChart>
                     </ResponsiveContainer>
