@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, Fragment } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Capacitacao } from '../types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
 import Select, { SingleValue } from 'react-select';
@@ -70,53 +70,6 @@ const formatDecimal = (value: any) => {
         return '0,00';
     }
     return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-};
-
-const renderCustomizedLabel = (props: any) => {
-    const { x, y, width, height, value, formatter, payload } = props;
-
-    if (!payload || !formatter || value === undefined || 
-        typeof x !== 'number' || typeof y !== 'number' || typeof width !== 'number' || typeof height !== 'number' ||
-        isNaN(x) || isNaN(y) || isNaN(width) || isNaN(height)) {
-        return null;
-    }
-    
-    const { name } = payload;
-    if (name === undefined) {
-        return null;
-    }
-
-    const formattedValue = formatter(value);
-    const barCenterY = y + height / 2;
-
-    return (
-        <g>
-            {/* Label (nome) dentro da barra, alinhado à esquerda */}
-            <text 
-                x={x + 10} 
-                y={barCenterY} 
-                fill="#fff" 
-                textAnchor="start" 
-                dominantBaseline="middle"
-                fontSize={14}
-                fontWeight="bold"
-            >
-                {name}
-            </text>
-            
-            {/* Valor formatado dentro da barra, alinhado à direita */}
-            <text 
-                x={x + width - 10} 
-                y={barCenterY} 
-                fill="#fff" 
-                textAnchor="end" 
-                dominantBaseline="middle"
-                fontSize={14}
-            >
-                {formattedValue}
-            </text>
-        </g>
-    );
 };
 
 const CustomTooltip = ({ active, payload, label, isCurrency }: any) => {
@@ -284,19 +237,16 @@ const Capacitacoes: React.FC = () => {
                             data={valorPorLinha}
                             layout="vertical"
                             style={{ fontFamily: 'Open Sans, sans-serif' }}
-                            margin={{ top: 20, right: 120, left: 20, bottom: 5 }}
-                            onClick={handleChartClick}
+                            margin={{ top: 20, right: 20, left: 20, bottom: 5 }}
                             barSize={40}
                         >
                             <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
-                            <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
+                            <XAxis type="number" hide />
                             <YAxis type="category" dataKey="name" hide />
                             <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(71, 85, 105, 0.5)' }} />
                             <Bar dataKey="total" fill="#4f46e5" radius={[0, 10, 10, 0]}>
-                                <LabelList 
-                                    dataKey="total" 
-                                    content={(props) => renderCustomizedLabel({ ...props, formatter: formatCurrency })} 
-                                />
+                                <LabelList dataKey="name" position="insideLeft" offset={10} style={{ fill: 'white', fontWeight: 'bold' }} />
+                                <LabelList dataKey="total" position="insideRight" offset={-10} style={{ fill: 'white' }} formatter={formatCurrency} />
                             </Bar>
                         </BarChart>
                     </ResponsiveContainer>
@@ -310,19 +260,16 @@ const Capacitacoes: React.FC = () => {
                             data={quantidadePorLinha}
                             layout="vertical"
                             style={{ fontFamily: 'Open Sans, sans-serif' }}
-                            margin={{ top: 20, right: 120, left: 20, bottom: 5 }}
-                            onClick={handleChartClick}
+                            margin={{ top: 20, right: 20, left: 20, bottom: 5 }}
                             barSize={40}
                         >
                             <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
-                            <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
+                            <XAxis type="number" hide />
                             <YAxis type="category" dataKey="name" hide />
                             <Tooltip content={<CustomTooltip isCurrency={false} />} cursor={{ fill: 'rgba(71, 85, 105, 0.5)' }} />
                             <Bar dataKey="total" fill="#4f46e5" radius={[0, 10, 10, 0]}>
-                                <LabelList 
-                                    dataKey="total" 
-                                    content={(props) => renderCustomizedLabel({ ...props, formatter: formatNumber })}
-                                />
+                                <LabelList dataKey="name" position="insideLeft" offset={10} style={{ fill: 'white', fontWeight: 'bold' }} />
+                                <LabelList dataKey="total" position="insideRight" offset={-10} style={{ fill: 'white' }} formatter={formatNumber} />
                             </Bar>
                         </BarChart>
                     </ResponsiveContainer>
