@@ -72,28 +72,6 @@ const formatDecimal = (value: any) => {
     return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
-const renderCustomizedLabel = (props: any) => {
-    const { x, y, width, value, formatter } = props;
-    const { name } = props.payload;
-    
-    // Define uma largura mínima para a barra, para o nome não vazar
-    const barWidth = Math.max(width, 0);
-
-    return (
-        <g>
-            {/* 1. Nome DENTRO da barra (alinhado à esquerda) */}
-            <text x={x + 10} y={y + 14} fill="#fff" textAnchor="start" fontSize={14}>
-                {name}
-            </text>
-            
-            {/* 2. Valor FORA da barra (alinhado à esquerda, após a barra) */}
-            <text x={x + barWidth + 10} y={y + 14} fill="#94a3b8" textAnchor="start" fontSize={14}>
-                {formatter(value)}
-            </text>
-        </g>
-    );
-};
-
 const CustomTooltip = ({ active, payload, label, isCurrency }: any) => {
     if (active && payload && payload.length) {
         return (
@@ -254,73 +232,97 @@ const Capacitacoes: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
     <h3 className="text-xl font-bold text-white mb-4">Valor por Linha de Capacitação</h3>
     <ResponsiveContainer width="100%" height={1000}>
-        {/* MUDANÇA 4: Margem direita aumentada para acomodar o valor externo */}
+        {/* Ajuste a margem 'left' para dar espaço ao Eixo Y.
+          Ajuste a margem 'right' para dar espaço ao valor (LabelList).
+        */}
         <BarChart 
             data={valorPorLinha} 
             layout="vertical" 
             style={{fontFamily: 'Open Sans, sans-serif'}} 
-            margin={{ top: 20, right: 80, left: 20, bottom: 5 }} 
+            margin={{ top: 20, right: 80, left: 150, bottom: 5 }} // Margens ajustadas
             onClick={handleChartClick} 
             barCategoryGap={10}
         >
-            {/* MUDANÇA 2: Bloco <defs> (gradiente) foi REMOVIDO */}
-            
             <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
             
-            {/* MUDANÇA 3: Eixo X (XAxis) oculto com tick={false} */}
+            {/* Eixo X oculto, como na imagem */}
             <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
             
-            {/* O YAxis permanece oculto, como no seu código original */}
-            <YAxis type="category" dataKey="name" tick={{ display: 'none' }} axisLine={false} tickLine={false} width={0} />
+            {/* Eixo Y ATIVADO para mostrar o 'name' (Linkd.sh/...) */}
+            <YAxis 
+                type="category" 
+                dataKey="name" 
+                tick={{ fill: '#e2e8f0', fontSize: 14 }} // Cor e tamanho do texto
+                axisLine={false} 
+                tickLine={false} 
+                width={150} // Largura reservada para o texto
+                dx={-10} // Desloca o texto 10px para a esquerda (mais perto da borda)
+            />
             
             <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
             
-            {/* MUDANÇA 2: 'fill' usa cor sólida */}
-            {/* MUDANÇA 5: 'radius={10}' arredonda todos os cantos, como na imagem */}
+            {/* Cor sólida e 'radius={10}' para arredondar todas as bordas */}
             <Bar dataKey="total" fill="#4f46e5" radius={10}>
                 
-                {/* MUDANÇA 1: O LabelList chama sua nova função renderCustomizedLabel */}
-                <LabelList dataKey="total" content={(props) => {
-                    if (props.payload === undefined) return null;
-                    return renderCustomizedLabel({...props, value: props.payload.total, formatter: formatCurrency});
-                }} />
+                {/* Isto substitui a função 'renderCustomizedLabel'.
+                  'position="right"' coloca o valor FORA da barra, à direita.
+                */}
+                <LabelList 
+                    dataKey="total" 
+                    position="right" 
+                    formatter={formatCurrency} 
+                    fill="#94a3b8" 
+                    fontSize={14} 
+                />
             </Bar>
         </BarChart>
     </ResponsiveContainer>
 </div>
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Quantidade por Linha de Capacitação</h3>
-                    <ResponsiveContainer width="100%" height={1000}>
-        {/* MUDANÇA 4: Margem direita aumentada para acomodar o valor externo */}
+    <ResponsiveContainer width="100%" height={1000}>
+        {/* Ajuste a margem 'left' para dar espaço ao Eixo Y.
+          Ajuste a margem 'right' para dar espaço ao valor (LabelList).
+        */}
         <BarChart 
             data={valorPorLinha} 
             layout="vertical" 
             style={{fontFamily: 'Open Sans, sans-serif'}} 
-            margin={{ top: 20, right: 80, left: 20, bottom: 5 }} 
+            margin={{ top: 20, right: 80, left: 150, bottom: 5 }} // Margens ajustadas
             onClick={handleChartClick} 
             barCategoryGap={10}
         >
-            {/* MUDANÇA 2: Bloco <defs> (gradiente) foi REMOVIDO */}
-            
             <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
             
-            {/* MUDANÇA 3: Eixo X (XAxis) oculto com tick={false} */}
+            {/* Eixo X oculto, como na imagem */}
             <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
             
-            {/* O YAxis permanece oculto, como no seu código original */}
-            <YAxis type="category" dataKey="name" tick={{ display: 'none' }} axisLine={false} tickLine={false} width={0} />
+            {/* Eixo Y ATIVADO para mostrar o 'name' (Linkd.sh/...) */}
+            <YAxis 
+                type="category" 
+                dataKey="name" 
+                tick={{ fill: '#e2e8f0', fontSize: 14 }} // Cor e tamanho do texto
+                axisLine={false} 
+                tickLine={false} 
+                width={150} // Largura reservada para o texto
+                dx={-10} // Desloca o texto 10px para a esquerda (mais perto da borda)
+            />
             
             <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
             
-            {/* MUDANÇA 2: 'fill' usa cor sólida */}
-            {/* MUDANÇA 5: 'radius={10}' arredonda todos os cantos, como na imagem */}
+            {/* Cor sólida e 'radius={10}' para arredondar todas as bordas */}
             <Bar dataKey="total" fill="#4f46e5" radius={10}>
                 
-                {/* MUDANÇA 1: O LabelList chama sua nova função renderCustomizedLabel */}
-                <LabelList dataKey="total" content={(props) => {
-                    if (props.payload === undefined) return null;
-                    return renderCustomizedLabel({...props, value: props.payload.total, formatter: formatCurrency});
-                }} />
+                {/* Isto substitui a função 'renderCustomizedLabel'.
+                  'position="right"' coloca o valor FORA da barra, à direita.
+                */}
+                <LabelList 
+                    dataKey="total" 
+                    position="right" 
+                    formatter={formatCurrency} 
+                    fill="#94a3b8" 
+                    fontSize={14} 
+                />
             </Bar>
         </BarChart>
     </ResponsiveContainer>
