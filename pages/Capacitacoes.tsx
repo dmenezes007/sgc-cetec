@@ -254,7 +254,10 @@ const Capacitacoes: React.FC = () => {
                             <YAxis type="category" dataKey="name" tick={{ display: 'none' }} axisLine={false} tickLine={false} width={0} />
                             <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
                             <Bar dataKey="total" fill="url(#colorUv)" radius={[0, 10, 10, 0]}>
-                                <LabelList dataKey="name" content={(props) => renderCustomizedLabel({...props, value: props.payload.total, formatter: formatCurrency})} />
+                                <LabelList dataKey="name" content={(props) => {
+                                    if (props.payload === undefined) return null;
+                                    return renderCustomizedLabel({...props, value: props.payload.total, formatter: formatCurrency});
+                                }} />
                             </Bar>                        </BarChart>
                     </ResponsiveContainer>
                 </div>
@@ -273,7 +276,10 @@ const Capacitacoes: React.FC = () => {
                             <YAxis type="category" dataKey="name" tick={{ display: 'none' }} axisLine={false} tickLine={false} width={0} />
                             <Tooltip content={<CustomTooltip isCurrency={false} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
                             <Bar dataKey="total" fill="url(#colorUv2)" radius={[0, 10, 10, 0]}>
-                                <LabelList dataKey="name" content={(props) => renderCustomizedLabel({...props, value: props.payload.total, formatter: (value) => value})} />
+                                <LabelList dataKey="name" content={(props) => {
+                                    if (props.payload === undefined) return null;
+                                    return renderCustomizedLabel({...props, value: props.payload.total, formatter: (value) => value});
+                                }} />
                             </Bar>
                         </BarChart>
                     </ResponsiveContainer>
