@@ -290,9 +290,9 @@ const Capacitacoes: React.FC = () => {
     <ResponsiveContainer width="100%" height={1000}>
         {/* Margens 'left' e 'right' ajustadas */}
         <BarChart 
-            data={quantidadePorLinha}  {/* CORREÇÃO: Usando os dados de quantidade */}
-            layout="vertical" 
-            style={{fontFamily: 'Open Sans, sans-serif'}} 
+    data={quantidadePorLinha}
+    layout="vertical" 
+    style={{fontFamily: 'Open Sans, sans-serif'}}
             margin={{ top: 20, right: 100, left: 20, bottom: 5 }} 
             onClick={handleChartClick} 
             barCategoryGap={10}
