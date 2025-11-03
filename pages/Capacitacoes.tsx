@@ -75,7 +75,6 @@ const formatDecimal = (value: any) => {
 const renderCustomizedLabel = (props: any) => {
     const { x, y, width, height, value, formatter, payload } = props;
 
-    // --- Verificações de Segurança ---
     if (!payload || !formatter || value === undefined || 
         typeof x !== 'number' || typeof y !== 'number' || typeof width !== 'number' || typeof height !== 'number' ||
         isNaN(x) || isNaN(y) || isNaN(width) || isNaN(height)) {
@@ -87,19 +86,15 @@ const renderCustomizedLabel = (props: any) => {
         return null;
     }
 
-    const barWidth = Math.max(width, 0);
     const formattedValue = formatter(value);
     const barCenterY = y + height / 2;
 
-    // Posição vertical do texto, ajustada para alinhar ao centro
-    const textY = barCenterY;
-
     return (
         <g>
-            {/* 1. Nome DENTRO da barra (sobreposto) */}
+            {/* Label (nome) dentro da barra, alinhado à esquerda */}
             <text 
                 x={x + 10} 
-                y={textY} 
+                y={barCenterY} 
                 fill="#fff" 
                 textAnchor="start" 
                 dominantBaseline="middle"
@@ -109,12 +104,12 @@ const renderCustomizedLabel = (props: any) => {
                 {name}
             </text>
             
-            {/* 2. Valor FORA da barra (à direita) */}
+            {/* Valor formatado dentro da barra, alinhado à direita */}
             <text 
-                x={x + barWidth + 10} 
-                y={textY} 
-                fill="#94a3b8" 
-                textAnchor="start" 
+                x={x + width - 10} 
+                y={barCenterY} 
+                fill="#fff" 
+                textAnchor="end" 
                 dominantBaseline="middle"
                 fontSize={14}
             >
