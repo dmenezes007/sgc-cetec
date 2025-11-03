@@ -73,41 +73,55 @@ const formatDecimal = (value: any) => {
 };
 
 const renderCustomizedLabel = (props: any) => {
-    const { x, y, width, value, formatter, payload } = props;
-    
+    const { x, y, width, height, value, formatter, payload } = props;
+
     // --- Verificações de Segurança ---
-    // 1. Verifica se os dados essenciais existem
-    if (!payload || !formatter || value === undefined) {
+    if (!payload || !formatter || value === undefined || 
+        typeof x !== 'number' || typeof y !== 'number' || typeof width !== 'number' || typeof height !== 'number' ||
+        isNaN(x) || isNaN(y) || isNaN(width) || isNaN(height)) {
         return null;
     }
     
-    const { name } = payload;
+    const { name } = payload;
     if (name === undefined) {
         return null;
     }
 
-    // 2. Verifica se as coordenadas são números válidos
-    if (typeof x !== 'number' || typeof y !== 'number' || typeof width !== 'number' || isNaN(x) || isNaN(y) || isNaN(width)) {
-        return null;
-    }
-    // --- Fim das Verificações ---
-
     const barWidth = Math.max(width, 0);
     const formattedValue = formatter(value);
+    const barCenterY = y + height / 2;
 
-    return (
-        <g>
-            {/* 1. Nome DENTRO da barra (sobreposto) */}
-            <text x={x + 10} y={y + 14} fill="#fff" textAnchor="start" fontSize={14}>
+    // Posição vertical do texto, ajustada para alinhar ao centro
+    const textY = barCenterY;
+
+    return (
+        <g>
+            {/* 1. Nome DENTRO da barra (sobreposto) */}
+            <text 
+                x={x + 10} 
+                y={textY} 
+                fill="#fff" 
+                textAnchor="start" 
+                dominantBaseline="middle"
+                fontSize={14}
+                fontWeight="bold"
+            >
                 {name}
             </text>
-            
-            {/* 2. Valor FORA da barra (à direita) */}
-            <text x={x + barWidth + 10} y={y + 14} fill="#94a3b8" textAnchor="start" fontSize={14}>
+            
+            {/* 2. Valor FORA da barra (à direita) */}
+            <text 
+                x={x + barWidth + 10} 
+                y={textY} 
+                fill="#94a3b8" 
+                textAnchor="start" 
+                dominantBaseline="middle"
+                fontSize={14}
+            >
                 {formattedValue}
             </text>
-        </g>
-    );
+        </g>
+    );
 };
 
 const CustomTooltip = ({ active, payload, label, isCurrency }: any) => {
@@ -267,70 +281,57 @@ const Capacitacoes: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 gap-8 mb-8">
+                {/* Gráfico de Valor por Linha */}
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
-    <h3 className="text-xl font-bold text-white mb-4">Valor por Linha de Capacitação</h3>
-    <ResponsiveContainer width="100%" height={1000}>
-        {/* MUDANÇA: Margens 'left' pequena e 'right' grande */}
-        <BarChart 
-            data={valorPorLinha} 
-            layout="vertical" 
-            style={{fontFamily: 'Open Sans, sans-serif'}} 
-            margin={{ top: 20, right: 100, left: 20, bottom: 5 }} 
-            onClick={handleChartClick} 
-            barCategoryGap={10}
-        >
-            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
-            
-            {/* Eixo X permanece oculto */}
-            <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
-            
-            {/* MUDANÇA: Eixo Y (YAxis) Oculto */}
-            <YAxis type="category" dataKey="name" tick={{ display: 'none' }} axisLine={false} tickLine={false} width={0} />
-            
-            <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
-            
-            <Bar dataKey="total" fill="#4f46e5" radius={10}>
-                
-                {/* MUDANÇA: LabelList usa 'content' para chamar a função customizada */}
-                <LabelList dataKey="total" content={(props) => 
-    renderCustomizedLabel({...props, formatter: formatCurrency})
-} />
-            </Bar>
-        </BarChart>
-    </ResponsiveContainer>
-</div>
+                    <h3 className="text-xl font-bold text-white mb-4">Valor por Linha de Capacitação</h3>
+                    <ResponsiveContainer width="100%" height={valorPorLinha.length * 60}>
+                        <BarChart
+                            data={valorPorLinha}
+                            layout="vertical"
+                            style={{ fontFamily: 'Open Sans, sans-serif' }}
+                            margin={{ top: 20, right: 120, left: 20, bottom: 5 }}
+                            onClick={handleChartClick}
+                            barSize={40}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
+                            <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
+                            <YAxis type="category" dataKey="name" hide />
+                            <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(71, 85, 105, 0.5)' }} />
+                            <Bar dataKey="total" fill="#4f46e5" radius={[0, 10, 10, 0]}>
+                                <LabelList 
+                                    dataKey="total" 
+                                    content={(props) => renderCustomizedLabel({ ...props, formatter: formatCurrency })} 
+                                />
+                            </Bar>
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+
+                {/* Gráfico de Quantidade por Linha */}
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
-    <h3 className="text-xl font-bold text-white mb-4">Quantidade por Linha de Capacitação</h3>
-    <ResponsiveContainer width="100%" height={1000}>
-        {/* Margens 'left' e 'right' ajustadas */}
-        <BarChart 
-    data={quantidadePorLinha}
-    layout="vertical" 
-    style={{fontFamily: 'Open Sans, sans-serif'}}
-            margin={{ top: 20, right: 100, left: 20, bottom: 5 }} 
-            onClick={handleChartClick} 
-            barCategoryGap={10}
-        >
-            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
-            
-            <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
-            
-            {/* Eixo Y (YAxis) Oculto */}
-            <YAxis type="category" dataKey="name" tick={{ display: 'none' }} axisLine={false} tickLine={false} width={0} />
-            
-            {/* CORREÇÃO: Tooltip com isCurrency={false} */}
-            <Tooltip content={<CustomTooltip isCurrency={false} />} cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }} />
-            
-            <Bar dataKey="total" fill="#4f46e5" radius={10}>
-                
-                {/* LabelList chama a função customizada */}
-                <LabelList dataKey="total" content={(props) => 
-    renderCustomizedLabel({...props, formatter: formatNumber})
-} />
-            </Bar>
-        </BarChart>
-    </ResponsiveContainer>
-</div>
+                    <h3 className="text-xl font-bold text-white mb-4">Quantidade por Linha de Capacitação</h3>
+                    <ResponsiveContainer width="100%" height={quantidadePorLinha.length * 60}>
+                        <BarChart
+                            data={quantidadePorLinha}
+                            layout="vertical"
+                            style={{ fontFamily: 'Open Sans, sans-serif' }}
+                            margin={{ top: 20, right: 120, left: 20, bottom: 5 }}
+                            onClick={handleChartClick}
+                            barSize={40}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
+                            <XAxis type="number" tick={false} axisLine={false} tickLine={false} />
+                            <YAxis type="category" dataKey="name" hide />
+                            <Tooltip content={<CustomTooltip isCurrency={false} />} cursor={{ fill: 'rgba(71, 85, 105, 0.5)' }} />
+                            <Bar dataKey="total" fill="#4f46e5" radius={[0, 10, 10, 0]}>
+                                <LabelList 
+                                    dataKey="total" 
+                                    content={(props) => renderCustomizedLabel({ ...props, formatter: formatNumber })}
+                                />
+                            </Bar>
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
             </div>
         </div>
     );
