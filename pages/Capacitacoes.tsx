@@ -247,30 +247,36 @@ const Capacitacoes: React.FC = () => {
       tick={{ fontSize: 13, fill: '#94a3b8' }}
       axisLine={false}
       tickLine={false}
-      width={200}
+      width={220}
     />
     <Bar
-      dataKey="total"
-      fill="#4338CA"
-      radius={[0, 8, 8, 0]}
-      label={{
-        content: (props: any) => {
-          const { x, y, width, height, value } = props;
-          return (
-            <text
-              x={x + width + 8}
-              y={y + height / 2 + 4}
-              fill="#ffffff"
-              fontSize={13}
-              fontWeight={500}
-              textAnchor="start"
-            >
-              {formatNumber(value)}
-            </text>
-          );
-        },
-      }}
-    />
+  dataKey="total"
+  fill="#4338CA"
+  radius={[0, 8, 8, 0]}
+  label={{
+    content: (props: any) => {
+      const { x, y, width, height, value } = props;
+      // x é a coordenada inicial da barra; aqui deslocamos um pouco para a direita
+      // e permitimos que o texto se estenda além do width da barra.
+      const textX = x + 8;
+      const textY = y + height / 2;
+
+      return (
+        <text
+          x={textX}
+          y={textY}
+          fill="#ffffff"
+          fontSize={13}
+          fontWeight={500}
+          textAnchor="start"        // começa no ponto x e cresce para a direita
+          dominantBaseline="middle" // centraliza verticalmente
+        >
+          {formatNumber(value)}
+        </text>
+      );
+    },
+  }}
+/>
   </BarChart>
 </ResponsiveContainer>
                 </div>
@@ -293,30 +299,36 @@ const Capacitacoes: React.FC = () => {
       tick={{ fontSize: 13, fill: '#94a3b8' }}
       axisLine={false}
       tickLine={false}
-      width={200}
+      width={220}
     />
     <Bar
-      dataKey="total"
-      fill="#4338CA"
-      radius={[0, 8, 8, 0]}
-      label={{
-        content: (props: any) => {
-          const { x, y, width, height, value } = props;
-          return (
-            <text
-              x={x + width + 8}
-              y={y + height / 2 + 4}
-              fill="#ffffff"
-              fontSize={13}
-              fontWeight={500}
-              textAnchor="start"
-            >
-              {formatNumber(value)}
-            </text>
-          );
-        },
-      }}
-    />
+  dataKey="total"
+  fill="#4338CA"
+  radius={[0, 8, 8, 0]}
+  label={{
+    content: (props: any) => {
+      const { x, y, width, height, value } = props;
+      // x é a coordenada inicial da barra; aqui deslocamos um pouco para a direita
+      // e permitimos que o texto se estenda além do width da barra.
+      const textX = x + 8;
+      const textY = y + height / 2;
+
+      return (
+        <text
+          x={textX}
+          y={textY}
+          fill="#ffffff"
+          fontSize={13}
+          fontWeight={500}
+          textAnchor="start"        // começa no ponto x e cresce para a direita
+          dominantBaseline="middle" // centraliza verticalmente
+        >
+          {formatNumber(value)}
+        </text>
+      );
+    },
+  }}
+/>
   </BarChart>
 </ResponsiveContainer>
                 </div>
