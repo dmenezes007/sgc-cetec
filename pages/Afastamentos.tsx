@@ -1,11 +1,10 @@
-import React, { useMemo, useState, useEffect } from 'react';
+
+import React, { useMemo, useState, useEffect, Fragment } from 'react';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import React, { useMemo, useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Select, { SingleValue } from 'react-select';
 import Papa from 'papaparse';
@@ -137,10 +136,12 @@ let DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 const Afastamentos: React.FC = () => {
-    console.log("Afastamentos component rendering...");
     const [afastamentos, setAfastamentos] = useState<Afastamento[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [expandedRowIndex, setExpandedRowIndex] = useState<number | null>(null);
+    const itemsPerPage = 10;
 
     // Filtros
     const [filterLocal, setFilterLocal] = useState<string>('');
@@ -153,6 +154,9 @@ const Afastamentos: React.FC = () => {
         }
     };
 
+    const handleRowClick = (index: number) => {
+        setExpandedRowIndex(expandedRowIndex === index ? null : index);
+    };
 
     useEffect(() => {
         const fetchAfastamentos = async () => {
@@ -169,16 +173,13 @@ const Afastamentos: React.FC = () => {
                         complete: (results) => resolve(results),
                     });
                 });
-                console.log("Parsed Data:", result.data);
                 const dataWithNumbers = result.data.map(row => ({
                     ...row,
                     Latitude: parseFloat(String(row.Latitude).replace(',', '.')),
                     Longitude: parseFloat(String(row.Longitude).replace(',', '.'))
                 }));
                 setAfastamentos(dataWithNumbers);
-                console.log("Afastamentos state set:", dataWithNumbers);
             } catch (err: any) {
-                console.error("Error fetching data:", err);
                 setError(err.toString());
             } finally {
                 setIsLoading(false);
@@ -191,14 +192,17 @@ const Afastamentos: React.FC = () => {
     const uniqueLocais = useMemo(() => ['', ...Array.from(new Set(afastamentos.map(a => a.Local))).sort()], [afastamentos]);
 
     const filteredAfastamentos = useMemo(() => {
-        const filtered = afastamentos.filter(a => {
+        return afastamentos.filter(a => {
             const localMatch = filterLocal ? a.Local === filterLocal : true;
             const chartMatch = chartFilter ? a.Local === chartFilter : true;
             return localMatch && chartMatch;
         });
-        console.log("Filtered Afastamentos:", filtered);
-        return filtered;
     }, [afastamentos, filterLocal, chartFilter]);
+
+    const paginatedAfastamentos = useMemo(() => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        return filteredAfastamentos.slice(startIndex, startIndex + itemsPerPage);
+    }, [filteredAfastamentos, currentPage]);
 
     const stats = useMemo(() => {
         const totalAfastamentos = filteredAfastamentos.length;
@@ -257,40 +261,91 @@ const Afastamentos: React.FC = () => {
                     </ResponsiveContainer>
                 </div>
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
-    <h3 className="text-xl font-bold text-white mb-4">Mapa de Afastamentos</h3>
-    
-    <MapContainer 
-        center={[20, 0]} // Centraliza o mapa [latitude, longitude]
-        zoom={2} 
-        style={{ width: "100%", height: "300px", zIndex: 0 }} // Adicionado zIndex: 0
-        scrollWheelZoom={false} // Desabilita zoom com scroll
-    >
-        {/* Camada do mapa de fundo com tema escuro */}
-        <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-        />
+                    <h3 className="text-xl font-bold text-white mb-4">Mapa de Afastamentos</h3>
+                    <MapContainer 
+                        center={[20, 0]} 
+                        zoom={2} 
+                        style={{ width: "100%", height: "300px", zIndex: 0 }}
+                        scrollWheelZoom={false}
+                    >
+                        <TileLayer
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                        />
+                        {filteredAfastamentos.map((afastamento, i) => {
+                            const latValida = isFinite(afastamento.Latitude);
+                            const longValida = isFinite(afastamento.Longitude);
+                            
+                            return (latValida && longValida) ? (
+                                <Marker 
+                                    key={i} 
+                                    position={[afastamento.Latitude, afastamento.Longitude]}
+                                >
+                                    <Popup>
+                                        {afastamento.Local}
+                                    </Popup>
+                                </Marker>
+                            ) : null;
+                        })}
+                    </MapContainer>
+                </div>
+            </div>
 
-        {/* Mapeia seus marcadores */}
-        {filteredAfastamentos.map((afastamento, i) => {
-            
-            const latValida = isFinite(afastamento.Latitude);
-            const longValida = isFinite(afastamento.Longitude);
-            
-            return (latValida && longValida) ? (
-                /* ATENÇÃO: Leaflet usa [Latitude, Longitude] */
-                <Marker 
-                    key={i} 
-                    position={[afastamento.Latitude, afastamento.Longitude]}
-                >
-                    <Popup>
-                        {afastamento.Local}
-                    </Popup>
-                </Marker>
-            ) : null;
-        })}
-    </MapContainer>
-</div>
+            <div className="bg-slate-800 p-6 rounded-lg shadow-md mt-8">
+                <h3 className="text-xl font-bold text-white mb-4">Afastamentos</h3>
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-slate-700 table-fixed w-full">
+                        <thead className="bg-slate-700">
+                            <tr>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-1/4">Servidor</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-1/4">Local</th>
+                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider w-1/4">Início</th>
+                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider w-1/4">Fim</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-slate-800 divide-y divide-slate-700">
+                            {paginatedAfastamentos.map((afastamento, index) => (
+                                <Fragment key={index}>
+                                    <tr onClick={() => handleRowClick(index)} className="hover:bg-slate-700 cursor-pointer">
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white">{afastamento.Servidor}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white">{afastamento.Local}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white text-center">{afastamento['Data Inicio']}</td>
+                                        <td className="px-6 py-4 whitespace-normal text-sm text-white text-center">{afastamento['Data Fim']}</td>
+                                    </tr>
+                                    {expandedRowIndex === index && (
+                                        <tr className="bg-slate-700">
+                                            <td colSpan={4} className="p-4">
+                                                <div className="grid grid-cols-2 gap-4 text-sm text-white">
+                                                    <div><strong>Latitude:</strong> {afastamento.Latitude}</div>
+                                                    <div><strong>Longitude:</strong> {afastamento.Longitude}</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )}
+                                </Fragment>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="py-3 flex items-center justify-between">
+                    <div className="flex-1 flex justify-between sm:hidden">
+                        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="relative inline-flex items-center px-4 py-2 border border-slate-600 text-sm font-medium rounded-md text-gray-300 bg-slate-800 hover:bg-slate-700"> Anterior </button>
+                        <button onClick={() => setCurrentPage(p => p + 1)} disabled={paginatedAfastamentos.length < itemsPerPage} className="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-600 text-sm font-medium rounded-md text-gray-300 bg-slate-800 hover:bg-slate-700"> Próximo </button>
+                    </div>
+                    <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                        <div>
+                            <p className="text-sm text-gray-300">
+                                Mostrando <span className="font-medium">{(currentPage - 1) * itemsPerPage + 1}</span> a <span className="font-medium">{(currentPage - 1) * itemsPerPage + paginatedAfastamentos.length}</span> de <span className="font-medium">{filteredAfastamentos.length}</span> resultados
+                            </p>
+                        </div>
+                        <div>
+                            <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-slate-600 bg-slate-800 text-sm font-medium text-gray-400 hover:bg-slate-700"> <span className="sr-only">Anterior</span> &lt; </button>
+                                <button onClick={() => setCurrentPage(p => p + 1)} disabled={paginatedAfastamentos.length < itemsPerPage} className="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-slate-600 bg-slate-800 text-sm font-medium text-gray-400 hover:bg-slate-700"> <span className="sr-only">Próximo</span> &gt; </button>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

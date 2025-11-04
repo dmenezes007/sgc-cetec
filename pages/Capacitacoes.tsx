@@ -228,177 +228,55 @@ const Capacitacoes: React.FC = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-8 mb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Valor por Linha de Capacitação</h3>
                     <ResponsiveContainer width="100%" height={500}>
-  <BarChart
-    data={valorPorLinha}
-    layout="vertical"
-    // Atenção às margens: top maior para permitir rótulos acima das barras;
-    // right maior para permitir espaço ao valor alinhado à direita.
-    margin={{ top: 28, right: 120, left: 0, bottom: 20 }}
-    style={{ fontFamily: 'Open Sans, sans-serif' }}
-  >
-    <CartesianGrid horizontal={false} stroke="#2563eb" />
-    <XAxis type="number" hide />
-    <YAxis
-      type="category"
-      dataKey="name"
-      tick={false}     // escondemos os ticks do Y porque usaremos label personalizado acima da barra
-      axisLine={false}
-      tickLine={false}
-      width={160}
-    />
-
-    <Bar
-      dataKey="total"
-      fill="#2563eb"
-      radius={[8, 8, 8, 8]}
-      // label customizado
-      label={{
-        content: (props: any) => {
-          // Segurança: evita crash quando o Recharts chama com props incompletos
-          if (!props || !props.payload) return null;
-
-          // Destrutura props (alguns campos podem ser indefinidos dependendo da versão)
-          const { x = 0, y = 0, width = 0, height = 0, value, viewBox = {}, payload } = props;
-
-          // viewBox pode ser { x, y, width, height } ou undefined; normalizamos:
-          const vbX = typeof viewBox.x === 'number' ? viewBox.x : 0;
-          const vbWidth = typeof viewBox.width === 'number' ? viewBox.width : 0;
-
-          // ---- COORDENADAS ----
-          // 1) Rótulo (nome) — acima da barra, ligeiramente deslocado para a direita do início
-          const labelX = x + 8;      // começa logo após o início da barra
-          const labelY = y - 8;      // acima da barra (ajuste -6 / -10 conforme preferir)
-
-          // 2) Valor — fixado à direita do gráfico (usar viewBox.x + viewBox.width)
-          const paddingRight = 16;   // margem da borda direita
-          const valueX = vbX + vbWidth - paddingRight;
-          const valueY = y + height / 2; // centralizado verticalmente na barra
-
-          // Renderiza dois textos: nome acima da barra e valor alinhado à direita
-          return (
-            <>
-              {/* Nome da categoria - acima da barra */}
-              <text
-                x={labelX}
-                y={labelY}
-                fill="#e2e8f0"
-                fontSize={13}
-                fontWeight={500}
-                textAnchor="start"
-                dominantBaseline="alphabetic" // bom para posicionamento acima com y - N
-              >
-                {payload.name}
-              </text>
-
-              {/* Valor - alinhado à direita do gráfico */}
-              <text
-                x={valueX}
-                y={valueY}
-                fill="#ffffff"
-                fontSize={13}
-                fontWeight={600}
-                textAnchor="end"
-                dominantBaseline="middle"
-              >
-                {formatCurrency(value)} {/* ou formatNumber(value) se não for R$ */}
-              </text>
-            </>
-          );
-        },
-      }}
-    />
-  </BarChart>
-</ResponsiveContainer>
+                        <BarChart
+                            data={valorPorLinha}
+                            layout="vertical"
+                            margin={{ top: 5, right: 30, left: 200, bottom: 5 }}
+                            style={{ fontFamily: 'Open Sans, sans-serif' }}
+                            onClick={handleChartClick}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
+                            <XAxis type="number" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                            <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={200} />
+                            <Tooltip
+                                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', color: 'white' }}
+                                itemStyle={{ color: 'white' }}
+                                labelStyle={{ color: 'white' }}
+                                cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }}
+                                formatter={(value: number) => formatCurrency(value)}
+                            />
+                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} activeBar={{ fillOpacity: 0.5 }} />
+                        </BarChart>
+                    </ResponsiveContainer>
                 </div>
 
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
-    <h3 className="text-xl font-bold text-white mb-4">Quantidade por Linha de Capacitação</h3>
-    <ResponsiveContainer width="100%" height={500}>
-  <BarChart
-    data={valorPorLinha}
-    layout="vertical"
-    // Atenção às margens: top maior para permitir rótulos acima das barras;
-    // right maior para permitir espaço ao valor alinhado à direita.
-    margin={{ top: 28, right: 120, left: 0, bottom: 20 }}
-    style={{ fontFamily: 'Open Sans, sans-serif' }}
-  >
-    <CartesianGrid horizontal={false} stroke="#2563eb" />
-    <XAxis type="number" hide />
-    <YAxis
-      type="category"
-      dataKey="name"
-      tick={false}     // escondemos os ticks do Y porque usaremos label personalizado acima da barra
-      axisLine={false}
-      tickLine={false}
-      width={160}
-    />
-
-    <Bar
-      dataKey="total"
-      fill="#2563eb"
-      radius={[8, 8, 8, 8]}
-      // label customizado
-      label={{
-        content: (props: any) => {
-          // Segurança: evita crash quando o Recharts chama com props incompletos
-          if (!props || !props.payload) return null;
-
-          // Destrutura props (alguns campos podem ser indefinidos dependendo da versão)
-          const { x = 0, y = 0, width = 0, height = 0, value, viewBox = {}, payload } = props;
-
-          // viewBox pode ser { x, y, width, height } ou undefined; normalizamos:
-          const vbX = typeof viewBox.x === 'number' ? viewBox.x : 0;
-          const vbWidth = typeof viewBox.width === 'number' ? viewBox.width : 0;
-
-          // ---- COORDENADAS ----
-          // 1) Rótulo (nome) — acima da barra, ligeiramente deslocado para a direita do início
-          const labelX = x + 8;      // começa logo após o início da barra
-          const labelY = y - 8;      // acima da barra (ajuste -6 / -10 conforme preferir)
-
-          // 2) Valor — fixado à direita do gráfico (usar viewBox.x + viewBox.width)
-          const paddingRight = 16;   // margem da borda direita
-          const valueX = vbX + vbWidth - paddingRight;
-          const valueY = y + height / 2; // centralizado verticalmente na barra
-
-          // Renderiza dois textos: nome acima da barra e valor alinhado à direita
-          return (
-            <>
-              {/* Nome da categoria - acima da barra */}
-              <text
-                x={labelX}
-                y={labelY}
-                fill="#e2e8f0"
-                fontSize={13}
-                fontWeight={500}
-                textAnchor="start"
-                dominantBaseline="alphabetic" // bom para posicionamento acima com y - N
-              >
-                {payload.name}
-              </text>
-
-              {/* Valor - alinhado à direita do gráfico */}
-              <text
-                x={valueX}
-                y={valueY}
-                fill="#ffffff"
-                fontSize={13}
-                fontWeight={600}
-                textAnchor="end"
-                dominantBaseline="middle"
-              >
-                {formatCurrency(value)} {/* ou formatNumber(value) se não for R$ */}
-              </text>
-            </>
-          );
-        },
-      }}
-    />
-  </BarChart>
-</ResponsiveContainer>
+                    <h3 className="text-xl font-bold text-white mb-4">Quantidade por Linha de Capacitação</h3>
+                    <ResponsiveContainer width="100%" height={500}>
+                        <BarChart
+                            data={quantidadePorLinha}
+                            layout="vertical"
+                            margin={{ top: 5, right: 30, left: 200, bottom: 5 }}
+                            style={{ fontFamily: 'Open Sans, sans-serif' }}
+                            onClick={handleChartClick}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
+                            <XAxis type="number" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                            <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={200} />
+                            <Tooltip
+                                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', color: 'white' }}
+                                itemStyle={{ color: 'white' }}
+                                labelStyle={{ color: 'white' }}
+                                cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }}
+                                formatter={(value: number) => formatNumber(value)}
+                            />
+                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} activeBar={{ fillOpacity: 0.5 }} />
+                        </BarChart>
+                    </ResponsiveContainer>
                 </div>
             </div>
         </div>

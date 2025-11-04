@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, Fragment } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Select, { SingleValue } from 'react-select';
 import Papa from 'papaparse';
@@ -318,7 +318,7 @@ const Planejamento: React.FC = () => {
                         </thead>
                         <tbody className="bg-slate-800 divide-y divide-slate-700">
                             {paginatedContratacoes.map((contratacao, index) => (
-                                <React.Fragment key={contratacao.Processo || index}> {/* Using Processo as key, fallback to index */}
+                                <Fragment key={contratacao.Processo || index}> {/* Using Processo as key, fallback to index */}
                                     <tr onClick={() => handleRowClick(index)} className="hover:bg-slate-700 cursor-pointer"> {/* Using index as id for expandedRowId */}
                                         <td className="px-6 py-4 whitespace-normal text-sm text-white">{contratacao.Unidade}</td>
                                         <td className="px-6 py-4 whitespace-normal text-sm text-white">{contratacao.Evento}</td>
