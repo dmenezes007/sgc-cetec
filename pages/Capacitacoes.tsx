@@ -232,50 +232,70 @@ const Capacitacoes: React.FC = () => {
                 {/* Gráfico de Valor por Linha */}
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Valor por Linha de Capacitação</h3>
-                    <ResponsiveContainer width="100%" height={300}>
+                    <ResponsiveContainer width="100%" height={500}>
   <BarChart
     data={valorPorLinha.sort((a, b) => b.total - a.total)}
     layout="vertical"
     margin={{ top: 10, right: 80, left: 0, bottom: 10 }}
     style={{ fontFamily: 'Open Sans, sans-serif' }}
   >
-    <CartesianGrid horizontal={false} stroke="#334155" />
+    <CartesianGrid horizontal={false} stroke="#2563eb" />
     <XAxis type="number" hide />
     <YAxis
       type="category"
       dataKey="name"
-      tick={{ fontSize: 13, fill: '#94a3b8' }}
+      tick={{ fontSize: 15, fill: '#94a3b8' }}
       axisLine={false}
       tickLine={false}
-      width={320}
+      width={200}
     />
     <Bar
   dataKey="total"
   fill="#4338CA"
-  radius={[0, 8, 8, 0]}
+  radius={[8, 8, 8, 8]}
   label={{
-    content: (props: any) => {
-      const { x, y, width, height, value } = props;
-      // x é a coordenada inicial da barra; aqui deslocamos um pouco para a direita
-      // e permitimos que o texto se estenda além do width da barra.
-      const textX = x + 8;
-      const textY = y + height / 2;
+  content: (props: any) => {
+    const { x, y, width, height, value, viewBox, index, payload } = props;
+    const chartWidth = viewBox.width; // largura total do gráfico
+    const textY = y + height / 2;
 
-      return (
+    // 🔹 Variação 1 — Nome da linha, começando um pouco após o início da barra
+    const labelX = x + 8;
+
+    // 🔹 Variação 2 — Valor fixo à direita do gráfico
+    const valueX = chartWidth - 10;
+
+    return (
+      <>
+        {/* Nome da linha */}
         <text
-          x={textX}
+          x={labelX}
+          y={textY}
+          fill="#e2e8f0" // cinza claro
+          fontSize={14}
+          fontWeight={500}
+          textAnchor="start"
+          dominantBaseline="middle"
+        >
+          {payload.name}
+        </text>
+
+        {/* Valor à direita */}
+        <text
+          x={valueX}
           y={textY}
           fill="#ffffff"
-          fontSize={13}
-          fontWeight={500}
-          textAnchor="start"        // começa no ponto x e cresce para a direita
-          dominantBaseline="middle" // centraliza verticalmente
+          fontSize={15}
+          fontWeight={600}
+          textAnchor="end"
+          dominantBaseline="middle"
         >
-          {formatNumber(value)}
+          {formatCurrency(value)}
         </text>
-      );
-    },
-  }}
+      </>
+    );
+  },
+}}
 />
   </BarChart>
 </ResponsiveContainer>
@@ -284,50 +304,70 @@ const Capacitacoes: React.FC = () => {
                 {/* Gráfico de Quantidade por Linha */}
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Quantidade por Linha de Capacitação</h3>
-                    <ResponsiveContainer width="100%" height={300}>
+                    <ResponsiveContainer width="100%" height={500}>
   <BarChart
     data={valorPorLinha.sort((a, b) => b.total - a.total)}
     layout="vertical"
     margin={{ top: 10, right: 80, left: 0, bottom: 10 }}
     style={{ fontFamily: 'Open Sans, sans-serif' }}
   >
-    <CartesianGrid horizontal={false} stroke="#334155" />
+    <CartesianGrid horizontal={false} stroke="#2563eb" />
     <XAxis type="number" hide />
     <YAxis
       type="category"
       dataKey="name"
-      tick={{ fontSize: 13, fill: '#94a3b8' }}
+      tick={{ fontSize: 15, fill: '#94a3b8' }}
       axisLine={false}
       tickLine={false}
-      width={320}
+      width={200}
     />
     <Bar
   dataKey="total"
-  fill="#4338CA"
-  radius={[0, 8, 8, 0]}
+  fill="#2563eb"
+  radius={[8, 8, 8, 8]}
   label={{
-    content: (props: any) => {
-      const { x, y, width, height, value } = props;
-      // x é a coordenada inicial da barra; aqui deslocamos um pouco para a direita
-      // e permitimos que o texto se estenda além do width da barra.
-      const textX = x + 8;
-      const textY = y + height / 2;
+  content: (props: any) => {
+    const { x, y, width, height, value, viewBox, index, payload } = props;
+    const chartWidth = viewBox.width; // largura total do gráfico
+    const textY = y + height / 2;
 
-      return (
+    // 🔹 Variação 1 — Nome da linha, começando um pouco após o início da barra
+    const labelX = x + 8;
+
+    // 🔹 Variação 2 — Valor fixo à direita do gráfico
+    const valueX = chartWidth - 10;
+
+    return (
+      <>
+        {/* Nome da linha */}
         <text
-          x={textX}
+          x={labelX}
+          y={textY}
+          fill="#e2e8f0" // cinza claro
+          fontSize={14}
+          fontWeight={500}
+          textAnchor="start"
+          dominantBaseline="middle"
+        >
+          {payload.name}
+        </text>
+
+        {/* Valor à direita */}
+        <text
+          x={valueX}
           y={textY}
           fill="#ffffff"
-          fontSize={13}
-          fontWeight={500}
-          textAnchor="start"        // começa no ponto x e cresce para a direita
-          dominantBaseline="middle" // centraliza verticalmente
+          fontSize={15}
+          fontWeight={600}
+          textAnchor="end"
+          dominantBaseline="middle"
         >
-          {formatNumber(value)}
+          {formatCurrency(value)}
         </text>
-      );
-    },
-  }}
+      </>
+    );
+  },
+}}
 />
   </BarChart>
 </ResponsiveContainer>
