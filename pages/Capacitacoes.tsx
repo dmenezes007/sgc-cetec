@@ -330,7 +330,7 @@ label={{
                     const { x, y, width, height, value, viewBox, index, payload } = props;
                     const chartWidth = viewBox.width; 
                     const textY = y + height / 2;
-                    const labelX = x + 8;
+                    const labelX = x - 8;
                     const valueX = chartWidth - 10;
 
                     return (
