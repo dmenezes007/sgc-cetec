@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import Layout from './components/Layout';
-import Overview from './pages/Overview';
-import CadastrarCapacitacao from './pages/CadastrarCapacitacao';
-import Relatorios from './pages/Relatorios';
 import { Page } from './types';
 import LoginPage from './components/LoginPage';
 
+const Capacitacoes = React.lazy(() => import('./pages/Capacitacoes'));
+const Capacitados = React.lazy(() => import('./pages/Capacitados'));
+const Afastamentos = React.lazy(() => import('./pages/Afastamentos'));
+const Planejamento = React.lazy(() => import('./pages/Planejamento'));
+const Relatorios = React.lazy(() => import('./pages/Relatorios'));
+
+
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<Page>('Overview');
+  const [currentPage, setCurrentPage] = useState<Page>('Capacitações');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogin = (password: string) => {
@@ -20,14 +24,18 @@ const App: React.FC = () => {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'Overview':
-        return <Overview />;
-      case 'Cadastrar Capacitação':
-        return <CadastrarCapacitacao />;
+      case 'Capacitações':
+        return <Capacitacoes />;
+      case 'Capacitados':
+        return <Capacitados />;
+      case 'Afastamentos':
+        return <Afastamentos />;
+      case 'Planejamento':
+        return <Planejamento />;
       case 'Relatórios':
         return <Relatorios />;
       default:
-        return <Overview />;
+        return <Capacitacoes />;
     }
   };
 
@@ -36,9 +44,11 @@ const App: React.FC = () => {
   }
 
   return (
-    <Layout currentPage={currentPage} setCurrentPage={setCurrentPage}>
-      {renderPage()}
-    </Layout>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Layout currentPage={currentPage} setCurrentPage={setCurrentPage}>
+        {renderPage()}
+      </Layout>
+    </Suspense>
   );
 };
 
