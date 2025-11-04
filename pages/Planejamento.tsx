@@ -358,7 +358,7 @@ const Planejamento: React.FC = () => {
                                             </td>
                                         </tr>
                                     )}
-                                </React.Fragment>
+                                </Fragment>
                             ))}
                         </tbody>
                     </table>
