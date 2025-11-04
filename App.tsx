@@ -1,39 +1,44 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState } from 'react';
 import Layout from './components/Layout';
+import Overview from './pages/Overview';
+import CadastrarCapacitacao from './pages/CadastrarCapacitacao';
+import Relatorios from './pages/Relatorios';
 import { Page } from './types';
-
-const Capacitacoes = React.lazy(() => import('./pages/Capacitacoes'));
-const Capacitados = React.lazy(() => import('./pages/Capacitados'));
-const Afastamentos = React.lazy(() => import('./pages/Afastamentos'));
-const Planejamento = React.lazy(() => import('./pages/Planejamento'));
-const Relatorios = React.lazy(() => import('./pages/Relatorios'));
+import LoginPage from './components/LoginPage';
 
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<Page>('Capacitações');
+  const [currentPage, setCurrentPage] = useState<Page>('Overview');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'Capacitações':
-        return <Capacitacoes />;
-      case 'Capacitados':
-        return <Capacitados />;
-      case 'Afastamentos':
-        return <Afastamentos />;
-      case 'Planejamento':
-        return <Planejamento />;
-      case 'Relatórios':
-        return <Relatorios />;
-      default:
-        return <Capacitacoes />;
+  const handleLogin = (password: string) => {
+    if (password === 'SGC_CETEC_2025') {
+      setIsLoggedIn(true);
+    } else {
+      alert('Senha incorreta');
     }
   };
 
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'Overview':
+        return <Overview />;
+      case 'Cadastrar Capacitação':
+        return <CadastrarCapacitacao />;
+      case 'Relatórios':
+        return <Relatorios />;
+      default:
+        return <Overview />;
+    }
+  };
+
+  if (!isLoggedIn) {
+    return <LoginPage onLogin={handleLogin} />;
+  }
+
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Layout currentPage={currentPage} setCurrentPage={setCurrentPage}>
-        {renderPage()}
-      </Layout>
-    </Suspense>
+    <Layout currentPage={currentPage} setCurrentPage={setCurrentPage}>
+      {renderPage()}
+    </Layout>
   );
 };
 
