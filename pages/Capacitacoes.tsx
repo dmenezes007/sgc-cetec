@@ -234,9 +234,9 @@ const Capacitacoes: React.FC = () => {
                     <h3 className="text-xl font-bold text-white mb-4">Valor por Linha de Capacitação</h3>
                     <ResponsiveContainer width="100%" height={300}>
   <BarChart
-    data={valorPorLinha.sort((a, b) => b.total - a.total)} // ordena do maior pro menor
+    data={valorPorLinha.sort((a, b) => b.total - a.total)}
     layout="vertical"
-    margin={{ top: 10, right: 40, left: 0, bottom: 10 }}
+    margin={{ top: 10, right: 80, left: 0, bottom: 10 }}
     style={{ fontFamily: 'Open Sans, sans-serif' }}
   >
     <CartesianGrid horizontal={false} stroke="#334155" />
@@ -247,19 +247,30 @@ const Capacitacoes: React.FC = () => {
       tick={{ fontSize: 13, fill: '#94a3b8' }}
       axisLine={false}
       tickLine={false}
-      width={150}
+      width={200}
     />
-    <Bar dataKey="total" fill="#4338CA" radius={[0, 8, 8, 0]}>
-      <LabelList
-  dataKey="total"
-  position="right"
-  style={{
-    fill: '#ffffff',
-    fontSize: 13,
-    fontWeight: 500,
-  }}
-/>
-    </Bar>
+    <Bar
+      dataKey="total"
+      fill="#4338CA"
+      radius={[0, 8, 8, 0]}
+      label={{
+        content: (props: any) => {
+          const { x, y, width, height, value } = props;
+          return (
+            <text
+              x={x + width + 8}
+              y={y + height / 2 + 4}
+              fill="#ffffff"
+              fontSize={13}
+              fontWeight={500}
+              textAnchor="start"
+            >
+              {formatNumber(value)}
+            </text>
+          );
+        },
+      }}
+    />
   </BarChart>
 </ResponsiveContainer>
                 </div>
@@ -269,9 +280,9 @@ const Capacitacoes: React.FC = () => {
                     <h3 className="text-xl font-bold text-white mb-4">Quantidade por Linha de Capacitação</h3>
                     <ResponsiveContainer width="100%" height={300}>
   <BarChart
-    data={valorPorLinha.sort((a, b) => b.total - a.total)} // ordena do maior pro menor
+    data={valorPorLinha.sort((a, b) => b.total - a.total)}
     layout="vertical"
-    margin={{ top: 10, right: 40, left: 0, bottom: 10 }}
+    margin={{ top: 10, right: 80, left: 0, bottom: 10 }}
     style={{ fontFamily: 'Open Sans, sans-serif' }}
   >
     <CartesianGrid horizontal={false} stroke="#334155" />
@@ -282,19 +293,30 @@ const Capacitacoes: React.FC = () => {
       tick={{ fontSize: 13, fill: '#94a3b8' }}
       axisLine={false}
       tickLine={false}
-      width={150}
+      width={200}
     />
-    <Bar dataKey="total" fill="#4338CA" radius={[0, 8, 8, 0]}>
-      <LabelList
-  dataKey="total"
-  position="right"
-  style={{
-    fill: '#ffffff',
-    fontSize: 13,
-    fontWeight: 500,
-  }}
-/>
-    </Bar>
+    <Bar
+      dataKey="total"
+      fill="#4338CA"
+      radius={[0, 8, 8, 0]}
+      label={{
+        content: (props: any) => {
+          const { x, y, width, height, value } = props;
+          return (
+            <text
+              x={x + width + 8}
+              y={y + height / 2 + 4}
+              fill="#ffffff"
+              fontSize={13}
+              fontWeight={500}
+              textAnchor="start"
+            >
+              {formatNumber(value)}
+            </text>
+          );
+        },
+      }}
+    />
   </BarChart>
 </ResponsiveContainer>
                 </div>
