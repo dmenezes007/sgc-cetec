@@ -231,154 +231,174 @@ const Capacitacoes: React.FC = () => {
             <div className="grid grid-cols-1 gap-8 mb-8">
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Valor por Linha de Capacitação</h3>
-                    <ResponsiveContainer width="100%" height={600}>
+                    <ResponsiveContainer width="100%" height={500}>
   <BarChart
-    data={valorPorLinha.sort((a, b) => b.total - a.total)}
+    data={valorPorLinha}
     layout="vertical"
-    margin={{ top: 10, right: 80, left: 0, bottom: 10 }}
+    // Atenção às margens: top maior para permitir rótulos acima das barras;
+    // right maior para permitir espaço ao valor alinhado à direita.
+    margin={{ top: 28, right: 120, left: 0, bottom: 20 }}
     style={{ fontFamily: 'Open Sans, sans-serif' }}
   >
-    <CartesianGrid horizontal={false} stroke="#334155" />
+    <CartesianGrid horizontal={false} stroke="#2563eb" />
     <XAxis type="number" hide />
     <YAxis
       type="category"
       dataKey="name"
-      tick={{ fontSize: 15, fill: '#94a3b8' }}
+      tick={false}     // escondemos os ticks do Y porque usaremos label personalizado acima da barra
       axisLine={false}
       tickLine={false}
-      width={200}
+      width={160}
     />
+
     <Bar
-  dataKey="total"
-  fill="#2563eb"
-  radius={[8, 8, 8, 8]}
-  label={{
-    content: (props: any) => {
-      // 🔒 Segurança: evita erro caso props ainda não estejam disponíveis
-      if (!props || !props.payload) {
-        return null;
-      }
+      dataKey="total"
+      fill="#2563eb"
+      radius={[8, 8, 8, 8]}
+      // label customizado
+      label={{
+        content: (props: any) => {
+          // Segurança: evita crash quando o Recharts chama com props incompletos
+          if (!props || !props.payload) return null;
 
-      // 🧭 Desestruturação dos parâmetros fornecidos pelo Recharts
-      const { x, y, width, height, value, viewBox, payload } = props;
-      const chartWidth = viewBox?.width || 0;
+          // Destrutura props (alguns campos podem ser indefinidos dependendo da versão)
+          const { x = 0, y = 0, width = 0, height = 0, value, viewBox = {}, payload } = props;
 
-      // 📍 Coordenadas personalizadas
-      const labelX = x;                // Rótulo começa um pouco à direita do início da barra
-      const labelY = y - 6;                // Acima da barra (pode ajustar: -4, -8, etc.)
-      const valueX = chartWidth;      // Valor alinhado à direita do gráfico
-      const valueY = y + height / 2;       // Centralizado verticalmente na barra
+          // viewBox pode ser { x, y, width, height } ou undefined; normalizamos:
+          const vbX = typeof viewBox.x === 'number' ? viewBox.x : 0;
+          const vbWidth = typeof viewBox.width === 'number' ? viewBox.width : 0;
 
-      return (
-        <>
-          {/* 🏷️ Nome da categoria */}
-          <text
-            x={labelX}
-            y={labelY}
-            fill="#e2e8f0"
-            fontSize={14}
-            fontWeight={500}
-            textAnchor="start"
-            dominantBaseline="middle"
-          >
-            {payload.name}
-          </text>
+          // ---- COORDENADAS ----
+          // 1) Rótulo (nome) — acima da barra, ligeiramente deslocado para a direita do início
+          const labelX = x + 8;      // começa logo após o início da barra
+          const labelY = y - 8;      // acima da barra (ajuste -6 / -10 conforme preferir)
 
-          {/* 💰 Valor numérico, fixo à direita do gráfico */}
-          <text
-            x={valueX}
-            y={valueY}
-            fill="#ffffff"
-            fontSize={15}
-            fontWeight={600}
-            textAnchor="end"
-            dominantBaseline="middle"
-          >
-            {formatNumber(value)}
-          </text>
-        </>
-      );
-    },
-  }}
-/>
+          // 2) Valor — fixado à direita do gráfico (usar viewBox.x + viewBox.width)
+          const paddingRight = 16;   // margem da borda direita
+          const valueX = vbX + vbWidth - paddingRight;
+          const valueY = y + height / 2; // centralizado verticalmente na barra
+
+          // Renderiza dois textos: nome acima da barra e valor alinhado à direita
+          return (
+            <>
+              {/* Nome da categoria - acima da barra */}
+              <text
+                x={labelX}
+                y={labelY}
+                fill="#e2e8f0"
+                fontSize={13}
+                fontWeight={500}
+                textAnchor="start"
+                dominantBaseline="alphabetic" // bom para posicionamento acima com y - N
+              >
+                {payload.name}
+              </text>
+
+              {/* Valor - alinhado à direita do gráfico */}
+              <text
+                x={valueX}
+                y={valueY}
+                fill="#ffffff"
+                fontSize={13}
+                fontWeight={600}
+                textAnchor="end"
+                dominantBaseline="middle"
+              >
+                {formatCurrency(value)} {/* ou formatNumber(value) se não for R$ */}
+              </text>
+            </>
+          );
+        },
+      }}
+    />
   </BarChart>
 </ResponsiveContainer>
                 </div>
 
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
     <h3 className="text-xl font-bold text-white mb-4">Quantidade por Linha de Capacitação</h3>
-    <ResponsiveContainer width="100%" height={600}>
-        <BarChart
-            data={quantidadePorLinha.sort((a, b) => b.total - a.total)}
-            layout="vertical"
-            margin={{ top: 10, right: 80, left: 0, bottom: 10 }}
-            style={{ fontFamily: 'Open Sans, sans-serif' }}
-        >
-            <CartesianGrid horizontal={false} stroke="#334155" />
-            <XAxis type="number" hide />
-            <YAxis
-                type="category"
-                dataKey="name"
-                tick={{ fontSize: 15, fill: '#94a3b8' }}
-                axisLine={false}
-                tickLine={false}
-                width={200}
-            />
-            <Bar
-  dataKey="total"
-  fill="#2563eb"
-  radius={[8, 8, 8, 8]}
-  label={{
-    content: (props: any) => {
-      // 🔒 Segurança: evita erro caso props ainda não estejam disponíveis
-      if (!props || !props.payload) {
-        return null;
-      }
+    <ResponsiveContainer width="100%" height={500}>
+  <BarChart
+    data={valorPorLinha}
+    layout="vertical"
+    // Atenção às margens: top maior para permitir rótulos acima das barras;
+    // right maior para permitir espaço ao valor alinhado à direita.
+    margin={{ top: 28, right: 120, left: 0, bottom: 20 }}
+    style={{ fontFamily: 'Open Sans, sans-serif' }}
+  >
+    <CartesianGrid horizontal={false} stroke="#2563eb" />
+    <XAxis type="number" hide />
+    <YAxis
+      type="category"
+      dataKey="name"
+      tick={false}     // escondemos os ticks do Y porque usaremos label personalizado acima da barra
+      axisLine={false}
+      tickLine={false}
+      width={160}
+    />
 
-      // 🧭 Desestruturação dos parâmetros fornecidos pelo Recharts
-      const { x, y, width, height, value, viewBox, payload } = props;
-      const chartWidth = viewBox?.width || 0;
+    <Bar
+      dataKey="total"
+      fill="#2563eb"
+      radius={[8, 8, 8, 8]}
+      // label customizado
+      label={{
+        content: (props: any) => {
+          // Segurança: evita crash quando o Recharts chama com props incompletos
+          if (!props || !props.payload) return null;
 
-      // 📍 Coordenadas personalizadas
-      const labelX = x;                // Rótulo começa um pouco à direita do início da barra
-      const labelY = y - 6;                // Acima da barra (pode ajustar: -4, -8, etc.)
-      const valueX = chartWidth;      // Valor alinhado à direita do gráfico
-      const valueY = y + height / 2;       // Centralizado verticalmente na barra
+          // Destrutura props (alguns campos podem ser indefinidos dependendo da versão)
+          const { x = 0, y = 0, width = 0, height = 0, value, viewBox = {}, payload } = props;
 
-      return (
-        <>
-          {/* 🏷️ Nome da categoria */}
-          <text
-            x={labelX}
-            y={labelY}
-            fill="#e2e8f0"
-            fontSize={14}
-            fontWeight={500}
-            textAnchor="start"
-            dominantBaseline="middle"
-          >
-            {payload.name}
-          </text>
+          // viewBox pode ser { x, y, width, height } ou undefined; normalizamos:
+          const vbX = typeof viewBox.x === 'number' ? viewBox.x : 0;
+          const vbWidth = typeof viewBox.width === 'number' ? viewBox.width : 0;
 
-          {/* 💰 Valor numérico, fixo à direita do gráfico */}
-          <text
-            x={valueX}
-            y={valueY}
-            fill="#ffffff"
-            fontSize={15}
-            fontWeight={600}
-            textAnchor="end"
-            dominantBaseline="middle"
-          >
-            {formatNumber(value)}
-          </text>
-        </>
-      );
-    },
-  }}
-/>
-        </BarChart>
-    </ResponsiveContainer>
+          // ---- COORDENADAS ----
+          // 1) Rótulo (nome) — acima da barra, ligeiramente deslocado para a direita do início
+          const labelX = x + 8;      // começa logo após o início da barra
+          const labelY = y - 8;      // acima da barra (ajuste -6 / -10 conforme preferir)
+
+          // 2) Valor — fixado à direita do gráfico (usar viewBox.x + viewBox.width)
+          const paddingRight = 16;   // margem da borda direita
+          const valueX = vbX + vbWidth - paddingRight;
+          const valueY = y + height / 2; // centralizado verticalmente na barra
+
+          // Renderiza dois textos: nome acima da barra e valor alinhado à direita
+          return (
+            <>
+              {/* Nome da categoria - acima da barra */}
+              <text
+                x={labelX}
+                y={labelY}
+                fill="#e2e8f0"
+                fontSize={13}
+                fontWeight={500}
+                textAnchor="start"
+                dominantBaseline="alphabetic" // bom para posicionamento acima com y - N
+              >
+                {payload.name}
+              </text>
+
+              {/* Valor - alinhado à direita do gráfico */}
+              <text
+                x={valueX}
+                y={valueY}
+                fill="#ffffff"
+                fontSize={13}
+                fontWeight={600}
+                textAnchor="end"
+                dominantBaseline="middle"
+              >
+                {formatCurrency(value)} {/* ou formatNumber(value) se não for R$ */}
+              </text>
+            </>
+          );
+        },
+      }}
+    />
+  </BarChart>
+</ResponsiveContainer>
                 </div>
             </div>
         </div>
