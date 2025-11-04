@@ -264,9 +264,9 @@ const Capacitacoes: React.FC = () => {
       const chartWidth = viewBox?.width || 0;
 
       // 📍 Coordenadas personalizadas
-      const labelX = x + 8;                // Rótulo começa um pouco à direita do início da barra
+      const labelX = x;                // Rótulo começa um pouco à direita do início da barra
       const labelY = y - 6;                // Acima da barra (pode ajustar: -4, -8, etc.)
-      const valueX = chartWidth - 16;      // Valor alinhado à direita do gráfico
+      const valueX = chartWidth;      // Valor alinhado à direita do gráfico
       const valueY = y + height / 2;       // Centralizado verticalmente na barra
 
       return (
