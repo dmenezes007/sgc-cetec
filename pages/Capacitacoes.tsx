@@ -247,7 +247,7 @@ const Capacitacoes: React.FC = () => {
       tick={{ fontSize: 13, fill: '#94a3b8' }}
       axisLine={false}
       tickLine={false}
-      width={220}
+      width={320}
     />
     <Bar
   dataKey="total"
@@ -299,7 +299,7 @@ const Capacitacoes: React.FC = () => {
       tick={{ fontSize: 13, fill: '#94a3b8' }}
       axisLine={false}
       tickLine={false}
-      width={220}
+      width={320}
     />
     <Bar
   dataKey="total"
