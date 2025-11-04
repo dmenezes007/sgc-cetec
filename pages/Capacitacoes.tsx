@@ -232,47 +232,71 @@ const Capacitacoes: React.FC = () => {
                 {/* Gráfico de Valor por Linha */}
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Valor por Linha de Capacitação</h3>
-                    <ResponsiveContainer width="100%" height={valorPorLinha.length * 60}>
-                        <BarChart
-                            data={valorPorLinha}
-                            layout="vertical"
-                            style={{ fontFamily: 'Open Sans, sans-serif' }}
-                            margin={{ top: 20, right: 20, left: 20, bottom: 5 }}
-                            barSize={40}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
-                            <XAxis type="number" hide />
-                            <YAxis type="category" dataKey="name" hide />
-                            <Tooltip content={<CustomTooltip isCurrency={true} />} cursor={{ fill: 'rgba(71, 85, 105, 0.5)' }} />
-                            <Bar dataKey="total" fill="#4f46e5" radius={[0, 10, 10, 0]}>
-                                <LabelList dataKey="name" position="insideLeft" offset={10} style={{ fill: 'white', fontWeight: 'bold' }} />
-                                <LabelList dataKey="total" position="insideRight" offset={-10} style={{ fill: 'white' }} formatter={formatCurrency} />
-                            </Bar>
-                        </BarChart>
-                    </ResponsiveContainer>
+                    <ResponsiveContainer width="100%" height={300}>
+  <BarChart
+    data={valorPorLinha.sort((a, b) => b.total - a.total)} // ordena do maior pro menor
+    layout="vertical"
+    margin={{ top: 10, right: 40, left: 0, bottom: 10 }}
+    style={{ fontFamily: 'Open Sans, sans-serif' }}
+  >
+    <CartesianGrid horizontal={false} stroke="#334155" />
+    <XAxis type="number" hide />
+    <YAxis
+      type="category"
+      dataKey="name"
+      tick={{ fontSize: 13, fill: '#94a3b8' }}
+      axisLine={false}
+      tickLine={false}
+      width={150}
+    />
+    <Bar dataKey="total" fill="#4338CA" radius={[0, 8, 8, 0]}>
+      <LabelList
+  dataKey="total"
+  position="right"
+  style={{
+    fill: '#ffffff',
+    fontSize: 13,
+    fontWeight: 500,
+  }}
+/>
+    </Bar>
+  </BarChart>
+</ResponsiveContainer>
                 </div>
 
                 {/* Gráfico de Quantidade por Linha */}
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Quantidade por Linha de Capacitação</h3>
-                    <ResponsiveContainer width="100%" height={quantidadePorLinha.length * 60}>
-                        <BarChart
-                            data={quantidadePorLinha}
-                            layout="vertical"
-                            style={{ fontFamily: 'Open Sans, sans-serif' }}
-                            margin={{ top: 20, right: 20, left: 20, bottom: 5 }}
-                            barSize={40}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
-                            <XAxis type="number" hide />
-                            <YAxis type="category" dataKey="name" hide />
-                            <Tooltip content={<CustomTooltip isCurrency={false} />} cursor={{ fill: 'rgba(71, 85, 105, 0.5)' }} />
-                            <Bar dataKey="total" fill="#4f46e5" radius={[0, 10, 10, 0]}>
-                                <LabelList dataKey="name" position="insideLeft" offset={10} style={{ fill: 'white', fontWeight: 'bold' }} />
-                                <LabelList dataKey="total" position="insideRight" offset={-10} style={{ fill: 'white' }} formatter={formatNumber} />
-                            </Bar>
-                        </BarChart>
-                    </ResponsiveContainer>
+                    <ResponsiveContainer width="100%" height={300}>
+  <BarChart
+    data={valorPorLinha.sort((a, b) => b.total - a.total)} // ordena do maior pro menor
+    layout="vertical"
+    margin={{ top: 10, right: 40, left: 0, bottom: 10 }}
+    style={{ fontFamily: 'Open Sans, sans-serif' }}
+  >
+    <CartesianGrid horizontal={false} stroke="#334155" />
+    <XAxis type="number" hide />
+    <YAxis
+      type="category"
+      dataKey="name"
+      tick={{ fontSize: 13, fill: '#94a3b8' }}
+      axisLine={false}
+      tickLine={false}
+      width={150}
+    />
+    <Bar dataKey="total" fill="#4338CA" radius={[0, 8, 8, 0]}>
+      <LabelList
+  dataKey="total"
+  position="right"
+  style={{
+    fill: '#ffffff',
+    fontSize: 13,
+    fontWeight: 500,
+  }}
+/>
+    </Bar>
+  </BarChart>
+</ResponsiveContainer>
                 </div>
             </div>
         </div>
