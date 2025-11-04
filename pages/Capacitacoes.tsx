@@ -190,16 +190,27 @@ const Capacitacoes: React.FC = () => {
         return { totalCapacitacoes, valorTotalEvento, valorTotalDiaria, valorTotalPassagem };
     }, [filteredCapacitacoes, filteredAggregatedData]);
 
-    const eventosPorAno = useMemo(() => {
+    const quantidadeEventosPorAno = useMemo(() => {
+        const data = filteredCapacitacoes.reduce((acc, curr) => {
+            const ano = curr.ano;
+            if (!acc[ano]) {
+                acc[ano] = { name: ano, quantidade: 0 };
+            }
+            acc[ano].quantidade++;
+            return acc;
+        }, {} as Record<string, { name: number; quantidade: number }>);
+        return Object.values(data).sort((a, b) => a.name - b.name);
+    }, [filteredCapacitacoes]);
+
+    const valorEventosPorAno = useMemo(() => {
         const data = filteredAggregatedData.reduce((acc, curr) => {
             const ano = curr.ano;
             if (!acc[ano]) {
-                acc[ano] = { name: ano, quantidade: 0, valor: 0 };
+                acc[ano] = { name: ano, valor: 0 };
             }
-            acc[ano].quantidade++;
             acc[ano].valor += curr.valor_evento;
             return acc;
-        }, {} as Record<string, { name: number; quantidade: number; valor: number }>);
+        }, {} as Record<string, { name: number; valor: number }>);
         return Object.values(data).sort((a, b) => a.name - b.name);
     }, [filteredAggregatedData]);
 
@@ -235,7 +246,7 @@ const Capacitacoes: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Quantidade de Eventos por Ano</h3>
                     <ResponsiveContainer width="100%" height={400}>
-                        <LineChart data={eventosPorAno} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                        <LineChart data={quantidadeEventosPorAno} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fill: '#94a3b8' }} />
                             <YAxis tick={{ fill: '#94a3b8' }} />
@@ -249,7 +260,7 @@ const Capacitacoes: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Valor Total de Eventos por Ano</h3>
                     <ResponsiveContainer width="100%" height={400}>
-                        <LineChart data={eventosPorAno} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                        <LineChart data={valorEventosPorAno} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fill: '#94a3b8' }} />
                             <YAxis tick={{ fill: '#94a3b8' }} tickFormatter={formatCurrency} />
