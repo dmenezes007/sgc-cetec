@@ -229,7 +229,6 @@ const Capacitacoes: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 gap-8 mb-8">
-                {/* Gráfico de Valor por Linha */}
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Valor por Linha de Capacitação</h3>
                     <ResponsiveContainer width="100%" height={500}>
@@ -256,22 +255,19 @@ const Capacitacoes: React.FC = () => {
   label={{
   content: (props: any) => {
     const { x, y, width, height, value, viewBox, index, payload } = props;
-    const chartWidth = viewBox.width; // largura total do gráfico
+    const chartWidth = viewBox.width;
     const textY = y + height / 2;
 
-    // 🔹 Variação 1 — Nome da linha, começando um pouco após o início da barra
     const labelX = x + 8;
 
-    // 🔹 Variação 2 — Valor fixo à direita do gráfico
     const valueX = chartWidth - 10;
 
     return (
       <>
-        {/* Nome da linha */}
         <text
           x={labelX}
           y={textY}
-          fill="#e2e8f0" // cinza claro
+          fill="#e2e8f0"
           fontSize={14}
           fontWeight={500}
           textAnchor="start"
@@ -280,7 +276,6 @@ const Capacitacoes: React.FC = () => {
           {payload.name}
         </text>
 
-        {/* Valor à direita */}
         <text
           x={valueX}
           y={textY}
@@ -301,12 +296,10 @@ const Capacitacoes: React.FC = () => {
 </ResponsiveContainer>
                 </div>
 
-                {/* Gráfico de Quantidade por Linha */}
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
     <h3 className="text-xl font-bold text-white mb-4">Quantidade por Linha de Capacitação</h3>
     <ResponsiveContainer width="100%" height={500}>
         <BarChart
-            /* CORREÇÃO 1: Usando os dados corretos */
             data={quantidadePorLinha.sort((a, b) => b.total - a.total)}
             layout="vertical"
             margin={{ top: 10, right: 80, left: 0, bottom: 10 }}
@@ -336,7 +329,6 @@ const Capacitacoes: React.FC = () => {
 
                     return (
                     <>
-                        {/* Nome da linha */}
                         <text
                             x={labelX}
                             y={textY}
@@ -349,7 +341,6 @@ const Capacitacoes: React.FC = () => {
                             {payload.name}
                         </text>
 
-                        {/* Valor à direita */}
                         <text
                             x={valueX}
                             y={textY}
@@ -359,7 +350,6 @@ const Capacitacoes: React.FC = () => {
                             textAnchor="end"
                             dominantBaseline="middle"
                         >
-                            {/* CORREÇÃO 2: Usando o formatador de número */}
                             {formatNumber(value)}
                         </text>
                     </>
