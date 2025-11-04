@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Capacitacao } from '../types';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend } from 'recharts';
 import Select, { SingleValue } from 'react-select';
 
 // Tipos e Estilos para o novo seletor
@@ -64,20 +64,12 @@ const formatCurrency = (value: any) => {
     return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
-const formatDecimal = (value: any) => {
-    const num = parseFloat(String(value).replace(',', '.'));
-    if (isNaN(num)) {
-        return '0,00';
-    }
-    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-};
-
 const CustomTooltip = ({ active, payload, label, isCurrency }: any) => {
     if (active && payload && payload.length) {
         return (
             <div className="p-2 bg-slate-800 border border-slate-700 rounded shadow-lg">
                 <p className="label text-white">{`${label}`}</p>
-                <p className="intro text-white">{isCurrency ? formatCurrency(payload[0].value) : formatDecimal(payload[0].value)}</p>
+                <p className="intro text-white">{isCurrency ? formatCurrency(payload[0].value) : formatNumber(payload[0].value)}</p>
             </div>
         );
     }
@@ -93,9 +85,9 @@ const StatCard: React.FC<{ title: string; value: string | number; description: s
     </div>
 );
 
-const SearchableDropdown: React.FC<{ options: string[]; value: string; onChange: (value: string) => void; placeholder: string; label: string; }> = ({ options, value, onChange, placeholder, label }) => {
+const SearchableDropdown: React.FC<{ options: (string | number)[]; value: string; onChange: (value: string) => void; placeholder: string; label: string; }> = ({ options, value, onChange, placeholder, label }) => {
     const selectOptions = useMemo(() =>
-        options.map(opt => ({ value: opt, label: opt || "" })),
+        options.map(opt => ({ value: String(opt), label: String(opt) || "" })),
     [options]);
 
     const selectedValue = useMemo(() =>
@@ -130,15 +122,8 @@ const Capacitacoes: React.FC = () => {
 
     // Filtros
     const [filterLinha, setFilterLinha] = useState<string>('');
-    const [chartFilter, setChartFilter] = useState<string>('');
-
-    const handleChartClick = (data: any) => {
-        if (data && data.activePayload && data.activePayload.length > 0) {
-            const newFilter = data.activePayload[0].payload.name;
-            setChartFilter(prevFilter => (prevFilter === newFilter ? '' : newFilter));
-        }
-    };
-
+    const [filterAno, setFilterAno] = useState<string>('');
+    const [filterValor, setFilterValor] = useState<string>('');
 
     useEffect(() => {
         const fetchCapacitacoes = async () => {
@@ -159,48 +144,64 @@ const Capacitacoes: React.FC = () => {
         fetchCapacitacoes();
     }, []);
 
+    const aggregatedData = useMemo(() => {
+        const uniqueEvents = new Map<string, Capacitacao>();
+        capacitacoes.forEach(c => {
+            const key = `${c.nome_evento}-${c.ano}`;
+            if (!uniqueEvents.has(key)) {
+                uniqueEvents.set(key, c);
+            }
+        });
+        return Array.from(uniqueEvents.values());
+    }, [capacitacoes]);
+
     const uniqueLinhas = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.linha_de_capacitacao))).sort()], [capacitacoes]);
+    const uniqueAnos = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.ano))).sort((a, b) => b - a)], [capacitacoes]);
+    const uniqueValores = useMemo(() => {
+        const valores = Array.from(new Set(aggregatedData.map(c => c.valor_evento))).sort((a, b) => b - a);
+        return ['', ...valores.map(v => formatCurrency(v))];
+    }, [aggregatedData]);
+
 
     const filteredCapacitacoes = useMemo(() => {
         return capacitacoes.filter(c => {
             const linhaMatch = filterLinha ? c.linha_de_capacitacao === filterLinha : true;
-            const chartMatch = chartFilter ? c.linha_de_capacitacao === chartFilter : true;
-            return linhaMatch && chartMatch;
+            const anoMatch = filterAno ? c.ano === parseInt(filterAno) : true;
+            const valorMatch = filterValor ? formatCurrency(c.valor_evento) === filterValor : true;
+            return linhaMatch && anoMatch && valorMatch;
         });
-    }, [capacitacoes, filterLinha, chartFilter]);
+    }, [capacitacoes, filterLinha, filterAno, filterValor]);
+
+    const filteredAggregatedData = useMemo(() => {
+        return aggregatedData.filter(c => {
+            const linhaMatch = filterLinha ? c.linha_de_capacitacao === filterLinha : true;
+            const anoMatch = filterAno ? c.ano === parseInt(filterAno) : true;
+            const valorMatch = filterValor ? formatCurrency(c.valor_evento) === filterValor : true;
+            return linhaMatch && anoMatch && valorMatch;
+        });
+    }, [aggregatedData, filterLinha, filterAno, filterValor]);
 
     const stats = useMemo(() => {
         const totalCapacitacoes = filteredCapacitacoes.length;
-        const valorTotalEvento = filteredCapacitacoes.reduce((acc, curr) => acc + curr.valor_evento, 0);
+        const valorTotalEvento = filteredAggregatedData.reduce((acc, curr) => acc + curr.valor_evento, 0);
         const valorTotalDiaria = filteredCapacitacoes.reduce((acc, curr) => acc + curr.valor_diaria, 0);
         const valorTotalPassagem = filteredCapacitacoes.reduce((acc, curr) => acc + curr.valor_passagem, 0);
 
         return { totalCapacitacoes, valorTotalEvento, valorTotalDiaria, valorTotalPassagem };
-    }, [filteredCapacitacoes]);
+    }, [filteredCapacitacoes, filteredAggregatedData]);
 
-    const valorPorLinha = useMemo(() => {
-        const linhaData = filteredCapacitacoes.reduce((acc, curr) => {
-            const linha = curr.linha_de_capacitacao;
-            if (!acc[linha]) {
-                acc[linha] = { name: linha, total: 0 };
+    const eventosPorAno = useMemo(() => {
+        const data = filteredAggregatedData.reduce((acc, curr) => {
+            const ano = curr.ano;
+            if (!acc[ano]) {
+                acc[ano] = { name: ano, quantidade: 0, valor: 0 };
             }
-            acc[linha].total += curr.valor_evento;
+            acc[ano].quantidade++;
+            acc[ano].valor += curr.valor_evento;
             return acc;
-        }, {} as Record<string, { name: string; total: number }>);
-        return Object.values(linhaData).sort((a, b) => b.total - a.total);
-    }, [filteredCapacitacoes]);
-
-    const quantidadePorLinha = useMemo(() => {
-        const linhaData = filteredCapacitacoes.reduce((acc, curr) => {
-            const linha = curr.linha_de_capacitacao;
-            if (!acc[linha]) {
-                acc[linha] = { name: linha, total: 0 };
-            }
-            acc[linha].total++;
-            return acc;
-        }, {} as Record<string, { name: string; total: number }>);
-        return Object.values(linhaData).sort((a, b) => b.total - a.total);
-    }, [filteredCapacitacoes]);
+        }, {} as Record<string, { name: number; quantidade: number; valor: number }>);
+        return Object.values(data).sort((a, b) => a.name - b.name);
+    }, [filteredAggregatedData]);
 
     if (isLoading) {
         return <div className="text-center py-16">Carregando Dados...</div>;
@@ -214,68 +215,48 @@ const Capacitacoes: React.FC = () => {
         <div style={{fontFamily: 'Open Sans, sans-serif'}}>
             <h2 className="text-3xl font-bold text-white mb-6">Capacitações</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <StatCard title="Total de Capacitações" value={formatNumber(stats.totalCapacitacoes)} description="Registros totais no sistema" />
-                <StatCard title="Valor Total Evento" value={formatCurrency(stats.valorTotalEvento)} description="Soma de todos os valores de evento" />
+                <StatCard title="Valor Total Evento" value={formatCurrency(stats.valorTotalEvento)} description="Soma dos valores de eventos únicos" />
                 <StatCard title="Valor Total Diária" value={formatCurrency(stats.valorTotalDiaria)} description="Soma de todos os valores de diária" />
                 <StatCard title="Valor Total Passagem" value={formatCurrency(stats.valorTotalPassagem)} description="Soma de todos os valores de passagem" />
             </div>
 
             <div className="bg-slate-800 p-6 rounded-lg shadow-md mb-8">
                 <h3 className="text-xl font-bold text-white mb-4">Filtros</h3>
-                <div className="grid grid-cols-1 gap-4">
-                    <SearchableDropdown options={uniqueLinhas} value={filterLinha} onChange={setFilterLinha} placeholder="Filtrar por Linha de Capacitação..." label="Linha de Capacitação" />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <SearchableDropdown options={uniqueLinhas} value={filterLinha} onChange={setFilterLinha} placeholder="Filtrar por Linha..." label="Linha de Capacitação" />
+                    <SearchableDropdown options={uniqueAnos} value={filterAno} onChange={setFilterAno} placeholder="Filtrar por Ano..." label="Ano" />
+                    <SearchableDropdown options={uniqueValores} value={filterValor} onChange={setFilterValor} placeholder="Filtrar por Valor..." label="Valor do Evento" />
                 </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
-                    <h3 className="text-xl font-bold text-white mb-4">Valor por Linha de Capacitação</h3>
-                    <ResponsiveContainer width="100%" height={500}>
-                        <BarChart
-                            data={valorPorLinha}
-                            layout="vertical"
-                            margin={{ top: 5, right: 30, left: 200, bottom: 5 }}
-                            style={{ fontFamily: 'Open Sans, sans-serif' }}
-                            onClick={handleChartClick}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
-                            <XAxis type="number" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                            <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={200} />
-                            <Tooltip
-                                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', color: 'white' }}
-                                itemStyle={{ color: 'white' }}
-                                labelStyle={{ color: 'white' }}
-                                cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }}
-                                formatter={(value: number) => formatCurrency(value)}
-                            />
-                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} activeBar={{ fillOpacity: 0.5 }} />
-                        </BarChart>
+                    <h3 className="text-xl font-bold text-white mb-4">Quantidade de Eventos por Ano</h3>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <LineChart data={eventosPorAno} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                            <XAxis dataKey="name" tick={{ fill: '#94a3b8' }} />
+                            <YAxis tick={{ fill: '#94a3b8' }} />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Legend wrapperStyle={{ color: '#94a3b8' }} />
+                            <Line type="monotone" dataKey="quantidade" stroke="#8884d8" activeDot={{ r: 8 }} />
+                        </LineChart>
                     </ResponsiveContainer>
                 </div>
 
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
-                    <h3 className="text-xl font-bold text-white mb-4">Quantidade por Linha de Capacitação</h3>
-                    <ResponsiveContainer width="100%" height={500}>
-                        <BarChart
-                            data={quantidadePorLinha}
-                            layout="vertical"
-                            margin={{ top: 5, right: 30, left: 200, bottom: 5 }}
-                            style={{ fontFamily: 'Open Sans, sans-serif' }}
-                            onClick={handleChartClick}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
-                            <XAxis type="number" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                            <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={200} />
-                            <Tooltip
-                                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', color: 'white' }}
-                                itemStyle={{ color: 'white' }}
-                                labelStyle={{ color: 'white' }}
-                                cursor={{ fill: 'rgba(204, 204, 204, 0.5)' }}
-                                formatter={(value: number) => formatNumber(value)}
-                            />
-                            <Bar dataKey="total" fill="#2563EB" fillOpacity={0.75} stroke="#2563EB" strokeOpacity={1} activeBar={{ fillOpacity: 0.5 }} />
-                        </BarChart>
+                    <h3 className="text-xl font-bold text-white mb-4">Valor Total de Eventos por Ano</h3>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <LineChart data={eventosPorAno} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                            <XAxis dataKey="name" tick={{ fill: '#94a3b8' }} />
+                            <YAxis tick={{ fill: '#94a3b8' }} tickFormatter={formatCurrency} />
+                            <Tooltip content={<CustomTooltip isCurrency />} />
+                            <Legend wrapperStyle={{ color: '#94a3b8' }} />
+                            <Line type="monotone" dataKey="valor" stroke="#82ca9d" activeDot={{ r: 8 }} />
+                        </LineChart>
                     </ResponsiveContainer>
                 </div>
             </div>
