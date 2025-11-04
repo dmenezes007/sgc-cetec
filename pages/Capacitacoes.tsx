@@ -252,8 +252,11 @@ const Capacitacoes: React.FC = () => {
   dataKey="total"
   fill="#4338CA"
   radius={[8, 8, 8, 8]}
-  label={{
+label={{
   content: (props: any) => {
+    if (!props || !props.payload) {
+        return null;
+    }
     const { x, y, width, height, value, viewBox, index, payload } = props;
     const chartWidth = viewBox.width;
     const textY = y + height / 2;
@@ -320,7 +323,10 @@ const Capacitacoes: React.FC = () => {
                 fill="#2563eb"
                 radius={[8, 8, 8, 8]}
                 label={{
-                content: (props: any) => {
+  content: (props: any) => {
+    if (!props || !props.payload) {
+        return null;
+    }
                     const { x, y, width, height, value, viewBox, index, payload } = props;
                     const chartWidth = viewBox.width; 
                     const textY = y + height / 2;
