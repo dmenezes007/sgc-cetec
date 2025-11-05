@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Capacitacao } from '../types';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Select, { SingleValue } from 'react-select';
 
 // Tipos e Estilos para o novo seletor
@@ -62,6 +62,16 @@ const formatCurrency = (value: any) => {
         return 'R$ 0,00';
     }
     return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+
+const yAxisTickFormatter = (value: number) => {
+    if (value === 0) return '';
+    return formatNumber(value);
+};
+
+const yAxisCurrencyTickFormatter = (value: number) => {
+    if (value === 0) return '';
+    return formatCurrency(value);
 };
 
 const CustomTooltip = ({ active, payload, label, isCurrency }: any) => {
@@ -251,12 +261,17 @@ const Capacitacoes: React.FC = () => {
                     <h3 className="text-xl font-bold text-white mb-4">Quantidade de Eventos por Ano</h3>
                     <ResponsiveContainer width="100%" height={400}>
                         <AreaChart data={quantidadeEventosPorAno} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <defs>
+                                <linearGradient id="colorQuantidade" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#2563EB" stopOpacity={0.8}/>
+                                    <stop offset="95%" stopColor="#2563EB" stopOpacity={0}/>
+                                </linearGradient>
+                            </defs>
                             <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fill: '#94a3b8' }} />
-                            <YAxis tick={{ fill: '#94a3b8' }} />
+                            <YAxis tick={{ fill: '#94a3b8' }} tickFormatter={yAxisTickFormatter} />
                             <Tooltip content={<CustomTooltip />} />
-                            <Legend wrapperStyle={{ color: '#94a3b8' }} />
-                            <Area type="monotone" dataKey="quantidade" stroke="#8884d8" strokeWidth={4} dot={false} fillOpacity={0.5} fill="#8884d8" />
+                            <Area type="monotone" dataKey="quantidade" stroke="#2563EB" strokeWidth={4} dot={false} fillOpacity={1} fill="url(#colorQuantidade)" />
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
@@ -265,12 +280,17 @@ const Capacitacoes: React.FC = () => {
                     <h3 className="text-xl font-bold text-white mb-4">Valor Total de Eventos por Ano</h3>
                     <ResponsiveContainer width="100%" height={400}>
                         <AreaChart data={valorEventosPorAno} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <defs>
+                                <linearGradient id="colorValor" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#2563EB" stopOpacity={0.8}/>
+                                    <stop offset="95%" stopColor="#2563EB" stopOpacity={0}/>
+                                </linearGradient>
+                            </defs>
                             <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fill: '#94a3b8' }} />
-                            <YAxis tick={{ fill: '#94a3b8' }} tickFormatter={formatCurrency} />
+                            <YAxis tick={{ fill: '#94a3b8' }} tickFormatter={yAxisCurrencyTickFormatter} />
                             <Tooltip content={<CustomTooltip isCurrency />} />
-                            <Legend wrapperStyle={{ color: '#94a3b8' }} />
-                            <Area type="monotone" dataKey="valor" stroke="#82ca9d" strokeWidth={4} dot={false} fillOpacity={0.5} fill="#82ca9d" />
+                            <Area type="monotone" dataKey="valor" stroke="#2563EB" strokeWidth={4} dot={false} fillOpacity={1} fill="url(#colorValor)" />
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
