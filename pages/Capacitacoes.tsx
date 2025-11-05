@@ -183,9 +183,9 @@ const Capacitacoes: React.FC = () => {
 
     const stats = useMemo(() => {
         const totalCapacitacoes = filteredCapacitacoes.length;
-        const valorTotalEvento = filteredAggregatedData.reduce((acc, curr) => acc + curr.valor_evento, 0);
-        const valorTotalDiaria = filteredCapacitacoes.reduce((acc, curr) => acc + curr.valor_diaria, 0);
-        const valorTotalPassagem = filteredCapacitacoes.reduce((acc, curr) => acc + curr.valor_passagem, 0);
+        const valorTotalEvento = filteredAggregatedData.reduce((acc, curr) => acc + (Number(curr.valor_evento) || 0), 0);
+        const valorTotalDiaria = filteredCapacitacoes.reduce((acc, curr) => acc + (Number(curr.valor_diaria) || 0), 0);
+        const valorTotalPassagem = filteredCapacitacoes.reduce((acc, curr) => acc + (Number(curr.valor_passagem) || 0), 0);
 
         return { totalCapacitacoes, valorTotalEvento, valorTotalDiaria, valorTotalPassagem };
     }, [filteredCapacitacoes, filteredAggregatedData]);
@@ -193,10 +193,12 @@ const Capacitacoes: React.FC = () => {
     const quantidadeEventosPorAno = useMemo(() => {
         const data = filteredCapacitacoes.reduce((acc, curr) => {
             const ano = curr.ano;
-            if (!acc[ano]) {
-                acc[ano] = { name: ano, quantidade: 0 };
+            if (ano >= 2017) {
+                if (!acc[ano]) {
+                    acc[ano] = { name: ano, quantidade: 0 };
+                }
+                acc[ano].quantidade++;
             }
-            acc[ano].quantidade++;
             return acc;
         }, {} as Record<string, { name: number; quantidade: number }>);
         return Object.values(data).sort((a, b) => a.name - b.name);
@@ -205,10 +207,12 @@ const Capacitacoes: React.FC = () => {
     const valorEventosPorAno = useMemo(() => {
         const data = filteredAggregatedData.reduce((acc, curr) => {
             const ano = curr.ano;
-            if (!acc[ano]) {
-                acc[ano] = { name: ano, valor: 0 };
+            if (ano >= 2017) {
+                if (!acc[ano]) {
+                    acc[ano] = { name: ano, valor: 0 };
+                }
+                acc[ano].valor += (Number(curr.valor_evento) || 0);
             }
-            acc[ano].valor += curr.valor_evento;
             return acc;
         }, {} as Record<string, { name: number; valor: number }>);
         return Object.values(data).sort((a, b) => a.name - b.name);
@@ -252,7 +256,7 @@ const Capacitacoes: React.FC = () => {
                             <YAxis tick={{ fill: '#94a3b8' }} />
                             <Tooltip content={<CustomTooltip />} />
                             <Legend wrapperStyle={{ color: '#94a3b8' }} />
-                            <Line type="monotone" dataKey="quantidade" stroke="#8884d8" activeDot={{ r: 8 }} />
+                            <Line type="monotone" dataKey="quantidade" stroke="#8884d8" strokeWidth={3} dot={false} activeDot={{ r: 8 }} />
                         </LineChart>
                     </ResponsiveContainer>
                 </div>
@@ -266,7 +270,7 @@ const Capacitacoes: React.FC = () => {
                             <YAxis tick={{ fill: '#94a3b8' }} tickFormatter={formatCurrency} />
                             <Tooltip content={<CustomTooltip isCurrency />} />
                             <Legend wrapperStyle={{ color: '#94a3b8' }} />
-                            <Line type="monotone" dataKey="valor" stroke="#82ca9d" activeDot={{ r: 8 }} />
+                            <Line type="monotone" dataKey="valor" stroke="#82ca9d" strokeWidth={3} dot={false} activeDot={{ r: 8 }} />
                         </LineChart>
                     </ResponsiveContainer>
                 </div>
