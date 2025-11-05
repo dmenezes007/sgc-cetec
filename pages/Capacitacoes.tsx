@@ -241,18 +241,18 @@ const Capacitacoes: React.FC = () => {
             <h2 className="text-3xl font-bold text-white mb-6">Capacitações</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <StatCard title="Total de Capacitações" value={formatNumber(stats.totalCapacitacoes)} description="Registros totais no sistema" />
-                <StatCard title="Valor Total Evento" value={formatCurrency(stats.valorTotalEvento)} description="Soma dos valores de eventos únicos" />
-                <StatCard title="Valor Total Diária" value={formatCurrency(stats.valorTotalDiaria)} description="Soma de todos os valores de diária" />
-                <StatCard title="Valor Total Passagem" value={formatCurrency(stats.valorTotalPassagem)} description="Soma de todos os valores de passagem" />
+                <StatCard title="Número Total de Capacitações" value={formatNumber(stats.totalCapacitacoes)} description="Registros totais de capacitações" />
+                <StatCard title="Valor Total Pago em Eventos" value={formatCurrency(stats.valorTotalEvento)} description="Soma dos valores de eventos únicos" />
+                <StatCard title="Valor Total Pago em Diárias" value={formatCurrency(stats.valorTotalDiaria)} description="Soma de todos os valores de diárias" />
+                <StatCard title="Valor Total Pago em Passagens" value={formatCurrency(stats.valorTotalPassagem)} description="Soma de todos os valores de passagens" />
             </div>
 
             <div className="bg-slate-800 p-6 rounded-lg shadow-md mb-8">
                 <h3 className="text-xl font-bold text-white mb-4">Filtros</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <SearchableDropdown options={uniqueLinhas} value={filterLinha} onChange={setFilterLinha} placeholder="Filtrar por Linha..." label="Linha de Capacitação" />
+                    <SearchableDropdown options={uniqueLinhas} value={filterLinha} onChange={setFilterLinha} placeholder="Filtrar por Linha..." label="Linha" />
                     <SearchableDropdown options={uniqueAnos} value={filterAno} onChange={setFilterAno} placeholder="Filtrar por Ano..." label="Ano" />
-                    <SearchableDropdown options={uniqueValores} value={filterValor} onChange={setFilterValor} placeholder="Filtrar por Valor..." label="Valor do Evento" />
+                    <SearchableDropdown options={uniqueValores} value={filterValor} onChange={setFilterValor} placeholder="Filtrar por Valor..." label="Valor" />
                 </div>
             </div>
 
