@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Capacitacao } from '../types';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import Select, { SingleValue } from 'react-select';
 
 // Tipos e Estilos para o novo seletor
@@ -144,23 +144,23 @@ const Capacitacoes: React.FC = () => {
         fetchCapacitacoes();
     }, []);
 
-    const aggregatedData = useMemo(() => {
-        const uniqueEvents = new Map<string, Capacitacao>();
+    const uniqueEvents = useMemo(() => {
+        const events = new Map<string, Capacitacao>();
         capacitacoes.forEach(c => {
-            const key = `${c.nome_evento}-${c.ano}`;
-            if (!uniqueEvents.has(key)) {
-                uniqueEvents.set(key, c);
+            const key = `${c.evento}-${c.ano}`;
+            if (!events.has(key)) {
+                events.set(key, c);
             }
         });
-        return Array.from(uniqueEvents.values());
+        return Array.from(events.values());
     }, [capacitacoes]);
 
     const uniqueLinhas = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.linha_de_capacitacao))).sort()], [capacitacoes]);
     const uniqueAnos = useMemo(() => ['', ...Array.from(new Set(capacitacoes.map(c => c.ano))).sort((a, b) => b - a)], [capacitacoes]);
     const uniqueValores = useMemo(() => {
-        const valores = Array.from(new Set(aggregatedData.map(c => c.valor_evento))).sort((a, b) => b - a);
+        const valores = Array.from(new Set(uniqueEvents.map(c => c.valor_evento))).sort((a, b) => b - a);
         return ['', ...valores.map(v => formatCurrency(v))];
-    }, [aggregatedData]);
+    }, [uniqueEvents]);
 
 
     const filteredCapacitacoes = useMemo(() => {
@@ -172,26 +172,26 @@ const Capacitacoes: React.FC = () => {
         });
     }, [capacitacoes, filterLinha, filterAno, filterValor]);
 
-    const filteredAggregatedData = useMemo(() => {
-        return aggregatedData.filter(c => {
+    const filteredUniqueEvents = useMemo(() => {
+        return uniqueEvents.filter(c => {
             const linhaMatch = filterLinha ? c.linha_de_capacitacao === filterLinha : true;
             const anoMatch = filterAno ? c.ano === parseInt(filterAno) : true;
             const valorMatch = filterValor ? formatCurrency(c.valor_evento) === filterValor : true;
             return linhaMatch && anoMatch && valorMatch;
         });
-    }, [aggregatedData, filterLinha, filterAno, filterValor]);
+    }, [uniqueEvents, filterLinha, filterAno, filterValor]);
 
     const stats = useMemo(() => {
         const totalCapacitacoes = filteredCapacitacoes.length;
-        const valorTotalEvento = filteredAggregatedData.reduce((acc, curr) => acc + (Number(curr.valor_evento) || 0), 0);
+        const valorTotalEvento = filteredUniqueEvents.reduce((acc, curr) => acc + (Number(curr.valor_evento) || 0), 0);
         const valorTotalDiaria = filteredCapacitacoes.reduce((acc, curr) => acc + (Number(curr.valor_diaria) || 0), 0);
         const valorTotalPassagem = filteredCapacitacoes.reduce((acc, curr) => acc + (Number(curr.valor_passagem) || 0), 0);
 
         return { totalCapacitacoes, valorTotalEvento, valorTotalDiaria, valorTotalPassagem };
-    }, [filteredCapacitacoes, filteredAggregatedData]);
+    }, [filteredCapacitacoes, filteredUniqueEvents]);
 
     const quantidadeEventosPorAno = useMemo(() => {
-        const data = filteredCapacitacoes.reduce((acc, curr) => {
+        const data = filteredUniqueEvents.reduce((acc, curr) => {
             const ano = curr.ano;
             if (ano >= 2017) {
                 if (!acc[ano]) {
@@ -202,10 +202,10 @@ const Capacitacoes: React.FC = () => {
             return acc;
         }, {} as Record<string, { name: number; quantidade: number }>);
         return Object.values(data).sort((a, b) => a.name - b.name);
-    }, [filteredCapacitacoes]);
+    }, [filteredUniqueEvents]);
 
     const valorEventosPorAno = useMemo(() => {
-        const data = filteredAggregatedData.reduce((acc, curr) => {
+        const data = filteredUniqueEvents.reduce((acc, curr) => {
             const ano = curr.ano;
             if (ano >= 2017) {
                 if (!acc[ano]) {
@@ -216,7 +216,7 @@ const Capacitacoes: React.FC = () => {
             return acc;
         }, {} as Record<string, { name: number; valor: number }>);
         return Object.values(data).sort((a, b) => a.name - b.name);
-    }, [filteredAggregatedData]);
+    }, [filteredUniqueEvents]);
 
     if (isLoading) {
         return <div className="text-center py-16">Carregando Dados...</div>;
@@ -250,28 +250,28 @@ const Capacitacoes: React.FC = () => {
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Quantidade de Eventos por Ano</h3>
                     <ResponsiveContainer width="100%" height={400}>
-                        <LineChart data={quantidadeEventosPorAno} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                        <AreaChart data={quantidadeEventosPorAno} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fill: '#94a3b8' }} />
                             <YAxis tick={{ fill: '#94a3b8' }} />
                             <Tooltip content={<CustomTooltip />} />
                             <Legend wrapperStyle={{ color: '#94a3b8' }} />
-                            <Line type="monotone" dataKey="quantidade" stroke="#8884d8" strokeWidth={3} dot={false} activeDot={{ r: 8 }} />
-                        </LineChart>
+                            <Area type="monotone" dataKey="quantidade" stroke="#8884d8" strokeWidth={4} dot={false} fillOpacity={0.5} fill="#8884d8" />
+                        </AreaChart>
                     </ResponsiveContainer>
                 </div>
 
                 <div className="bg-slate-800 p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-white mb-4">Valor Total de Eventos por Ano</h3>
                     <ResponsiveContainer width="100%" height={400}>
-                        <LineChart data={valorEventosPorAno} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                        <AreaChart data={valorEventosPorAno} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                             <XAxis dataKey="name" tick={{ fill: '#94a3b8' }} />
                             <YAxis tick={{ fill: '#94a3b8' }} tickFormatter={formatCurrency} />
                             <Tooltip content={<CustomTooltip isCurrency />} />
                             <Legend wrapperStyle={{ color: '#94a3b8' }} />
-                            <Line type="monotone" dataKey="valor" stroke="#82ca9d" strokeWidth={3} dot={false} activeDot={{ r: 8 }} />
-                        </LineChart>
+                            <Area type="monotone" dataKey="valor" stroke="#82ca9d" strokeWidth={4} dot={false} fillOpacity={0.5} fill="#82ca9d" />
+                        </AreaChart>
                     </ResponsiveContainer>
                 </div>
             </div>
