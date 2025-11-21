@@ -110,7 +110,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }
       </aside>
 
       <main className="flex-1 overflow-y-auto p-8">
-        <div className="max-w-7xl mx-auto">
+        <div>
           {children}
         </div>
       </main>
