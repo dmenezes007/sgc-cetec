@@ -1,10 +1,8 @@
 
 import React, { useMemo, useState, useEffect, Fragment } from 'react';
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import L from 'leaflet';
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Select, { SingleValue } from 'react-select';
 import Papa from 'papaparse';
@@ -126,15 +124,6 @@ const SearchableDropdown: React.FC<{ options: string[]; value: string; onChange:
     );
 };
 
-let DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconSize: [25, 41], // O tamanho do ícone
-    iconAnchor: [12, 41] // O ponto do ícone que 'gruda' no mapa
-});
-
-L.Marker.prototype.options.icon = DefaultIcon;
-
 const Afastamentos: React.FC = () => {
     const [afastamentos, setAfastamentos] = useState<Afastamento[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -223,6 +212,26 @@ const Afastamentos: React.FC = () => {
         return Object.values(localData);
     }, [filteredAfastamentos]);
 
+    const afastamentosPorLocalComCoordenadas = useMemo(() => {
+        const localData = filteredAfastamentos.reduce((acc, curr) => {
+            const local = curr.Local;
+            if (isFinite(curr.Latitude) && isFinite(curr.Longitude)) {
+                if (!acc[local]) {
+                    acc[local] = {
+                        name: local,
+                        total: 0,
+                        latitude: curr.Latitude,
+                        longitude: curr.Longitude
+                    };
+                }
+                acc[local].total++;
+            }
+            return acc;
+        }, {} as Record<string, { name: string; total: number; latitude: number, longitude: number }>);
+        return Object.values(localData);
+    }, [filteredAfastamentos]);
+
+
     if (isLoading) {
         return <div className="text-center py-16">Carregando Dados...</div>;
     }
@@ -272,21 +281,18 @@ const Afastamentos: React.FC = () => {
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
                             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                         />
-                        {filteredAfastamentos.map((afastamento, i) => {
-                            const latValida = isFinite(afastamento.Latitude);
-                            const longValida = isFinite(afastamento.Longitude);
-                            
-                            return (latValida && longValida) ? (
-                                <Marker 
-                                    key={i} 
-                                    position={[afastamento.Latitude, afastamento.Longitude]}
-                                >
-                                    <Popup>
-                                        {afastamento.Local}
-                                    </Popup>
-                                </Marker>
-                            ) : null;
-                        })}
+                        {afastamentosPorLocalComCoordenadas.map((local, i) => (
+                            <CircleMarker
+                                key={i}
+                                center={[local.latitude, local.longitude]}
+                                radius={5 + local.total * 2}
+                                pathOptions={{ color: '#2563EB', fillColor: '#2563EB', fillOpacity: 0.5 }}
+                            >
+                                <Popup>
+                                    {local.name}: {local.total} afastamento(s)
+                                </Popup>
+                            </CircleMarker>
+                        ))}
                     </MapContainer>
                 </div>
             </div>
